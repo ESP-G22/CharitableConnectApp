@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">CharitableConnect</string>
+    <string name="profile_nav_bar_string">Profile</string>
+    <string name="explore_nav_bar_string">Explore</string>
+    <string name="feed_nav_bar_string">Feed</string>
+    <string name="hello_explore_fragment">Hello explore fragment</string>
+    <string name="hello_feed_fragment">Hello feed fragment</string>
+    <string name="hello_profile_fragment">Hello profile fragment</string>
+    <string name="profile_fragment_title">Profile</string>
+    <string name="feed_fragment_title">Feed</string>
+    <string name="explore_fragment_title">Explore</string>
 </resources>
