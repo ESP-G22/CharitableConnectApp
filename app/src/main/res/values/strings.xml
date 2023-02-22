@@ -20,4 +20,7 @@
     <string name="enable_rsvp">Enable RSVP?</string>
     <string name="add_other_organiser">ADD OTHER ORGANISER</string>
     <string name="add_location">ADD LOCATION</string>
+    <string name="skip_section">Skip ></string>
+    <string name="continue_to_section">Continue ></string>
+    <string name="rsvp_event">RSVP</string>
 </resources>
