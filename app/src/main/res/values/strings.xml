@@ -9,4 +9,15 @@
     <string name="profile_fragment_title">Profile</string>
     <string name="feed_fragment_title">Feed</string>
     <string name="explore_fragment_title">Explore</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_event_fragment_title">New Event</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="image">Image</string>
+    <string name="upload_new">UPLOAD NEW</string>
+    <string name="description">Description</string>
+    <string name="enable_rsvp">Enable RSVP?</string>
+    <string name="add_other_organiser">ADD OTHER ORGANISER</string>
+    <string name="add_location">ADD LOCATION</string>
 </resources>
