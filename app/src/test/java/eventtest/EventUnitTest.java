@@ -1,9 +1,10 @@
-package event;
+package eventtest;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 import errors.EmptyInputError;
 import errors.MaximumInputSizeError;
+import event.EventValidate;
 
 public class EventUnitTest {
     @Test
@@ -17,7 +18,7 @@ public class EventUnitTest {
 
     @Test
     public void ExpectedTitle() {
-        Event.checkTitle("ah");
+        EventValidate.checkTitle("ah");
     }
 
     @Test
@@ -41,7 +42,7 @@ public class EventUnitTest {
 
     @Test
     public void ExpectedDescription() {
-        Event.checkDescription("ah");
+        EventValidate.checkDescription("ah");
     }
 
     @Test
@@ -56,21 +57,21 @@ public class EventUnitTest {
 
     @Test
     public void nullDatetime() {
-        assertTrue(False);
+        assertTrue(false);
     }
 
     @Test
     public void FutureDatetime() {
-        assertTrue(False);
+        assertTrue(false);
     }
 
     @Test
     public void locationNotInBA2() {
-        assertTrue(False);
+        assertTrue(false);
     }
 
     @Test
     public void locationInBA2() {
-        assertTrue(False);
+        assertTrue(false);
     }
 }

@@ -1,5 +1,7 @@
 package event;
 
+import java.util.Date;
+
 public class EventValidate {
     public static void checkTitle(String title) {
         return;

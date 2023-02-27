@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import errors.EmptyInputError;
-import errors.MaximumInputSizeError;
-
 public class Event {
     private int id;
     private int type;
@@ -130,7 +127,7 @@ public class Event {
         return image;
     }
 
-    private void setImage(String image) {
+    private void setImage(int image) {
         this.image = image;
     }
 
@@ -164,29 +161,29 @@ public class Event {
     /**
      * Adds user ID to event attendance, using RSVP.
      * 
-     * @param userID. Integer ID from user.getID().
+     * @param userID Integer ID from user.getID().
      */
     public void addAttendee(int userID) {
-        this.attendees.add(userID);
+        attendees.add(userID);
         numAttendees++;
     }
 
     /**
      * Removes user from attendance, if they are on the attendance list.
      * 
-     * @param userID. Integer ID from user.getID().
+     * @param userID Integer ID from user.getID().
      * 
      * @return True if user removed, False if user not on list.
      */
     public boolean removeAttendee(int userID) {
-        if (!this.attendees.contains(userID)) {
-            return False;
+        if (!attendees.contains(userID)) {
+            return false;
         }
 
-        this.attendees.remove(userID);
-        attendees--;
+        attendees.remove(userID);
+        numAttendees--;
 
-        return True;
+        return true;
     }
 
     public static boolean postNewEvent(int type, String title,
@@ -196,8 +193,11 @@ public class Event {
         // check inputs
         // check if event doesn't already exist
         // post event to db
+
+        return false;
     }
 
+    // TODO: Use API documentation to correctly use API
     public static Event getFromApi() {
         return null;
     }

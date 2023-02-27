@@ -10,21 +10,24 @@ public class Organiser extends User {
 
     public Organiser(
             int id, int count, String email, String name,
-            List<Event> eventsHosted, String bio)
-    {
+            List<Event> eventsHosted, String bio) {
         super(id, count, email, name);
         setEventsHosted(eventsHosted);
         setBio(bio);
 
     }
 
-    public List<Event> getEventsHosted() { return eventsHosted; }
+    public List<Event> getEventsHosted() {
+        return eventsHosted;
+    }
 
     private void setEventsHosted(List<Event> eventsHosted) {
         this.eventsHosted = eventsHosted;
     }
 
-    public String getBio() { return bio; }
+    public String getBio() {
+        return bio;
+    }
 
     private void setBio(String bio) {
         this.bio = bio;

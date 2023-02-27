@@ -11,8 +11,7 @@ public class Attendee extends User {
     public Attendee(
             int id, int count, String email, String name,
             List<Event> eventsSubbedTo, List<Integer> eventPreference,
-            List<Organiser> organiserSubbedTo)
-    {
+            List<Organiser> organiserSubbedTo) {
         super(id, count, email, name);
         setEventsSubbedTo(eventsSubbedTo);
         setOrganiserSubbedTo(organiserSubbedTo);
@@ -20,19 +19,25 @@ public class Attendee extends User {
 
     }
 
-    public List<Event> getEventsSubbedTo() { return eventsSubbedTo; }
+    public List<Event> getEventsSubbedTo() {
+        return eventsSubbedTo;
+    }
 
     private void setEventsSubbedTo(List<Event> eventsSubbedTo) {
         this.eventsSubbedTo = eventsSubbedTo;
     }
 
-    public List<Integer> getEventPreference() { return eventPreference; }
+    public List<Integer> getEventPreference() {
+        return eventPreference;
+    }
 
     private void setEventPreference(List<Integer> eventPreference) {
         this.eventPreference = eventPreference;
     }
 
-    public List<Organiser> getOrganiserSubbedTo() { return organiserSubbedTo; }
+    public List<Organiser> getOrganiserSubbedTo() {
+        return organiserSubbedTo;
+    }
 
     private void setOrganiserSubbedTo(List<Organiser> organiserSubbedTo) {
         this.organiserSubbedTo = organiserSubbedTo;
