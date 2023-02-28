@@ -7,6 +7,10 @@ public abstract class User {
     protected String name;
     protected int profilePic; // Find image class
 
+    public User2(String token) {
+        
+    }
+
     public User(int id, int count, String email, String name) {
         setID(id);
         setCount(count);
@@ -70,7 +74,11 @@ public abstract class User {
         return false;
     }
 
-    public User IDToUser(int id) {
-        return null;
+    public boolean register(String username, String password, String email) {
+        return false;
+    }
+
+    public boolean login(String username, String password) {
+        return false;
     }
 }
