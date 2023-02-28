@@ -5,6 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="413dp"
+        android:layout_height="404dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="365dp"
+                android:layout_height="191dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "
+                android:textColor="#000000"
+                android:textSize="16sp"
+                tools:layout_editor_absoluteX="24dp"
+                tools:layout_editor_absoluteY="178dp" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="258dp"
+                android:layout_height="153dp"
+                tools:layout_editor_absoluteX="78dp"
+                tools:layout_editor_absoluteY="9dp"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -74,39 +106,21 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="330dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="186dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="16dp"
         android:text="RSVP"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.567"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+        tools:layout_editor_absoluteY="275dp" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="258dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="184dp"
+        android:layout_height="39dp"
+        android:backgroundTint="#F62F53"
+        android:text="Favourite"
+        app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="365dp"
-        android:layout_height="191dp"
-        android:fontFamily="sans-serif-black"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "
-        android:textColor="#000000"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.652"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
-        app:layout_constraintVertical_bias="0.18" />
+        tools:layout_editor_absoluteY="275dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
