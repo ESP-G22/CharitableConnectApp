@@ -3,7 +3,7 @@ package dev.n0ne1eft.charitableconnect;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-
+import android.widget.Button;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,5 +60,10 @@ public class ExploreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_explore, container, false);
+    }
+    public void disable(View v){
+        v.setEnabled(false);
+        Button button = (Button) v;
+        button.setText("Food");
     }
 }
