@@ -1,22 +1,48 @@
 package user;
 
 public abstract class User {
+    private String token;
     private int id;
     private int count;
     protected String email;
     protected String name;
     protected int profilePic; // Find image class
 
-    public User2(String token) {
-        
+    public User(String token) {
+        setToken(token);
     }
 
-    public User(int id, int count, String email, String name) {
+    public User(int id, int count, String email, String name, int profilePic) {
+        setAttrs(id, count, email, name, profilePic);
+    }
+
+    private void setToken(String token) {
+        // check if token is valid
+        this.token = token;
+
+        // get attributes from API
+        int id = 0;
+        int count = 1;
+        String email = "foo@bar.com";
+        int profilePic = 0;
+
+        setAttrs(id, count, email, name, profilePic);
+    }
+
+    private setAttrs(int id, int count, String email, String name, int profilePic) {
         setID(id);
         setCount(count);
         setEmail(email);
         setName(name);
         setProfilePic(profilePic);
+    }
+
+    public boolean changePassword(String originalPassword, String newPassword1, String newPassword2) {
+        return false;
+    }
+
+    public boolean deleteUser() {
+        return false;
     }
 
     /**
@@ -64,21 +90,5 @@ public abstract class User {
 
     private void setProfilePic(int profilePic) {
         this.profilePic = profilePic;
-    }
-
-    public String getData() {
-        return "";
-    }
-
-    public boolean deleteUser() {
-        return false;
-    }
-
-    public boolean register(String username, String password, String email) {
-        return false;
-    }
-
-    public boolean login(String username, String password) {
-        return false;
     }
 }
