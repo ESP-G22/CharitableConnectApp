@@ -33,4 +33,8 @@
     <string name="notifications_info">Would you like to receive notifications for events that may interest you?</string>
     <string name="yes_button">YES PLEASE</string>
     <string name="no_button">NO THANKS</string>
+    <string name="welcome_complete_title">All set!</string>
+    <string name="welcome_complete_button">LET\'S START BROWSING</string>
+    <string name="event_types_title">Event Types</string>
+    <string name="event_types_info">What kind of events are you interested in?</string>
 </resources>

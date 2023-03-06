@@ -2,11 +2,16 @@ package dev.n0ne1eft.charitableconnect;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import dev.n0ne1eft.charitableconnect.databinding.FragmentInitWelcomeBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +19,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class InitWelcomeFragment extends Fragment {
+
+    private FragmentInitWelcomeBinding binding;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,6 +30,8 @@ public class InitWelcomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
 
     public InitWelcomeFragment() {
         // Required empty public constructor
@@ -58,7 +67,31 @@ public class InitWelcomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        binding = FragmentInitWelcomeBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_init_welcome, container, false);
+        //return inflater.inflate(R.layout.fragment_init_welcome, container, false);
+    }
+
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // or view.findViewById(R.id.random_button).setOnClickListener()
+        binding.nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("haza");
+                Toast myToast = Toast.makeText(getActivity(), "Hello toast!", Toast.LENGTH_SHORT);
+                myToast.show();
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
