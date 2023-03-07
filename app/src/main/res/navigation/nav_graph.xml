@@ -6,11 +6,6 @@
     app:startDestination="@id/feedFragment">
 
     <fragment
-        android:id="@+id/feedFragment"
-        android:name="dev.n0ne1eft.charitableconnect.FeedFragment"
-        android:label="@string/feed_fragment_title"
-        tools:layout="@layout/fragment_feed" />
-    <fragment
         android:id="@+id/exploreFragment"
         android:name="dev.n0ne1eft.charitableconnect.ExploreFragment"
         android:label="@string/explore_fragment_title"
@@ -20,4 +15,9 @@
         android:name="dev.n0ne1eft.charitableconnect.ProfileFragment"
         android:label="@string/profile_fragment_title"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="dev.n0ne1eft.charitableconnect.FeedFragment"
+        android:label="@string/feed_fragment_title"
+        tools:layout="@layout/fragment_feed" />
 </navigation>
