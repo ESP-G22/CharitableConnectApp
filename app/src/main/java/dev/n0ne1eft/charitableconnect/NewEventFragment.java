@@ -41,6 +41,7 @@ public class NewEventFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private View view;
     private Image temp;
+    private LinearLayout linearLayout;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
 
 
@@ -87,6 +88,9 @@ public class NewEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_new_event, container, false);
+
+        //Common values
+        linearLayout = (LinearLayout) view.findViewById(R.id.imageLinearLayout);
 
         //Images
         someActivityResultLauncher = registerForActivityResult(
@@ -136,9 +140,6 @@ public class NewEventFragment extends Fragment {
 
     //Onclick methods
     public void uploadImage(Bitmap image){
-        //Get target layout
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.imageLinearLayout);
-
         //Initialise frame layout
         RelativeLayout card = new RelativeLayout(getActivity());
         //Initialise frame layout params
@@ -147,6 +148,10 @@ public class NewEventFragment extends Fragment {
         ImageView imageView = new ImageView(getActivity());
         //Initialise new button
         ImageButton deleteBut = new ImageButton(getActivity());
+        deleteBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {deleteImage(v);}
+        });
 
         //Edit button
         deleteBut.setBackgroundResource(R.drawable.delete_button_icon);
@@ -165,5 +170,12 @@ public class NewEventFragment extends Fragment {
         card.addView(deleteBut);
         //Add to layout
         linearLayout.addView(card);
+    }
+
+    public void deleteImage(View v){
+        //Get card that v belongs to
+        View card = (View)v.getParent();
+        //Remove it from layout
+        linearLayout.removeView(card);
     }
 }
