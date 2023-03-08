@@ -40,4 +40,12 @@
     <string name="user_is_not_organiser">
         NO, I AM AN EVENT ATTENDEE
     </string>
+    <string name="title_activity_date_time">DateTimeActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="select_date">SELECT DATE</string>
+    <string name="select_time">SELECT TIME</string>
 </resources>

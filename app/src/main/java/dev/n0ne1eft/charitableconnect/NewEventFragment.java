@@ -2,6 +2,9 @@ package dev.n0ne1eft.charitableconnect;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,12 +26,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +49,11 @@ public class NewEventFragment extends Fragment {
     private View view;
     private Image temp;
     private LinearLayout linearLayout;
+    private DatePickerDialog datePickerDialog;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
+    private Button dateBut;
+    private Button timeBut;
+    int hour, minute;
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -125,6 +136,26 @@ public class NewEventFragment extends Fragment {
             public void onClick(View v) {selectImage(v);}
         });
 
+        //Select date
+        initDatePicker();
+        dateBut = view.findViewById(R.id.launchDateButton);
+        dateBut.setText(getTodaysDate());
+        dateBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchDate(v);
+            }
+        });
+        //Select time
+        timeBut = view.findViewById(R.id.launchTimeButton);
+        timeBut.setText(String.format(Locale.getDefault(), "%02d:%02d",23,59));
+        timeBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTime(v);
+            }
+        });
+
         //Add other organiser
 
         return view;
@@ -138,7 +169,70 @@ public class NewEventFragment extends Fragment {
         someActivityResultLauncher.launch(intent);
     }
 
+    private String getTodaysDate(){
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        month = month + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        return makeDateString(day, month, year);
+    }
+
+    private void initDatePicker(){
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                month = month + 1;
+                String date = makeDateString(day, month, year);
+                dateBut.setText(date);
+            }
+        };
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        datePickerDialog = new DatePickerDialog(getActivity(), dateSetListener, year, month, day);
+
+    }
+
+    private String makeDateString(int day, int month, int year){
+        return getMonthFormat(month) + " " + day + " " + year;
+    }
+
+    private String getMonthFormat(int month) {
+        if(month == 1){return "JAN";}
+        if(month == 2){return "FEB";}
+        if(month == 3){return "MAR";}
+        if(month == 4){return "APR";}
+        if(month == 5){return "MAY";}
+        if(month == 6){return "JUN";}
+        if(month == 7){return "JUL";}
+        if(month == 8){return "AUG";}
+        if(month == 9){return "SEP";}
+        if(month == 10){return "OCT";}
+        if(month == 11){return "NOV";}
+        return "DEC";
+    }
+
     //Onclick methods
+    public void launchDate(View v){
+        datePickerDialog.show();
+    }
+    public void launchTime(View v){
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
+                hour = selectedHour;
+                minute = selectedMinute;
+                timeBut.setText(String.format(Locale.getDefault(), "%02d:%02d",hour,minute));
+            }
+        };
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), onTimeSetListener, hour, minute, true);
+        timePickerDialog.setTitle("Select Time");
+        timePickerDialog.show();
+
+    }
+
     public void uploadImage(Bitmap image){
         //Initialise frame layout
         RelativeLayout card = new RelativeLayout(getActivity());

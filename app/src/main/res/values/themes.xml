@@ -14,4 +14,11 @@
         <!-- Customize your theme here. -->
         <item name="android:navigationBarColor">@color/white</item>
     </style>
+    <style name="Theme.CharitableConnect.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.CharitableConnect.AppBarOverlay"
+        parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.CharitableConnect.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
