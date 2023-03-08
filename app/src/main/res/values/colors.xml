@@ -10,4 +10,5 @@
     <color name="white">#FFFFFFFF</color>
     <!-- Favourite button -->
     <color name="red">#FFF62F53</color>
+    <color name="navBarColor">#FF212121</color>
 </resources>

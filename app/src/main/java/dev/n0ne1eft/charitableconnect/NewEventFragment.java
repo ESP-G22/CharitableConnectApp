@@ -1,12 +1,29 @@
 package dev.n0ne1eft.charitableconnect;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +34,11 @@ public class NewEventFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private View view;
+    private Image temp;
+    ActivityResultLauncher<Intent> someActivityResultLauncher;
+
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -59,6 +81,99 @@ public class NewEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_event, container, false);
+        view = inflater.inflate(R.layout.fragment_new_event, container, false);
+
+        //Images
+        someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            //Operations from here
+                            if (data != null && data.getData() != null){
+                                Uri selectedImagedUri = data.getData();
+                                Bitmap selectedImageBitmap = null;
+                                try{
+                                    selectedImageBitmap
+                                            = MediaStore.Images.Media.getBitmap(
+                                                    getActivity().getApplicationContext().getContentResolver(),
+                                                    selectedImagedUri);
+                                } catch (IOException e){
+                                    e.printStackTrace();
+                                }
+                                uploadImage(selectedImageBitmap);
+                            }
+                        }
+                    }
+                });
+        
+        //Upload image onclick listener
+        Button uploadImageBut = view.findViewById(R.id.UploadNewButton);
+        uploadImageBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {selectImage(v);}
+        });
+
+        //Add other organiser
+
+        return view;
+    }
+    //Helper methods
+    public void selectImage(View v){
+        //Get target image
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        someActivityResultLauncher.launch(intent);
+    }
+
+    //Onclick methods
+    public void uploadImage(Bitmap image){
+        //Get target layout
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.imageLinearLayout);
+
+        //Get image from camera roll
+
+        //Initialise frame layout
+        FrameLayout card = new FrameLayout(getActivity());
+
+        //Initialise image view
+        ImageView imageView = new ImageView(getActivity());
+        imageView.setImageBitmap(image);
+
+        //Initialise new button
+        ImageButton deleteBut = new ImageButton(getActivity());
+        deleteBut.setBackgroundResource(R.drawable.delete_button_icon);
+        deleteBut.setMaxWidth(2);
+        deleteBut.setMinimumWidth(2);
+
+        //Add image to imageView
+
+
+
+        //Alter image size
+        imageView.setAdjustViewBounds(true);
+        imageView.setMinimumWidth(300);
+        imageView.setMaxWidth(300);
+        imageView.setMinimumHeight(300);
+        imageView.setMaxHeight(300);
+
+
+        //Add image to card
+        card.addView(imageView);
+        //Add delete button to card
+        card.addView(deleteBut);
+
+        //Edit card
+        card.setPadding(0, 0, 12, 0);
+
+        //Add to layout
+        linearLayout.addView(card);
+
+
+
+
     }
 }
