@@ -4,7 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import errors.EmptyInputError;
 import errors.MaximumInputSizeError;
-import event.EventValidate;
+import validate.Event;
 
 public class EventUnitTest {
     @Test
@@ -12,13 +12,13 @@ public class EventUnitTest {
         assertThrows(
                 EmptyInputError.class,
                 () -> {
-                    EventValidate.checkTitle("");
+                    Event.checkTitle("");
                 });
     }
 
     @Test
     public void ExpectedTitle() {
-        EventValidate.checkTitle("ah");
+        Event.checkTitle("ah");
     }
 
     @Test
@@ -26,7 +26,7 @@ public class EventUnitTest {
         assertThrows(
                 MaximumInputSizeError.class,
                 () -> {
-                    EventValidate.checkTitle(
+                    Event.checkTitle(
                             "ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
                 });
     }
@@ -36,13 +36,13 @@ public class EventUnitTest {
         assertThrows(
                 EmptyInputError.class,
                 () -> {
-                    EventValidate.checkDescription("");
+                    Event.checkDescription("");
                 });
     }
 
     @Test
     public void ExpectedDescription() {
-        EventValidate.checkDescription("ah");
+        Event.checkDescription("ah");
     }
 
     @Test
@@ -50,7 +50,7 @@ public class EventUnitTest {
         assertThrows(
                 MaximumInputSizeError.class,
                 () -> {
-                    EventValidate.checkDescription(
+                    Event.checkDescription(
                             "ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
                 });
     }

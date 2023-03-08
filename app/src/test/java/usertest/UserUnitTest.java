@@ -4,7 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import errors.EmptyInputError;
 import errors.MaximumInputSizeError;
-import user.UserValidate;
+import validate.User;
 
 public class UserUnitTest {
     @Test
@@ -12,18 +12,18 @@ public class UserUnitTest {
         assertThrows(
                 EmptyInputError.class,
                 () -> {
-                    UserValidate.checkEmail("");
+                    User.checkEmail("");
                 });
     }
 
     @Test
     public void ExpectedEmail() {
-        UserValidate.checkEmail("foo@bar.com");
+        User.checkEmail("foo@bar.com");
     }
 
     @Test
     public void IncorrectEmail() {
-        UserValidate.checkEmail("foobar.com");
+        User.checkEmail("foobar.com");
     }
 
     @Test
@@ -31,7 +31,7 @@ public class UserUnitTest {
         assertThrows(
                 MaximumInputSizeError.class,
                 () -> {
-                    UserValidate.checkEmail(
+                    User.checkEmail(
                             "ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
                 });
     }

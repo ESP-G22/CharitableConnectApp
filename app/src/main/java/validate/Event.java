@@ -1,8 +1,8 @@
-package event;
+package validate;
 
 import java.util.Date;
 
-public class EventValidate {
+public class Event {
     public static void checkTitle(String title) {
         return;
     }
