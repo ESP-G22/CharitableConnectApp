@@ -1,12 +1,12 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24"
-    android:tint="#FF4D4D"
+    android:width="36dp"
+    android:height="36dp"
+    android:viewportWidth="36"
+    android:viewportHeight="36"
+    android:tint="#ACACAC"
     android:alpha="1">
-  <group android:scaleX="1"
-      android:scaleY="1"
+  <group android:scaleX="1.5"
+      android:scaleY="1.5"
       android:translateX="0"
       android:translateY="0">
     <path

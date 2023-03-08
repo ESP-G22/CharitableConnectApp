@@ -1,8 +1,11 @@
 package dev.n0ne1eft.charitableconnect;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,14 +14,16 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -134,46 +139,31 @@ public class NewEventFragment extends Fragment {
         //Get target layout
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.imageLinearLayout);
 
-        //Get image from camera roll
-
         //Initialise frame layout
-        FrameLayout card = new FrameLayout(getActivity());
-
+        RelativeLayout card = new RelativeLayout(getActivity());
+        //Initialise frame layout params
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         //Initialise image view
         ImageView imageView = new ImageView(getActivity());
-        imageView.setImageBitmap(image);
-
         //Initialise new button
         ImageButton deleteBut = new ImageButton(getActivity());
+
+        //Edit button
         deleteBut.setBackgroundResource(R.drawable.delete_button_icon);
-        deleteBut.setMaxWidth(2);
-        deleteBut.setMinimumWidth(2);
-
-        //Add image to imageView
-
-
-
-        //Alter image size
+        //Edit imageview
         imageView.setAdjustViewBounds(true);
-        imageView.setMinimumWidth(300);
-        imageView.setMaxWidth(300);
-        imageView.setMinimumHeight(300);
-        imageView.setMaxHeight(300);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setLayoutParams(layoutParams);
+        //Edit card
+        card.setPadding(0, 0, 12, 0);
 
-
+        //Add image to image view
+        imageView.setImageBitmap(image);
         //Add image to card
         card.addView(imageView);
         //Add delete button to card
         card.addView(deleteBut);
-
-        //Edit card
-        card.setPadding(0, 0, 12, 0);
-
         //Add to layout
         linearLayout.addView(card);
-
-
-
-
     }
 }

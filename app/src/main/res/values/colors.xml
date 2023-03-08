@@ -11,4 +11,5 @@
     <!-- Favourite button -->
     <color name="red">#FFF62F53</color>
     <color name="navBarColor">#FF212121</color>
+    <color name="black_translucent">#61000000</color>
 </resources>

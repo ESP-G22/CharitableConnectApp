@@ -10,6 +10,6 @@
         android:title="@string/explore_fragment_title" />
     <item
         android:id="@+id/profileFragment"
-        android:icon="@android:drawable/btn_star"
+        android:icon="@drawable/ic_profile_icon"
         android:title="@string/profile_fragment_title" />
 </menu>
