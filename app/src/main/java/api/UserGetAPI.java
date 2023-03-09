@@ -1,6 +1,8 @@
 package api;
 
-public class UserGetAPI {
+import layout.UserGet;
+
+public class UserGetAPI implements UserGet {
     public String login(String username, String password) {
         return "token";
     }

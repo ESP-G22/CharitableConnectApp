@@ -4,9 +4,10 @@ import android.media.Image;
 
 import java.util.List;
 
-import validate.User;
+import layout.UserProfile;
+import validate.UserValidate;
 
-public class UserProfileAPI {
+public class UserProfileAPI implements UserProfile {
     private String token;
     /*
      * private int id;
@@ -20,11 +21,6 @@ public class UserProfileAPI {
         this.token = token;
     }
 
-    /**
-     * Unique identification number for user.
-     *
-     * @return id
-     */
     public int getID() {
         return 0;
     }
@@ -49,7 +45,23 @@ public class UserProfileAPI {
     }
 
     public void setName(String name) {
-        User.checkName(name);
+        UserValidate.checkName(name);
+    }
+
+    public String getBio() { return ""; }
+
+    public void setBio(String bio) {
+
+    }
+
+    public int getUserType() { return 0; }
+
+    public boolean isOrganiser() {
+        return getUserType() == 1;
+    }
+
+    public boolean isAttendee() {
+        return getUserType() == 2;
     }
 
     public Image getProfilePic() {

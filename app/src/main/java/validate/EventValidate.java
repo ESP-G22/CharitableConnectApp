@@ -1,8 +1,10 @@
 package validate;
 
+import android.media.Image;
+
 import java.util.Date;
 
-public class Event {
+public class EventValidate {
     public static void checkTitle(String title) {
         return;
     }
@@ -19,7 +21,7 @@ public class Event {
         return;
     }
 
-    public static void checkImage(int image) {
+    public static void checkImage(Image image) {
         return;
     }
 }

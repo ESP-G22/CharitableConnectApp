@@ -1,6 +1,6 @@
 package validate;
 
-public class User {
+public class UserValidate {
     /**
      * Check if email is in correct format using Regex and not empty input.
      * 

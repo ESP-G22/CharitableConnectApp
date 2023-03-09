@@ -2,6 +2,7 @@ package api;
 
 import android.media.Image;
 import layout.Event;
+import validate.EventValidate;
 import java.util.Date;
 
 public class EventAPI implements Event {
@@ -24,20 +25,10 @@ public class EventAPI implements Event {
         this.id = id;
     }
 
-    /**
-     * Unique identification number for event.
-     * 
-     * @return id
-     */
     public int getID() {
         return id;
     }
 
-    /**
-     * Category of event, as represented by an integer.
-     *
-     * @return type
-     */
     public int getEventType() {
         return 0;
     }
@@ -45,63 +36,38 @@ public class EventAPI implements Event {
     public void setEventType(int eventType) {
     }
 
-    /**
-     * Title of event.
-     * 
-     * @return title
-     */
     public String getTitle() {
         return "";
     }
 
     public void setTitle(String title) {
-        validate.Event.checkTitle(title);
+        EventValidate.checkTitle(title);
     }
 
-    /**
-     * Description of event.
-     * 
-     * @return description
-     */
     public String getDescription() {
         return "";
     }
 
     public void setDescription(String description) {
-        validate.Event.checkDescription(description);
+        EventValidate.checkDescription(description);
     }
 
-    /**
-     * Date and time of event.
-     * 
-     * @return datetime
-     */
     public Date getDatetime() {
         return null;
     }
 
     public void setDatetime(Date datetime) {
-        validate.Event.checkDatetime(datetime);
+        EventValidate.checkDatetime(datetime);
     }
 
-    /**
-     * Postcode of event.
-     * 
-     * @return location
-     */
     public String getLocation() {
         return "";
     }
 
     public void setLocation(String location) {
-        validate.Event.checkLocation(location);
+        EventValidate.checkLocation(location);
     }
 
-    /**
-     * Image chosen by event organiser to show event.
-     * 
-     * @return image
-     */
     public Image getImage() {
         return null;
     }
@@ -109,12 +75,6 @@ public class EventAPI implements Event {
     public void setImage(Image image) {
     }
 
-    /**
-     * Determines if you can RSVP to the event.
-     * True if enabled, False otherwise
-     * 
-     * @return hasRSVP
-     */
     public boolean getHasRSVP() {
         return false;
     }
@@ -122,21 +82,12 @@ public class EventAPI implements Event {
     public void setHasRSVP(boolean hasRSVP) {
     }
 
-    /**
-     * Event organisers' IDs.
-     * 
-     * @return organisers
-     */
-    public layout.UserProfile getOrganiser() {
-        return null;
-    }
-
-    public void setOrganiser(layout.UserProfile organiser) {
-
-    }
-
-    public static int createEvent() {
+    public int getOrganiser() {
         return 0;
+    }
+
+    public void setOrganiser(int organiser) {
+
     }
 
     public boolean deleteEvent() {
