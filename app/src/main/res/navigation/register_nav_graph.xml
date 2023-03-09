@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_nav_graph"
+    app:startDestination="@id/initWelcomeFragment">
+
+    <fragment
+        android:id="@+id/initWelcomeFragment"
+        android:name="dev.n0ne1eft.charitableconnect.InitWelcomeFragment"
+        tools:layout="@layout/fragment_init_welcome">
+
+        <action
+            android:id="@+id/action_init_to_organiser_welcome"
+            app:destination="@id/organiserWelcomeFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/organiserWelcomeFragment"
+        android:name="dev.n0ne1eft.charitableconnect.OrganiserWelcomeFragment"
+        tools:layout="@layout/fragment_organiser_welcome">
+
+        <action
+            android:id="@+id/action_organiser_to_eventType_welcome"
+            app:destination="@id/eventTypeWelcomeFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/eventTypeWelcomeFragment"
+        android:name="dev.n0ne1eft.charitableconnect.EventTypeWelcomeFragment"
+        tools:layout="@layout/fragment_event_type_welcome">
+
+        <action
+            android:id="@+id/action_eventType_to_notifications_welcome"
+            app:destination="@id/notificationsWelcomeFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/notificationsWelcomeFragment"
+        android:name="dev.n0ne1eft.charitableconnect.NotificationsWelcomeFragment"
+        tools:layout="@layout/fragment_notifications_welcome">
+
+        <action
+            android:id="@+id/action_notifications_to_end_welcome"
+            app:destination="@id/endWelcomeFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/endWelcomeFragment"
+        android:name="dev.n0ne1eft.charitableconnect.EndWelcomeFragment"
+        tools:layout="@layout/fragment_end_welcome"
+        />
+
+</navigation>

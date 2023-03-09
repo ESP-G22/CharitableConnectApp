@@ -6,21 +6,21 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/hiTextView"
+        android:id="@+id/notificationsQTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="200dp"
         android:gravity="top"
-        android:text="@string/hi"
-        android:textAppearance="@style/Heading1"
+        android:text="@string/notifications_title"
+        android:textAppearance="@style/Heading2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/introTextView"
+        android:id="@+id/notificationsInfoTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -30,39 +30,49 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="16dp"
         android:gravity="top"
-        android:text="@string/register_intro"
+        android:text="@string/notifications_info"
         android:textAppearance="@style/text"
-        app:layout_constraintBottom_toTopOf="@+id/nextButton"
+        app:layout_constraintBottom_toTopOf="@+id/yesButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.32"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hiTextView"
+        app:layout_constraintTop_toBottomOf="@+id/notificationsQTextView"
         app:layout_constraintVertical_bias="0.19" />
 
     <Button
-        android:id="@+id/nextButton"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="232dp"
-        android:background="@drawable/round_button"
-        android:text="@string/add"
+        android:id="@+id/yesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="200dp"
+        android:text="@string/yes_button"
+        android:textAppearance="@style/buttonText"
+        app:layout_constraintBottom_toTopOf="@+id/noButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notificationsQTextView"
+        app:layout_constraintVertical_bias="0.75" />
+
+    <Button
+        android:id="@+id/noButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:text="@string/no_button"
+        android:backgroundTint="@color/red"
+        android:width="200dp"
+        android:textAppearance="@style/buttonText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/skipButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:textAppearance="@style/skipButtonText"
-        android:textColor="@null"
         android:text="@string/skip_section"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="@color/white"
+        android:textColor="@null"
+        android:textAppearance="@style/skipButtonText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nextButton" />
-    <!--Line 60 allows textAppearance to set the colour-->
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
