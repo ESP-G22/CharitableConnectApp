@@ -122,7 +122,7 @@ public class ExploreFragment extends Fragment {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.SubscribedButton) {
             // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment();
+            FeedFragment feedPageFragment = new FeedFragment("Subscribed");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Start a FragmentTransaction
@@ -142,7 +142,7 @@ public class ExploreFragment extends Fragment {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.DateButton) {
             // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment();
+            FeedFragment feedPageFragment = new FeedFragment("Date");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Start a FragmentTransaction
@@ -162,7 +162,7 @@ public class ExploreFragment extends Fragment {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.TrendingButton) {
             // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment();
+            FeedFragment feedPageFragment = new FeedFragment("Trending");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Start a FragmentTransaction
@@ -182,7 +182,7 @@ public class ExploreFragment extends Fragment {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.FoodButton) {
             // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment();
+            FeedFragment feedPageFragment = new FeedFragment("FoodTasting");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Start a FragmentTransaction
@@ -202,7 +202,7 @@ public class ExploreFragment extends Fragment {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.MoviesButton) {
             // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment();
+            FeedFragment feedPageFragment = new FeedFragment("Movies");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Start a FragmentTransaction
@@ -222,7 +222,7 @@ public class ExploreFragment extends Fragment {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.ClubButton) {
             // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment();
+            FeedFragment feedPageFragment = new FeedFragment("Club");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Start a FragmentTransaction
@@ -242,7 +242,7 @@ public class ExploreFragment extends Fragment {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.SportsButton) {
             // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment();
+            FeedFragment feedPageFragment = new FeedFragment("Sports");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Start a FragmentTransaction

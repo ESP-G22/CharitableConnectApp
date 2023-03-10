@@ -3,7 +3,7 @@ package dev.n0ne1eft.charitableconnect;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-
+import java.util.ArrayList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,16 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class FeedFragment extends Fragment {
+    private String pageTitle;
+
+    public FeedFragment(String pageTitle) {
+        if (pageTitle != null){
+            this.pageTitle = pageTitle;
+        }
+        else {
+            this.pageTitle = "";
+        }
+    }
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,5 +70,25 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_feed, container, false);
+    }
+    public void eventShown(){
+        if (pageTitle == "Subscribed") {
+            //All events we are subscribed to their organizer are shown
+            //get events where subscribed to creator = true
+        } else if (pageTitle == "Date"){
+            //All events are shown but sorted according to the date they are held
+        } else if (pageTitle == "Trending") {
+            //All events are shown but sorted according to how many people are interested
+        } else if (pageTitle == "FoodTasting") {
+            //All food tasting events are shown
+        } else if (pageTitle == "Movies") {
+            //All movie events are shown
+        } else if (pageTitle == "Club") {
+            //All club events are shown
+        } else if (pageTitle == "Sports") {
+            //All sports events are shown
+        } else {
+            //All events are shown as before
+        }
     }
 }
