@@ -9,7 +9,7 @@ public interface UserGet {
      *
      * @return String token if user successfully logged in, otherwise empty string.
      */
-    String login(String username, String password);
+    OutputPair login(String username, String password);
 
     /**
      * Add new user to source.
@@ -20,5 +20,7 @@ public interface UserGet {
      *
      * @return true if user has been successfully added.
      */
-    boolean register(String email, String username, String password);
+    OutputPair register(String email, String username, String password);
+
+    OutputPair getUserID(String username, String token);
 }

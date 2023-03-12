@@ -47,12 +47,13 @@ public interface Event {
      */
     Date getDatetime();
 
-    /**
-     * Postcode of event.
-     *
-     * @return location
-     */
-    String getLocation();
+    String getFullAddress();
+
+    String getAddress1();
+
+    String getAddress2();
+
+    String getPostcode();
 
     /**
      * Image chosen by event organiser to show event.
@@ -80,7 +81,11 @@ public interface Event {
 
     void setDatetime(Date datetime);
 
-    void setLocation(String location);
+    void setAddress1(String address1);
+
+    void setAddress2(String address2);
+
+    void setPostcode(String postcode);
 
     void setImage(Image image);
 

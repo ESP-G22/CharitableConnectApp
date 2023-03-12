@@ -1,14 +1,61 @@
 package eventtest;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import java.util.Date;
+
+import api.EventAPI;
+import api.UserProfileAPI;
 import errors.EmptyInputError;
 import errors.MaximumInputSizeError;
+import layout.OutputPair;
+import layout.UserProfile;
 import validate.EventValidate;
+import usertest.UserUnitTest;
 
-/*
+
 public class EventUnitTest {
+    public static final int testEventType = 0;
+    public static final String testEventTitle = "Test";
+    public static final String testEventDesc = "This is a description";
+    public static final Date testEventDateTime = new Date();
+    public static final String testEventLocation = "Bath";
+
+    @Ignore
+    public void correctCreateEvent() {
+        try {
+            UserProfileAPI user = new UserProfileAPI(UserUnitTest.testToken, UserUnitTest.testID);
+            OutputPair out = user.createEvent(testEventType, testEventTitle, testEventDesc, testEventDateTime, "", "", "", null);
+            //assertTrue(out.isSuccess());
+            assertEquals("Event has been created.", out.getMessage());
+        } catch (Exception err) {
+            fail(err.getMessage());
+        }
+    }
+
     @Test
+    public void getEvent() {
+        try {
+            UserProfileAPI user = new UserProfileAPI(UserUnitTest.testToken, UserUnitTest.testID);
+            EventAPI event = new EventAPI(1, user);
+        } catch (Exception err) {
+            fail(err.getMessage());
+        }
+    }
+
+    @Test
+    public void daysUntilEvent() {
+        try {
+            UserProfileAPI user = new UserProfileAPI(UserUnitTest.testToken, UserUnitTest.testID);
+            EventAPI event = new EventAPI(1, user);
+            System.out.println(event.daysUntilEvent());
+        } catch (Exception err) {
+            fail(err.getMessage());
+        }
+    }
+    @Ignore
     public void EmptyTitle() {
         assertThrows(
                 EmptyInputError.class,
@@ -17,12 +64,12 @@ public class EventUnitTest {
                 });
     }
 
-    @Test
+    @Ignore
     public void ExpectedTitle() {
         EventValidate.checkTitle("ah");
     }
 
-    @Test
+    @Ignore
     public void MaximumTitle() {
         assertThrows(
                 MaximumInputSizeError.class,
@@ -32,7 +79,7 @@ public class EventUnitTest {
                 });
     }
 
-    @Test
+    @Ignore
     public void EmptyDescription() {
         assertThrows(
                 EmptyInputError.class,
@@ -41,12 +88,12 @@ public class EventUnitTest {
                 });
     }
 
-    @Test
+    @Ignore
     public void ExpectedDescription() {
         EventValidate.checkDescription("ah");
     }
 
-    @Test
+    @Ignore
     public void MaximumDescription() {
         assertThrows(
                 MaximumInputSizeError.class,
@@ -56,24 +103,24 @@ public class EventUnitTest {
                 });
     }
 
-    @Test
+    @Ignore
     public void nullDatetime() {
         assertTrue(false);
     }
 
-    @Test
+    @Ignore
     public void FutureDatetime() {
         assertTrue(false);
     }
 
-    @Test
+    @Ignore
     public void locationNotInBA2() {
         assertTrue(false);
     }
 
-    @Test
+    @Ignore
     public void locationInBA2() {
         assertTrue(false);
     }
 }
- */
+

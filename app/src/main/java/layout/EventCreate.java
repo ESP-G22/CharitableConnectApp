@@ -17,12 +17,11 @@ public interface EventCreate {
      * @param location Location of event.
      * @param image Image of event.
      * @param hasRSVP true if RSVP is done through the app.
-     * @param organiser User who set up event, must be an organiser.
      *
-     * @return If successful, the new event is returned.
+     * @return If successful, the new event is returned by its id.
      **/
-    Event createEvent(
-            int eventType, String title, String description, Date datetime,
-            String location, Image image, boolean hasRSVP, UserProfile organiser
+    OutputPair createEvent(
+            int eventType, String title, String description, Date datetime, String address1, String address2, String postcode, Image image,
+            String organiserToken
     );
 }

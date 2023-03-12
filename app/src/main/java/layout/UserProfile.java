@@ -2,6 +2,7 @@ package layout;
 
 import android.media.Image;
 
+import java.util.Date;
 import java.util.List;
 
 public interface UserProfile {
@@ -45,11 +46,11 @@ public interface UserProfile {
     /**
      * Get the level of user.
      *
-     * 0 for admin, 1 for organiser, 2 for attendee
+     * 'ADMIN' for admin, 'ORGANISER' for organiser, 'USER' for attendee
      *
-     * @return id of user type.
+     * @return user type.
      */
-    int getUserType();
+     String getUserType();
 
     /**
      * Is the user an event organiser?
@@ -89,7 +90,7 @@ public interface UserProfile {
      *
      * @return true if the change of password was successful.
      */
-    boolean changePassword(String originalPassword, String newPassword1, String newPassword2);
+    OutputPair changePassword(String originalPassword, String newPassword1, String newPassword2);
 
     // delete user from source
 
@@ -98,6 +99,7 @@ public interface UserProfile {
      *
      * @return true if the user was deleted successfully.
      */
-    boolean deleteUser();
+    OutputPair deleteUser();
 
+    public Event getEvent(int eventID) throws Exception;
 }
