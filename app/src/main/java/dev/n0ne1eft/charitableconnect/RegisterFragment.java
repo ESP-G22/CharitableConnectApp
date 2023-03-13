@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +26,7 @@ public class RegisterFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View view;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -58,7 +62,40 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_register, container, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+
+        //Sign up onclick
+        Button confirmSignUp = view.findViewById(R.id.confirmSignUpButton);
+        confirmSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean validated = ValidateSignUp(v);
+                if(validated){
+                    //Go to home page
+
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private boolean ValidateSignUp(View v) {
+        //Get first password as string
+        EditText passwordView = view.findViewById(R.id.regPasswordInput);
+        String password = passwordView.getText().toString();
+
+        //Get confirmation password as string
+        EditText confPasswordView = view.findViewById(R.id.confirmPasswordInput);
+        String confPassword = confPasswordView.getText().toString();
+
+        //Check if they are not equal
+        if(!password.equals(confPassword)){
+            //Raise toast
+            Toast.makeText(getActivity(), "Passwords must match", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 }

@@ -1,14 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegisterFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/existing_user"
+        app:layout_constraintEnd_toStartOf="@+id/launchSignUpText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmSignUpButton" />
+
+    <TextView
+        android:id="@+id/launchSignUpText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="130dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/sign_in"
+        app:layout_constraintBottom_toBottomOf="@+id/textView11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView11"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/confirmPasswordInput"
+        android:layout_width="294dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/custom_input_single_line"
+        android:drawableStart="@drawable/ic_check_icon"
+        android:drawablePadding="10dp"
+        android:drawableTint="@color/black_translucent"
+        android:ems="10"
+        android:hint="@string/confirm_password"
+        android:inputType="textPassword"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="@+id/regPasswordInput"
+        app:layout_constraintTop_toBottomOf="@+id/regPasswordInput" />
+
+    <EditText
+        android:id="@+id/regUsernameInput"
+        android:layout_width="294dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/custom_input_single_line"
+        android:drawableStart="@drawable/ic_profile_icon"
+        android:drawablePadding="10dp"
+        android:drawableTint="@color/black_translucent"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    <EditText
+        android:id="@+id/regEmailInput"
+        android:layout_width="294dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/custom_input_single_line"
+        android:drawableStart="@drawable/ic_email_icon"
+        android:drawablePadding="10dp"
+        android:drawableTint="@color/black_translucent"
+        android:ems="10"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="@+id/regUsernameInput"
+        app:layout_constraintTop_toBottomOf="@+id/regUsernameInput" />
+
+    <EditText
+        android:id="@+id/regPasswordInput"
+        android:layout_width="294dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/custom_input_single_line"
+        android:drawableStart="@drawable/ic_lock_icon"
+        android:drawablePadding="10dp"
+        android:drawableTint="@color/black_translucent"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="@+id/regEmailInput"
+        app:layout_constraintTop_toBottomOf="@+id/regEmailInput" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="298dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="150dp"
+        android:text="@string/sign_up"
+        android:textAlignment="viewStart"
+        android:textColor="#000000"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/confirmSignUpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/sign_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmPasswordInput" />
+</androidx.constraintlayout.widget.ConstraintLayout>
