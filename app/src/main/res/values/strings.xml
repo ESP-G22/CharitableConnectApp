@@ -31,15 +31,6 @@
     <string name="hi">Hi!</string>
     <string name="register_intro">Let\'s set your feed up with a few questions</string>
     <string name="add">+</string>
-    <string name="is_user_organiser_q">
-        Are you an event organiser?
-    </string>
-    <string name="user_is_organiser">
-        YES, I AM AN EVENT ORGANISER
-    </string>
-    <string name="user_is_not_organiser">
-        NO, I AM AN EVENT ATTENDEE
-    </string>
     <string name="title_activity_date_time">DateTimeActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -48,4 +39,15 @@
     <string name="previous">Previous</string>
     <string name="select_date">SELECT DATE</string>
     <string name="select_time">SELECT TIME</string>
+    <string name="is_user_organiser_q">Are you an event organiser?</string>
+    <string name="user_is_organiser">YES, I AM AN EVENT ORGANISER</string>
+    <string name="user_is_not_organiser">NO, I AM AN EVENT ATTENDEE</string>
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_info">Would you like to receive notifications for events that may interest you?</string>
+    <string name="yes_button">YES PLEASE</string>
+    <string name="no_button">NO THANKS</string>
+    <string name="welcome_complete_title">All set!</string>
+    <string name="welcome_complete_button">LET\'S START BROWSING</string>
+    <string name="event_types_title">Event Types</string>
+    <string name="event_types_info">What kind of events are you interested in?</string>
 </resources>
