@@ -13,7 +13,6 @@ import androidx.navigation.ui.NavigationUI;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
