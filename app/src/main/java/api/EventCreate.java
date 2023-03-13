@@ -7,20 +7,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import layout.EventCreate;
+import layout.EventCreateProperties;
 import layout.OutputPair;
-import layout.UserProfile;
-import layout.Event;
 
-public class EventCreateAPI implements EventCreate {
+public class EventCreate implements EventCreateProperties {
     public OutputPair createEvent(int eventType, String title, String description, Date datetime, String address1, String address2, String postcode, Image image,
                                   String organiserToken) {
         // Convert input into JSON

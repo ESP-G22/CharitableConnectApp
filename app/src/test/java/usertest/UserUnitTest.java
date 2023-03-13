@@ -4,16 +4,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import android.icu.util.Output;
-
 import java.util.LinkedList;
 
-import api.UserProfileAPI;
+import api.UserProfile;
 import errors.EmptyInputError;
 import errors.MaximumInputSizeError;
-import layout.UserProfile;
 import validate.UserValidate;
-import api.UserGetAPI;
+import api.UserGet;
 import layout.OutputPair;
 
 public class UserUnitTest {
@@ -23,19 +20,24 @@ public class UserUnitTest {
 
     public static final int testID = 4;
     public static final String testName = "This user has no name.";
-    public static final String testBio = "This user has no bio.";
+    public static final String testBio = "This user has no description.";
 
+    /**
+     * How to login.
+     */
     @Test
     public void correctLogin() {
-        UserGetAPI userGet = new UserGetAPI();
+        UserGet userGet = new UserGet();
         OutputPair out = userGet.login(testUsername, testPassword);
+        // out looks like (boolean, string message)
+        // if successful, the message is the token.
         String token = out.getMessage();
         assertEquals(testToken, token);
     }
 
     @Test
     public void incorrectLogin() {
-        UserGetAPI userGet = new UserGetAPI();
+        UserGet userGet = new UserGet();
         OutputPair out = userGet.login(testUsername, "password12");
         assertEquals(false, out.isSuccess());
         //assertEquals("Unable to log in with provided credentials.", out.getMessage());
@@ -43,7 +45,7 @@ public class UserUnitTest {
 
     @Test
     public void emptyLogin() {
-        UserGetAPI userGet = new UserGetAPI();
+        UserGet userGet = new UserGet();
         OutputPair out = userGet.login("", "");
         assertEquals(false, out.isSuccess());
         //assertEquals("Password field is blank.\nUsername field is blank.", out.getMessage());
@@ -51,7 +53,7 @@ public class UserUnitTest {
 
     @Test
     public void correctGetUserID() {
-        UserGetAPI userGet = new UserGetAPI();
+        UserGet userGet = new UserGet();
         OutputPair idSearch = userGet.getUserID("username", testToken);
         int idActual = Integer.parseInt(idSearch.getMessage());
 
@@ -60,19 +62,41 @@ public class UserUnitTest {
 
     @Test
     public void usernameNotPresentGetUserID() {
-        UserGetAPI userGet = new UserGetAPI();
+        UserGet userGet = new UserGet();
         OutputPair idSearch = userGet.getUserID("usernam", testToken);
 
         assertEquals(false, idSearch.isSuccess());
         assertEquals("Username not found.", idSearch.getMessage());
     }
 
+    /**
+     * How to login and create user profile class.
+     */
+    @Test
+    public void UserProfileFromScratch() {
+        try {
+            // logging in
+            UserGet userGet = new UserGet();
+            OutputPair out = userGet.login(testUsername, testPassword);
+            String token = out.getMessage();
+
+            // get user id
+            OutputPair idSearch = userGet.getUserID(testUsername, token);
+            int userID = Integer.parseInt(idSearch.getMessage());
+
+            // create user profile
+            UserProfile user = new UserProfile(testToken, userID);
+        } catch (Exception err) {
+            fail(err.getMessage());
+        }
+    }
+
     @Test
     public void attributesTestOwnUserUserProfileAPI() {
         try {
-            UserProfileAPI user = new UserProfileAPI(testToken, 4);
+            UserProfile user = new UserProfile(testToken, testID);
             assertEquals(testUsername, user.getUsername());
-            assertEquals(false, user.isOrganiser());
+            assertEquals(true, user.isOrganiser());
             assertEquals(testName, user.getName());
             assertEquals(testBio, user.getBio());
             assertTrue(new LinkedList<Integer>().equals(user.getFollowedUsers()));

@@ -4,17 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import layout.OutputPair;
-import layout.UserGet;
+import layout.UserGetProperties;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.io.IOException;
 
-public class UserGetAPI implements UserGet {
+public class UserGet implements UserGetProperties {
     public OutputPair login(String username, String password) {
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
@@ -33,7 +32,7 @@ public class UserGetAPI implements UserGet {
             conn.setDoOutput(true);
             Util.passParams(conn, input);
         } catch (IOException err) {
-            return new OutputPair(false, "Problem with sending request");
+            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
         }
 
         // Evaluate response code
@@ -69,7 +68,7 @@ public class UserGetAPI implements UserGet {
         // Establish connection and post JSON parameters
         HttpURLConnection conn;
         try {
-            URL url = new URL(Util.ENDPOINT_LOGIN);
+            URL url = new URL(Util.ENDPOINT_REGISTER);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -104,7 +103,7 @@ public class UserGetAPI implements UserGet {
             conn.setRequestProperty("Authorization", authHeaderValue);
             conn.setDoOutput(true);
         } catch (IOException err) {
-            return new OutputPair(false, "Problem with sending request");
+            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
         }
 
         // Evaluate response code

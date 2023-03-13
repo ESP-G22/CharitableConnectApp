@@ -3,7 +3,9 @@ package layout;
 import android.media.Image;
 import java.util.Date;
 
-public interface Event {
+public interface EventAttributes {
+    static final String NO_ADDRESS2 = "N/A";
+
     // Get event attributes directly through source
     /**
      * Unique identification number for event.
@@ -13,11 +15,11 @@ public interface Event {
     int getID();
 
     /**
-     * Event organiser's IDs.
+     * Event organiser.
      *
-     * @return organisers
+     * @return organiser ID.
      */
-    int getOrganiser();
+    int getOrganiserID();
 
     /**
      * Category of event, as represented by an integer.
@@ -62,16 +64,10 @@ public interface Event {
      */
     Image getImage();
 
-    /**
-     * Determines if you can RSVP to the event.
-     * True if enabled, False otherwise
-     *
-     * @return hasRSVP
-     */
-    boolean getHasRSVP();
+    int getAttendeeCount();
 
     // update event attributes through source
-    void setOrganiser(int organiser);
+    void setOrganiserID(int organiserID);
 
     void setEventType(int eventType);
 
@@ -88,17 +84,4 @@ public interface Event {
     void setPostcode(String postcode);
 
     void setImage(Image image);
-
-    void setHasRSVP(boolean hasRSVP);
-
-    // delete event
-
-    /**
-     * Delete an event from the source.
-     *
-     * Only deletes an event if it is organiser's doing.
-     *
-     * @return true if event successfully removed.
-     */
-    boolean deleteEvent();
 }
