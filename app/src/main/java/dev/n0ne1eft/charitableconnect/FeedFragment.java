@@ -1,7 +1,7 @@
 package dev.n0ne1eft.charitableconnect;
 
 import android.os.Bundle;
-
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import android.view.LayoutInflater;
@@ -55,7 +55,6 @@ public class FeedFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,26 +68,69 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_feed, container, false);
+        //Call the eventShownfromExplore() function to handle the events shown
+        eventshownfromExplore(v);
         return inflater.inflate(R.layout.fragment_feed, container, false);
     }
-    public void eventShown(){
+    public void eventshownfromExplore(View v){
         if (pageTitle == "Subscribed") {
-            //All events we are subscribed to their organizer are shown
-            //get events where subscribed to creator = true
+            //Only events we are subscribed to their organizer are shown
         } else if (pageTitle == "Date"){
-            //All events are shown but sorted according to the date they are held
+            sorting("Date");
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Date");
         } else if (pageTitle == "Trending") {
-            //All events are shown but sorted according to how many people are interested
+            sorting("Trending");
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Trending");
         } else if (pageTitle == "FoodTasting") {
-            //All food tasting events are shown
+            //Only food tasting events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("FoodTasting");
         } else if (pageTitle == "Movies") {
-            //All movie events are shown
+            //Only movie events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Movies");
         } else if (pageTitle == "Club") {
-            //All club events are shown
+            //Only club events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Club");
         } else if (pageTitle == "Sports") {
-            //All sports events are shown
+            //Only sports events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Sports");
         } else {
             //All events are shown as before
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Feed");
         }
     }
+    public void sorting(String type){
+        /*
+        const currentEvent;
+        int j;
+        if (type == "Date"){
+            for (int i = 0; i < events.size() - 1; i++){
+                currentEvent = events.get(i);
+                j = i + 1;
+                if (events.get(i).date > events.get(j).date){
+                    events.get(i) = events.get(j);
+                    events.get(j) = currentEvent;
+                }
+            }
+        }
+        else if (type == "Trending"){
+            for (int i = 0; i < events.size() - 1; i++){
+                currentEvent = events.get(i);
+                j = i + 1;
+                if (events.get(i).trending > events.get(j).trending){
+                    events.get(i) = events.get(j);
+                    events.get(j) = currentEvent;
+                }
+            }
+        }
+        */
+    }
+
 }
