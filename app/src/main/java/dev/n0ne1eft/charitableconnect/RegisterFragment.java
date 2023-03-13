@@ -1,15 +1,21 @@
 package dev.n0ne1eft.charitableconnect;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,9 +78,21 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v) {
                 boolean validated = ValidateSignUp(v);
                 if(validated){
-                    //Go to home page
-
+                    //Launch main activity
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    requireActivity().startActivity(intent);
                 }
+            }
+        });
+        //Sign in text onclick
+        TextView launchSignIn = view.findViewById(R.id.launchSignInText);
+
+        launchSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Launch sign in
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.loginNavHost);
+                navController.navigate(R.id.loginFragment);
             }
         });
 

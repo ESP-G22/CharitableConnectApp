@@ -8,11 +8,11 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="dev.n0ne1eft.charitableconnect.LoginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/registerFragment"
         android:name="dev.n0ne1eft.charitableconnect.RegisterFragment"
-        android:label="fragment_register"
+        android:label="Register"
         tools:layout="@layout/fragment_register" />
 </navigation>
