@@ -39,6 +39,17 @@
     <string name="previous">Previous</string>
     <string name="select_date">SELECT DATE</string>
     <string name="select_time">SELECT TIME</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="register_title">Register</string>
+    <string name="new_user">New user?</string>
+    <string name="sign_up_exclaim">Sign up!</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email">Email</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="existing_user">Existing user?</string>
+
     <string name="is_user_organiser_q">Are you an event organiser?</string>
     <string name="user_is_organiser">YES, I AM AN EVENT ORGANISER</string>
     <string name="user_is_not_organiser">NO, I AM AN EVENT ATTENDEE</string>
