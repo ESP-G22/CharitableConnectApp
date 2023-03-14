@@ -1,5 +1,6 @@
 package dev.n0ne1eft.charitableconnect;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class EndWelcomeFragment extends Fragment {
@@ -20,6 +22,7 @@ public class EndWelcomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View view;
 
 
 
@@ -49,17 +52,22 @@ public class EndWelcomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_end_welcome, container, false);
+        view = inflater.inflate(R.layout.fragment_end_welcome, container, false);
+
+        //Proceed button onclick
+        Button proceed = view.findViewById(R.id.proceedButton);
+        proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Launch Login activity
+                Intent i = new Intent(getActivity(), LoginActivity.class);
+                requireActivity().startActivity(i);
+            }
+        });
+        return view;
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        view.findViewById(R.id.proceedButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // go to login screen
-            }
-        });
     }
 }
