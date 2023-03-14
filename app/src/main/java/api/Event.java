@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import layout.EventAttributes;
 import layout.OutputPair;
-import validate.EventValidate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,10 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Event implements EventAttributes {
@@ -125,7 +122,7 @@ public class Event implements EventAttributes {
 
     @Override
     public void setTitle(String title) {
-        EventValidate.checkTitle(title);
+
     }
 
     @Override
@@ -135,7 +132,7 @@ public class Event implements EventAttributes {
 
     @Override
     public void setDescription(String description) {
-        EventValidate.checkDescription(description);
+
     }
 
     @Override
@@ -145,7 +142,7 @@ public class Event implements EventAttributes {
 
     @Override
     public void setDatetime(Date datetime) {
-        EventValidate.checkDatetime(datetime);
+
     }
 
     @Override
@@ -237,7 +234,7 @@ public class Event implements EventAttributes {
     public List<RSVP> getRSVPs() throws MalformedURLException, IOException, JSONException {
         // Establish connection and post JSON parameters
         HttpURLConnection conn;
-        URL url = new URL(Util.getEventEndpoint(id) + "/rsvp");
+        URL url = new URL(Util.getEventRSVPEndpoint(id));
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");

@@ -65,6 +65,10 @@ public class Util {
         return ENDPOINT_RSVP + Integer.valueOf(id).toString();
     }
 
+    public static String getEventRSVPEndpoint(int id) {
+        return Util.getEventEndpoint(id) + "/rsvp";
+    }
+
     /**
      * Format token for authorisation header.
      *
@@ -139,7 +143,7 @@ public class Util {
         try {
             int responseCode = conn.getResponseCode();
             if (responseCode == 404) {
-                return Util.disconnect(conn, new OutputPair(false, "Could not contact server"));
+                return Util.disconnect(conn, new OutputPair(false, "Could not contact server."));
             }
             if (responseCode == 403) {
                 return Util.disconnect(conn, new OutputPair(false, "You do not have the permission to do this. Are you logged in as the correct user?"));

@@ -1,5 +1,6 @@
 package usertest;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -16,6 +17,8 @@ import layout.OutputPair;
 public class UserUnitTest {
     public static final String testUsername = "username";
     public static final String testPassword = "password123";
+
+    public static final String testIncorrectPassword = "password";
     public static final String testToken = "5d3f89aea81317f5b26a30aceb4944d33edc18e0";
 
     public static final int testID = 4;
@@ -38,7 +41,7 @@ public class UserUnitTest {
     @Test
     public void incorrectLogin() {
         UserGet userGet = new UserGet();
-        OutputPair out = userGet.login(testUsername, "password12");
+        OutputPair out = userGet.login(testUsername, testIncorrectPassword);
         assertEquals(false, out.isSuccess());
         //assertEquals("Unable to log in with provided credentials.", out.getMessage());
     }
@@ -49,6 +52,31 @@ public class UserUnitTest {
         OutputPair out = userGet.login("", "");
         assertEquals(false, out.isSuccess());
         //assertEquals("Password field is blank.\nUsername field is blank.", out.getMessage());
+    }
+
+    @Test
+    public void registerUserThenDelete() {
+        String email = "foo@bar.com";
+        String username = "username99";
+        String password = "newpassword";
+
+        UserGet userGet = new UserGet();
+        OutputPair output_register = userGet.register(email, username, password);
+        assertTrue(output_register.isSuccess());
+
+        OutputPair output_login = userGet.login(username, password);
+        assertTrue(output_login.isSuccess());
+        String token = output_login.getMessage();
+
+        OutputPair idSearch = userGet.getUserID(testUsername, token);
+        int userID = Integer.parseInt(idSearch.getMessage());
+
+        try {
+            UserProfile user = new UserProfile(token, userID);
+            user.delete();
+        } catch (Exception err) {
+            fail(err.getMessage());
+        }
     }
 
     @Test
@@ -103,33 +131,5 @@ public class UserUnitTest {
         } catch (Exception err) {
             fail(err.getMessage());
         }
-    }
-    @Ignore
-    public void EmptyEmail() {
-        assertThrows(
-                EmptyInputError.class,
-                () -> {
-                    UserValidate.checkEmail("");
-                });
-    }
-
-    @Ignore
-    public void ExpectedEmail() {
-        UserValidate.checkEmail("foo@bar.com");
-    }
-
-    @Ignore
-    public void IncorrectEmail() {
-        UserValidate.checkEmail("foobar.com");
-    }
-
-    @Ignore
-    public void MaximumEmail() {
-        assertThrows(
-                MaximumInputSizeError.class,
-                () -> {
-                    UserValidate.checkEmail(
-                            "ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-                });
     }
 }
