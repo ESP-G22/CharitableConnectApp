@@ -235,43 +235,4 @@ public class UserProfile implements UserProfileAttributes {
 
         return Util.disconnect(conn, new OutputPair(true, "Password changed."));
     }
-
-    /**
-     * If the user logged in has authorization, or the user's token and id match,
-     * they are deleted from the system.
-     *
-     * @return If the task was completed and a status message.
-     */
-    public OutputPair delete() {
-        // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.getUserEndpoint(id));
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("DELETE");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-        } catch (IOException err) {
-            return new OutputPair(false, "This user cannot do this operation.");
-        }
-
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
-        if (!status.isSuccess()) {
-            return status;
-        }
-
-        // If successful, output the users
-        try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
-            return Util.disconnect(conn, new OutputPair(true, out.getJSONObject(0).getString("msg")));
-        } catch (IOException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with getting token"));
-        } catch (JSONException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
-        }
-    }
 }

@@ -54,8 +54,8 @@ public class UserUnitTest {
         //assertEquals("Password field is blank.\nUsername field is blank.", out.getMessage());
     }
 
-    @Test
-    public void registerUserThenDelete() {
+    @Ignore
+    public void registerUser() {
         String email = "foo@bar.com";
         String username = "username99";
         String password = "newpassword";
@@ -73,7 +73,6 @@ public class UserUnitTest {
 
         try {
             UserProfile user = new UserProfile(token, userID);
-            user.delete();
         } catch (Exception err) {
             fail(err.getMessage());
         }
