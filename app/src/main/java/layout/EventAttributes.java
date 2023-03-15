@@ -1,5 +1,6 @@
 package layout;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import java.util.Date;
 
@@ -22,11 +23,11 @@ public interface EventAttributes {
     int getOrganiserID();
 
     /**
-     * Category of event, as represented by an integer.
+     * Category of event.
      *
      * @return type
      */
-    int getEventType();
+    String getEventType();
 
     /**
      * Title of event.
@@ -62,14 +63,14 @@ public interface EventAttributes {
      *
      * @return image
      */
-    Image getImage();
+    Bitmap getImage();
 
     int getAttendeeCount();
 
     // update event attributes through source
     void setOrganiserID(int organiserID);
 
-    void setEventType(int eventType);
+    void setEventType(String eventType);
 
     void setTitle(String title);
 
@@ -83,5 +84,5 @@ public interface EventAttributes {
 
     void setPostcode(String postcode);
 
-    void setImage(Image image);
+    void setImage(Bitmap image);
 }

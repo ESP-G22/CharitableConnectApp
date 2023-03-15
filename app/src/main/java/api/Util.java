@@ -1,16 +1,24 @@
 package api;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,8 +40,13 @@ public class Util {
     public static final String ENDPOINT_RSVP = ENDPOINT + "rsvp/";
     public static final String ENDPOINT_RSVP_CREATE = ENDPOINT_RSVP + "create";
 
+    public static final String ENDPOINT_IMAGE = ENDPOINT + "images/";
+
+    public static final String ENDPOINT_IMAGE_UPLOAD = ENDPOINT_IMAGE + "upload";
+
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    public static final String PROBLEM_WITH_SENDING_REQUEST = "Problem with sending request";
+    public static final String PROBLEM_WITH_SENDING_REQUEST = "Problem with sending the request.\n" +
+            "Are you connected to the Internet?";
 
     /**
      * Get specific user by their id.
@@ -63,6 +76,16 @@ public class Util {
      */
     public static String getRSVPEndpoint(int id) {
         return ENDPOINT_RSVP + Integer.valueOf(id).toString();
+    }
+
+    /**
+     * Get specific image by their id.
+     *
+     * @param id ID of image to get.
+     * @return URL of image.
+     */
+    public static String getImageEndpoint(int id) {
+        return ENDPOINT_IMAGE + Integer.valueOf(id).toString();
     }
 
     public static String getEventRSVPEndpoint(int id) {
@@ -230,5 +253,62 @@ public class Util {
         } catch (JSONException err) {
             return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
         }
+    }
+
+    public static OutputPair uploadImage(Bitmap image, String authHeaderValue) {
+        // convert image to byte array for upload.
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] imageContents = stream.toByteArray();
+        image.recycle();
+
+        HttpURLConnection conn;
+        try {
+            URL url = new URL(ENDPOINT_IMAGE_UPLOAD);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "image/jpeg");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Authorization", authHeaderValue);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            OutputStream out = conn.getOutputStream();
+            DataOutputStream imageStream = new DataOutputStream(out);
+
+            imageStream.write(imageContents, 0, imageContents.length);
+        } catch (IOException err) {
+            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
+        }
+
+        // Evaluate response code
+        OutputPair status = Util.checkResponseCode(conn);
+        if (!status.isSuccess()) {
+            return status;
+        }
+
+        return new OutputPair(true, "Image added");
+    }
+
+    public Bitmap getImage(int imageID, String authHeaderValue) throws IOException, Exception {
+        HttpURLConnection conn;
+
+        URL url = new URL(Util.getImageEndpoint(imageID));
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "image/jpeg");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Authorization", authHeaderValue);
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        //Bitmap bitmap = BitmapFactory.decodeStream((InputStream) conn.getEntity().getContent());
+
+        // Evaluate response code
+        OutputPair status = Util.checkResponseCode(conn);
+        if (!status.isSuccess()) {
+            throw new Exception(status.getMessage());
+        }
+
+        //BitmapFactory.decodeByteArray(null, 0, 1);
+        return null;
     }
 }

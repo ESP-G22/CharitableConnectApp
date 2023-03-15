@@ -9,7 +9,9 @@ import layout.UserGetProperties;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 
@@ -38,6 +40,25 @@ public class UserGet implements UserGetProperties {
         // Evaluate response code
         OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
+            try {
+                JSONArray output = new JSONArray(status.getMessage());
+                System.out.println(status.getMessage());
+                JSONObject error = output.getJSONObject(0);
+                if (error.has("non_field_errors")) {
+                    status.setMessage(error.getString("non_field_errors"));
+                } else if (error.has("username")) {
+                    String msg = error.getString("username");
+                    status.setMessage("Username: " + msg);
+                } else if (error.has("password")) {
+                    String msg = error.getString("password");
+                    status.setMessage("Password: " + msg);
+                } else {
+                    status.setMessage("Unknown error in getting response");
+                }
+            } catch (JSONException err) {
+                status.setMessage("Unknown error in getting response");
+            }
+
             return status;
         }
 
@@ -76,7 +97,7 @@ public class UserGet implements UserGetProperties {
             conn.setDoOutput(true);
             Util.passParams(conn, input);
         } catch (IOException err) {
-            return new OutputPair(false, "Problem with sending request");
+            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
         }
 
         // Evaluate response code

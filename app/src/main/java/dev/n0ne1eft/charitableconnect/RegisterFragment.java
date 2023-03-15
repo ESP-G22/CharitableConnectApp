@@ -1,6 +1,7 @@
 package dev.n0ne1eft.charitableconnect;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+
+import api.UserGet;
+import layout.OutputPair;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,19 +74,46 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_register, container, false);
-        // Inflate the layout for this fragment
+
+        EditText passwordView = view.findViewById(R.id.regPasswordInput);
+        EditText confPasswordView = view.findViewById(R.id.confirmPasswordInput);
+        EditText usernameView = view.findViewById(R.id.regUsernameInput);
+        EditText emailView = view.findViewById(R.id.regEmailInput);
 
         //Sign up onclick
         Button confirmSignUp = view.findViewById(R.id.confirmSignUpButton);
         confirmSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean validated = ValidateSignUp(v);
-                if(validated){
-                    //Launch main activity
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    requireActivity().startActivity(intent);
+                String username = usernameView.getText().toString();
+                String email = emailView.getText().toString();
+                String password = passwordView.getText().toString();
+                String confPassword = confPasswordView.getText().toString();
+
+                OutputPair output_register = ValidateSignUp(username, email, password, confPassword);
+                boolean validated = output_register.isSuccess();
+
+                if(!validated){
+                    Toast.makeText(getActivity(), output_register.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
                 }
+                // clear previous input
+                usernameView.setText("");
+                passwordView.setText("");
+                confPasswordView.setText("");
+                emailView.setText("");
+
+                // go back to login screen in order to get token.
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.loginNavHost);
+                navController.navigate(R.id.loginFragment);
+
+                Toast.makeText(getActivity(), output_register.getMessage(), Toast.LENGTH_LONG).show();
+
+                /*
+                //Launch main activity
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                requireActivity().startActivity(intent);
+                */
             }
         });
         //Sign in text onclick
@@ -99,21 +131,50 @@ public class RegisterFragment extends Fragment {
         return view;
     }
 
-    private boolean ValidateSignUp(View v) {
-        //Get first password as string
-        EditText passwordView = view.findViewById(R.id.regPasswordInput);
-        String password = passwordView.getText().toString();
-
-        //Get confirmation password as string
-        EditText confPasswordView = view.findViewById(R.id.confirmPasswordInput);
-        String confPassword = confPasswordView.getText().toString();
-
-        //Check if they are not equal
+    /**
+     * Evaluates a new user register request.
+     *
+     * @param username Inputted username.
+     * @param email Inputted email. Must be in the correct email format.
+     * @param password Inputted password.
+     * @param confPassword Double-entry verification of password.
+     * @return Output pair where if true, the message a success message, otherwise it
+     *  contains an error message.
+     */
+    private OutputPair ValidateSignUp(String username, String email, String password, String confPassword) {
+        // Check if they are not equal
         if(!password.equals(confPassword)){
-            //Raise toast
-            Toast.makeText(getActivity(), "Passwords must match", Toast.LENGTH_LONG).show();
-            return false;
+            return new OutputPair(false, "Passwords must match.");
         }
-        return true;
+
+        RegisterTask register = new RegisterTask(username, email, password);
+        register.execute();
+        try {
+            OutputPair output_register = register.get(); // get return value from thread.
+            return output_register;
+        } catch (ExecutionException err) {
+            return new OutputPair(false, "ExecutionError");
+        } catch (InterruptedException err) {
+            return new OutputPair(false, "InterruptedError");
+        }
+    }
+}
+
+class RegisterTask extends AsyncTask<String, String, OutputPair> {
+    private String username;
+    private String email;
+    private String password;
+
+    public RegisterTask(String username, String email, String password) {
+        super();
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+    protected OutputPair doInBackground(String... params) {
+        UserGet userGet = new UserGet();
+        OutputPair output_register = userGet.register(email, username, password);
+
+        return output_register;
     }
 }

@@ -21,7 +21,7 @@ import usertest.UserUnitTest;
 
 public class EventUnitTest {
     public static final int testEventID = 3;
-    public static final int testEventType = 0;
+    public static final String testEventType = "Other";
     public static final String testEventTitle = "Test Event";
     public static final String testEventDesc = "This is a description.";
     public static final Date testEventDateTime = new Date();
@@ -56,6 +56,7 @@ public class EventUnitTest {
             assertEquals(testEventDesc, event.getDescription());
             assertEquals(true, event.eventRequesterIsOrganiser());
         } catch (Exception err) {
+            err.printStackTrace();
             fail(err.getMessage());
         }
     }
@@ -67,6 +68,7 @@ public class EventUnitTest {
             Event event = new Event(testEventID, user);
             System.out.println(event.daysUntilEvent());
         } catch (Exception err) {
+            err.printStackTrace();
             fail(err.getMessage());
         }
     }
@@ -81,6 +83,7 @@ public class EventUnitTest {
             List<Event> output = Event.search("Test", user);
             assertEquals(testEventID, output.get(0).getID());
         } catch (Exception err) {
+            err.printStackTrace();
             fail(err.getMessage());
         }
     }
@@ -120,6 +123,20 @@ public class EventUnitTest {
             fail(err.getMessage());
         }
     }
+
+    @Test
+    public void getEventsByType() {
+        try {
+            // get user
+            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
+            List<Event> events = Event.getByEventType("Other", user);
+            System.out.println(events);
+        } catch (Exception err) {
+            err.printStackTrace();
+            fail(err.getMessage());
+        }
+    }
+
 
     @Test
     public void getEventRSVPs() {

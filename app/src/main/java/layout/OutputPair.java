@@ -22,4 +22,8 @@ public class OutputPair extends Pair<Boolean, String> {
     public String getMessage() {
         return y;
     }
+
+    public void setMessage(String newMessage) {
+        this.y = newMessage;
+    }
 }

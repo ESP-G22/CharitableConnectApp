@@ -1,6 +1,7 @@
 package dev.n0ne1eft.charitableconnect;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,9 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import api.UserGet;
+import layout.OutputPair;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,15 +78,39 @@ public class LoginFragment extends Fragment {
 
         //Sign in onclick
         Button signInButton = view.findViewById(R.id.signInButton);
+        EditText usernameBox = (EditText) view.findViewById(R.id.usernameInput);
+        EditText passwordBox = (EditText) view.findViewById(R.id.passwordInput);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean validated = validateSignIn(v);
-                if(validated){
-                   //Launch main activity
-                   Intent intent = new Intent(getActivity(), MainActivity.class);
-                   requireActivity().startActivity(intent);
+                String username = usernameBox.getText().toString();
+                String password = passwordBox.getText().toString();
+
+                OutputPair output_login = validateSignIn(username, password);
+                boolean validated = output_login.isSuccess();
+
+                if (!validated) {
+                    Toast.makeText(getActivity(), output_login.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
                 }
+
+                // clear previous input
+                usernameBox.setText("");
+                passwordBox.setText("");
+
+                String token = output_login.getMessage();
+                // TODO: pass token to main activity
+                // intent.putExtra("TOKEN", token);
+
+                // In main activity:
+                // Bundle extras = getIntent().getExtras();
+                // if (extras != null) {
+                // String token = extras.getString("TOKEN");
+                // }
+
+                //Launch main activity
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                requireActivity().startActivity(intent);
             }
         });
 
@@ -96,8 +127,41 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    private boolean validateSignIn(View v) {
-        //Do something...
-        return true;
+    /**
+     * Evaluates sign in request and runs the task in a new thread.
+     *
+     * @param username Login username input.
+     * @param password Login password input.
+     * @return Output pair where if true, the message is the token, otherwise it
+     *  contains an error message.
+     */
+    private OutputPair validateSignIn(String username, String password) {
+        LoginTask login = new LoginTask(username, password);
+        login.execute();
+        try {
+            OutputPair output_login = login.get();  // get return value from thread.
+            return output_login;
+        } catch (ExecutionException err) {
+            return new OutputPair(false, "ExecutionError");
+        } catch (InterruptedException err) {
+            return new OutputPair(false, "InterruptedError");
+        }
+    }
+}
+
+class LoginTask extends AsyncTask<String, String, OutputPair> {
+    private String username;
+    private String password;
+
+    public LoginTask(String username, String password) {
+        super();
+        this.username = username;
+        this.password = password;
+    }
+    protected OutputPair doInBackground(String... params) {
+        UserGet userGet = new UserGet();
+        OutputPair output_login = userGet.login(username, password);
+
+        return output_login;
     }
 }

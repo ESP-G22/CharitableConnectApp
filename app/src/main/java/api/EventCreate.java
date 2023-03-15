@@ -1,5 +1,6 @@
 package api;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 
 import org.json.JSONObject;
@@ -15,8 +16,8 @@ import layout.EventCreateProperties;
 import layout.OutputPair;
 
 public class EventCreate implements EventCreateProperties {
-    public OutputPair createEvent(int eventType, String title, String description, Date datetime, String address1, String address2, String postcode, Image image,
-                                  String organiserToken) {
+    public OutputPair createEvent(String eventType, String title, String description, Date datetime, String address1, String address2, String postcode, Bitmap image,
+                                  String organiserAuthHeaderValue) {
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("eventType", eventType);
@@ -36,7 +37,7 @@ public class EventCreate implements EventCreateProperties {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", organiserToken);
+            conn.setRequestProperty("Authorization", organiserAuthHeaderValue);
             conn.setDoOutput(true);
             Util.passParams(conn, input);
         } catch (IOException err) {
@@ -49,6 +50,7 @@ public class EventCreate implements EventCreateProperties {
             return status;
         }
 
+        Util.uploadImage(image, organiserAuthHeaderValue);
         // If successful, output the success message
         return new OutputPair(true, "Event has been created.");
     }

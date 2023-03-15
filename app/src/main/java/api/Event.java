@@ -1,5 +1,6 @@
 package api;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 
 import org.json.JSONArray;
@@ -22,13 +23,15 @@ import java.util.concurrent.TimeUnit;
 public class Event implements EventAttributes {
     private int id;
     private UserProfile eventRequester;
-    private int eventType;
+    private String eventType;
     private String title;
     private String description;
     private Date datetime;
     private String address1;
     private String address2;
     private String postcode;
+
+    private RSVP rsvp; // may be null if no rsvp
     private int organiserID;
     //private int image; // need to find suitable image class
     private int numAttendees;
@@ -57,7 +60,7 @@ public class Event implements EventAttributes {
         this.datetime = Util.stringToDate(attrs.getString("date"));
         this.organiserID = attrs.getJSONObject("organiser").getInt("id");
         this.description = attrs.getString("description");
-        this.eventType = attrs.getInt("type");
+        this.eventType = attrs.getString("type");
         this.title = attrs.getString("title");
         this.postcode = attrs.getString("postcode");
         this.address1 = attrs.getString("address1");
@@ -67,10 +70,37 @@ public class Event implements EventAttributes {
             this.address2 = attrs.getString("address2");
         }
         this.numAttendees = attrs.getInt("attendeeCount");
+
+        if (attrs.isNull("rsvp")) {
+            this.rsvp = null;
+        } else {
+            JSONObject rsvp = attrs.getJSONObject("rsvp");
+            this.rsvp = new RSVP(rsvp.getInt("id"), eventRequester.getAuthHeaderValue());
+        }
     }
 
     private OutputPair getAttrs() {
         return Util.getRequest(Util.getEventEndpoint(getID()), getAuthHeaderValue());
+    }
+
+    public RSVP getRsvp() {
+        return rsvp;
+    }
+
+    public OutputPair removeRsvp() {
+        if (getRsvp() == null) {
+            return new OutputPair(false, "User has not RSVPed.");
+        }
+
+        return getEventRequester().unsubscribeFromEvent(getRsvp().getID());
+    }
+
+    public OutputPair addRsvp() {
+        if (getRsvp() != null) {
+            return new OutputPair(false, "User has already RSVPed.");
+        }
+
+        return getEventRequester().subscribeToEvent(getID());
     }
 
     /**
@@ -107,12 +137,12 @@ public class Event implements EventAttributes {
     }
 
     @Override
-    public int getEventType() {
+    public String getEventType() {
         return eventType;
     }
 
     @Override
-    public void setEventType(int eventType) {
+    public void setEventType(String eventType) {
     }
 
     @Override
@@ -184,12 +214,12 @@ public class Event implements EventAttributes {
     }
 
     @Override
-    public Image getImage() {
+    public Bitmap getImage() {
         return null;
     }
 
     @Override
-    public void setImage(Image image) {
+    public void setImage(Bitmap image) {
     }
 
     @Override
@@ -341,6 +371,7 @@ public class Event implements EventAttributes {
         try {
             InputStream inputStream = conn.getInputStream();
             JSONArray out = Util.getJSONResponse(inputStream);
+            System.out.println(out);
             JSONArray events = out.getJSONObject(0).getJSONArray("data");
             LinkedList<Event> listOfEvents = new LinkedList<>();
             for (int i = 0; i < events.length(); i++) {
@@ -358,6 +389,117 @@ public class Event implements EventAttributes {
         }
     }
 
+    /**
+     * Get all events that are within an event category.
+     *
+     * Returns blank list, if there was an error or if no events found for that type.
+     *
+     * @param eventType Type to filter by.
+     * @param eventRequester User who requested the events.
+     * @return All events that match, may be empty.
+     */
+    public static List<Event> getByEventType(String eventType, UserProfile eventRequester) {
+        HttpURLConnection conn;
+        try {
+            URL url = new URL(Util.ENDPOINT_EVENT_LIST + "?type=" + eventType);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
+            conn.setDoOutput(true);
+        } catch (IOException err) {
+            return new LinkedList<>();
+        }
+
+        // Evaluate response code
+        OutputPair status = Util.checkResponseCode(conn);
+        if (!status.isSuccess()) {
+            return new LinkedList<>();
+        }
+
+        // If successful, output the events in a list
+        try {
+            InputStream inputStream = conn.getInputStream();
+            JSONArray out = Util.getJSONResponse(inputStream);
+            JSONArray events = out.getJSONObject(0).getJSONArray("data");
+            LinkedList<Event> listOfEvents = new LinkedList<>();
+            for (int i = 0; i < events.length(); i++) {
+                try {
+                    listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
+                } catch (Exception err) {
+                    return listOfEvents;
+                }
+            }
+            return listOfEvents;
+        } catch (IOException err) {
+            return new LinkedList<>();
+        } catch (JSONException err) {
+            return new LinkedList<>();
+        }
+    }
+
+    public static List<Event> getByDate(Date datetime, UserProfile eventRequester) throws MalformedURLException, IOException, JSONException {
+        HttpURLConnection conn;
+        URL url = new URL(Util.ENDPOINT_EVENT_LIST + "?date=" + Util.dateToString(datetime));
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
+        conn.setDoOutput(true);
+
+        // Evaluate response code
+        OutputPair status = Util.checkResponseCode(conn);
+        if (!status.isSuccess()) {
+            throw new IOException(status.getMessage());
+        }
+
+        // If successful, output the events in a list
+        InputStream inputStream = conn.getInputStream();
+        JSONArray out = Util.getJSONResponse(inputStream);
+        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+        LinkedList<Event> listOfEvents = new LinkedList<>();
+        for (int i = 0; i < out.length(); i++) {
+            try {
+                listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
+            } catch (Exception err) {
+                return listOfEvents;
+            }
+        }
+        return listOfEvents;
+    }
+
+    public static List<Event> getTrendingEvents(UserProfile eventRequester) throws MalformedURLException, IOException, JSONException {
+        HttpURLConnection conn;
+        URL url = new URL(Util.ENDPOINT_EVENT_LIST + "?sort=attendeeCount");
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
+        conn.setDoOutput(true);
+
+        // Evaluate response code
+        OutputPair status = Util.checkResponseCode(conn);
+        if (!status.isSuccess()) {
+            throw new IOException(status.getMessage());
+        }
+
+        // If successful, output the events in a list
+        InputStream inputStream = conn.getInputStream();
+        JSONArray out = Util.getJSONResponse(inputStream);
+        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+        LinkedList<Event> listOfEvents = new LinkedList<>();
+        for (int i = 0; i < out.length(); i++) {
+            try {
+                listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
+            } catch (Exception err) {
+                return listOfEvents;
+            }
+        }
+        return listOfEvents;
+    }
     /**
      * Gets all currently advertised events.
      *
