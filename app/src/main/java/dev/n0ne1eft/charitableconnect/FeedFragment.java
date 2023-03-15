@@ -1,5 +1,4 @@
 package dev.n0ne1eft.charitableconnect;
-
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,13 +11,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class FeedFragment extends Fragment {
+    private String pageTitle;
+
+    public FeedFragment(String pageTitle) {
+        if (pageTitle != null){
+            this.pageTitle = pageTitle;
+        }
+        else {
+            this.pageTitle = "";
+        }
+    }
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,7 +60,6 @@ public class FeedFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +73,10 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_feed, container, false);
+        //Call the eventShownfromExplore() function to handle the events shown
+        eventshownfromExplore(v);
+        
         view = inflater.inflate(R.layout.fragment_feed, container, false);
 
         //Launch new event
@@ -79,4 +91,64 @@ public class FeedFragment extends Fragment {
 
         return view;
     }
+    public void eventshownfromExplore(View v){
+        if (pageTitle == "Subscribed") {
+            //Only events we are subscribed to their organizer are shown
+        } else if (pageTitle == "Date"){
+            sorting("Date");
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Date");
+        } else if (pageTitle == "Trending") {
+            sorting("Trending");
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Trending");
+        } else if (pageTitle == "FoodTasting") {
+            //Only food tasting events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("FoodTasting");
+        } else if (pageTitle == "Movies") {
+            //Only movie events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Movies");
+        } else if (pageTitle == "Club") {
+            //Only club events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Club");
+        } else if (pageTitle == "Sports") {
+            //Only sports events are shown
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Sports");
+        } else {
+            //All events are shown as before
+            TextView textView2 = v.findViewById(R.id.textView2);
+            textView2.setText("Feed");
+        }
+    }
+    public void sorting(String type){
+        /*
+        const currentEvent;
+        int j;
+        if (type == "Date"){
+            for (int i = 0; i < events.size() - 1; i++){
+                currentEvent = events.get(i);
+                j = i + 1;
+                if (events.get(i).date > events.get(j).date){
+                    events.get(i) = events.get(j);
+                    events.get(j) = currentEvent;
+                }
+            }
+        }
+        else if (type == "Trending"){
+            for (int i = 0; i < events.size() - 1; i++){
+                currentEvent = events.get(i);
+                j = i + 1;
+                if (events.get(i).trending > events.get(j).trending){
+                    events.get(i) = events.get(j);
+                    events.get(j) = currentEvent;
+                }
+            }
+        }
+        */
+    }
+
 }
