@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import android.os.Bundle;
 import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
