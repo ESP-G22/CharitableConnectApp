@@ -14,7 +14,7 @@ public class ImageTests {
     @Test
     public void uploadImageCorrect() {
         // Image not mocked?
-        Bitmap image = BitmapFactory.decodeFile("download.jpg");
+        // Bitmap image = BitmapFactory.decodeFile("download.jpg");
         //OutputPair out = Util.uploadImage(image, UserUnitTest.testToken);
         //assertTrue(out.isSuccess());
     }
