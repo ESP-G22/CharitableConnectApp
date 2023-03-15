@@ -37,6 +37,7 @@ public class FeedFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View view;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -75,7 +76,20 @@ public class FeedFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         //Call the eventShownfromExplore() function to handle the events shown
         eventshownfromExplore(v);
-        return inflater.inflate(R.layout.fragment_feed, container, false);
+        
+        view = inflater.inflate(R.layout.fragment_feed, container, false);
+
+        //Launch new event
+        FloatingActionButton newEventButton = view.findViewById(R.id.launchNewEventButton);
+        newEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
+                navController.navigate(R.id.newEventFragment);
+            }
+        });
+
+        return view;
     }
     public void eventshownfromExplore(View v){
         if (pageTitle == "Subscribed") {

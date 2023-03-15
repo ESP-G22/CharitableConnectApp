@@ -20,4 +20,9 @@
         android:name="dev.n0ne1eft.charitableconnect.FeedFragment"
         android:label="@string/feed_fragment_title"
         tools:layout="@layout/fragment_feed" />
+    <fragment
+        android:id="@+id/newEventFragment"
+        android:name="dev.n0ne1eft.charitableconnect.NewEventFragment"
+        android:label="Create New Event"
+        tools:layout="@layout/fragment_new_event" />
 </navigation>
