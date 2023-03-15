@@ -1,17 +1,18 @@
 package dev.n0ne1eft.charitableconnect;
-
 import android.os.Bundle;
-import android.widget.TextView;
+
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import android.os.Bundle;
+import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FeedFragment#newInstance} factory method to
