@@ -1,5 +1,8 @@
 package api;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,12 +12,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import layout.OutputPair;
 import layout.RSVPAttributes;
 
-public class RSVP implements RSVPAttributes {
+public class RSVP implements RSVPAttributes, Parcelable {
     private final int rsvpID;
     private final int eventID;
     private final int userID;
@@ -132,5 +136,34 @@ public class RSVP implements RSVPAttributes {
         } catch (JSONException err) {
             return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
         }
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(getID());
+        dest.writeInt(getEventID());
+        dest.writeInt(getUserID());
+        dest.writeString(getAuthHeaderValue());
+    }
+
+    public static final Parcelable.Creator<RSVP> CREATOR
+            = new Parcelable.Creator<RSVP>() {
+        public RSVP createFromParcel(Parcel in) {
+            return new RSVP(in);
+        }
+
+        public RSVP[] newArray(int size) {
+            return new RSVP[size];
+        }
+    };
+
+    private RSVP(Parcel in) {
+        rsvpID = in.readInt();
+        eventID = in.readInt();
+        userID = in.readInt();
+        authHeaderValue = in.readString();
     }
 }

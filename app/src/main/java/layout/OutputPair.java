@@ -1,29 +1,19 @@
 package layout;
 
-class Pair<T, U> {
-    public T x;
-    public U y;
-
-    public Pair(T x, U y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
 public class OutputPair extends Pair<Boolean, String> {
     public OutputPair(Boolean success, String message) {
         super(success, message);
     }
 
     public boolean isSuccess() {
-        return x;
+        return arg1;
     }
 
     public String getMessage() {
-        return y;
+        return arg2;
     }
 
     public void setMessage(String newMessage) {
-        this.y = newMessage;
+        this.arg2 = newMessage;
     }
 }

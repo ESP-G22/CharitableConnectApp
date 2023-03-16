@@ -1,6 +1,8 @@
 package api;
 
 import android.media.Image;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
@@ -22,7 +25,7 @@ import layout.OutputPair;
 import layout.UserProfileAttributes;
 import validate.UserValidate;
 
-public class UserProfile implements UserProfileAttributes {
+public class UserProfile implements UserProfileAttributes, Parcelable {
     public static final String defaultName = "This user has no name.";
     public static final String defaultDescription = "This user has no description.";
     private final String token;
@@ -32,6 +35,10 @@ public class UserProfile implements UserProfileAttributes {
     private String name;
     private String userType;
     private List<Integer> followedUsers;
+
+    private int eventCount;
+
+    private int followerCount;
 
     public UserProfile(String token, int id) throws Exception {
         this.token = token;
@@ -55,6 +62,8 @@ public class UserProfile implements UserProfileAttributes {
         ObjectMapper mapper = new ObjectMapper();
         this.followedUsers = new LinkedList<>();
         this.followedUsers = Arrays.asList(mapper.readValue(attrs.getJSONArray("followedUsers").toString(), Integer[].class));
+        this.eventCount = attrs.getInt("eventCount");
+        this.followerCount = attrs.getInt("followerCount");
     }
 
     private OutputPair getAttrs() {
@@ -99,7 +108,13 @@ public class UserProfile implements UserProfileAttributes {
     }
 
     @Override
-    public void setFollowedUsers(List<Integer> followedUsers) {
+    public int getEventCount() {
+        return eventCount;
+    }
+
+    @Override
+    public int getFollowerCount() {
+        return followerCount;
     }
 
     @Override
@@ -234,5 +249,45 @@ public class UserProfile implements UserProfileAttributes {
         }
 
         return Util.disconnect(conn, new OutputPair(true, "Password changed."));
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getToken());
+        dest.writeInt(getID());
+        dest.writeString(getUsername());
+        dest.writeString(getBio());
+        dest.writeString(getName());
+        dest.writeString(getUserType());
+        dest.writeList(getFollowedUsers());
+        dest.writeInt(getEventCount());
+        dest.writeInt(getFollowerCount());
+    }
+
+    public static final Parcelable.Creator<UserProfile> CREATOR
+            = new Parcelable.Creator<UserProfile>() {
+        public UserProfile createFromParcel(Parcel in) {
+            return new UserProfile(in);
+        }
+
+        public UserProfile[] newArray(int size) {
+            return new UserProfile[size];
+        }
+    };
+
+    private UserProfile(Parcel in) {
+        token = in.readString();
+        id = in.readInt();
+        username = in.readString();
+        bio = in.readString();
+        name = in.readString();
+        userType = in.readString();
+        followedUsers = new LinkedList<Integer>();
+        in.readList(followedUsers, Integer.class.getClassLoader());
+        eventCount = in.readInt();
+        followerCount = in.readInt();
     }
 }

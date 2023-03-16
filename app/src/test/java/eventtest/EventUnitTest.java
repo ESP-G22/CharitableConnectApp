@@ -137,6 +137,19 @@ public class EventUnitTest {
         }
     }
 
+    @Test
+    public void getEventsByTrending() {
+        try {
+            // get user
+            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
+            List<Event> events = Event.getTrendingEvents(user);
+            System.out.println(events);
+        } catch (Exception err) {
+            err.printStackTrace();
+            fail(err.getMessage());
+        }
+    }
+
 
     @Test
     public void getEventRSVPs() {
