@@ -28,7 +28,7 @@ import layout.OutputPair;
 public class Util {
     public static final String ENDPOINT = "https://api.cc.n0ne1eft.dev/";
     public static final String ENDPOINT_USER = ENDPOINT + "user/";
-    public static final String ENDPOINT_USER_LIST = ENDPOINT_USER + "list";
+    public static final String ENDPOINT_USER_LIST = ENDPOINT_USER + "list?";
     public static final String ENDPOINT_LOGIN = ENDPOINT_USER + "login";
     public static final String ENDPOINT_CHANGE_PASSWORD = ENDPOINT_USER + "passwordchange";
     public static final String ENDPOINT_REGISTER = ENDPOINT_USER + "register";
@@ -232,7 +232,6 @@ public class Util {
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Authorization", authHeaderValue);
-            conn.setDoOutput(true);
         } catch (IOException err) {
             return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
         }

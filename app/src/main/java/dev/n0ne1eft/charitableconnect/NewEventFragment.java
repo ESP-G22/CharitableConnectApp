@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -34,10 +35,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+
+import api.EventCreate;
+import api.UserGet;
+import layout.OutputPair;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -165,6 +173,14 @@ public class NewEventFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OutputPair output = createNewEvent();
+
+                if (!(output.isSuccess())) {
+                    Toast.makeText(getActivity(), output.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Toast.makeText(getActivity(), output.getMessage(), Toast.LENGTH_LONG).show();
                 //Launch feed
                 NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
                 //Send data back to feed
@@ -288,5 +304,58 @@ public class NewEventFragment extends Fragment {
         View card = (View)v.getParent();
         //Remove it from layout
         linearLayout.removeView(card);
+    }
+
+    public OutputPair createNewEvent() {
+        String title;
+        Date datetime;
+        Bitmap image;
+        String description;
+        return new OutputPair(false, "Not implemented yet.");
+    }
+        /*
+        LoginTask login = new LoginTask();
+        login.execute();
+        try {
+            OutputPair output_login = login.get();  // get return value from thread.
+            return output_login;
+        } catch (ExecutionException err) {
+            return new OutputPair(false, "ExecutionError");
+        } catch (InterruptedException err) {
+            return new OutputPair(false, "InterruptedError");
+        }
+         */
+}
+
+class NewEventTask extends AsyncTask<String, String, OutputPair> {
+    private String eventType;
+    private String title;
+    private String description;
+    private Date datetime;
+    private String address1;
+    private String address2;
+    private String postcode;
+    private String organiserAuthHeaderValue;
+
+    private Bitmap image;
+
+    public NewEventTask(String eventType, String title, String description, Date datetime, String address1, String address2, String postcode, Bitmap image,
+                        String organiserAuthHeaderValue) {
+        super();
+        this.eventType = eventType;
+        this.title = title;
+        this.description = description;
+        this.datetime = datetime;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.postcode = postcode;
+        this.image = image;
+        this.organiserAuthHeaderValue = organiserAuthHeaderValue;
+    }
+    protected OutputPair doInBackground(String... params) {
+        EventCreate create = new EventCreate();
+        OutputPair output = create.createEvent(eventType, title, description, datetime, address1, address2, postcode, image, organiserAuthHeaderValue);
+
+        return output;
     }
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import api.UserGet;
+import api.UserProfile;
 import layout.OutputPair;
 
 import java.util.Objects;
@@ -99,17 +100,19 @@ public class LoginFragment extends Fragment {
                 passwordBox.setText("");
 
                 String token = output_login.getMessage();
-                // TODO: pass token to main activity
-                // intent.putExtra("TOKEN", token);
 
-                // In main activity:
-                // Bundle extras = getIntent().getExtras();
-                // if (extras != null) {
-                // String token = extras.getString("TOKEN");
-                // }
+                OutputPair output_getid = getUserID(username, token);
+
+                if (!output_getid.isSuccess()) {
+                    Toast.makeText(getActivity(), output_getid.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                int userID = Integer.parseInt(output_getid.getMessage());
 
                 //Launch main activity
                 Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("TOKEN", token);
+                intent.putExtra("USERID", userID);
                 requireActivity().startActivity(intent);
             }
         });
@@ -147,6 +150,19 @@ public class LoginFragment extends Fragment {
             return new OutputPair(false, "InterruptedError");
         }
     }
+
+    private OutputPair getUserID(String username, String token) {
+        GetUserIDTask getid = new GetUserIDTask(username, token);
+        getid.execute();
+        try {
+            OutputPair output = getid.get();  // get return value from thread.
+            return output;
+        } catch (ExecutionException err) {
+            return new OutputPair(false, "ExecutionError");
+        } catch (InterruptedException err) {
+            return new OutputPair(false, "InterruptedError");
+        }
+    }
 }
 
 class LoginTask extends AsyncTask<String, String, OutputPair> {
@@ -163,5 +179,22 @@ class LoginTask extends AsyncTask<String, String, OutputPair> {
         OutputPair output_login = userGet.login(username, password);
 
         return output_login;
+    }
+}
+
+class GetUserIDTask extends AsyncTask<String, String, OutputPair> {
+    private String username;
+    private String token;
+
+    public GetUserIDTask(String username, String token) {
+        super();
+        this.username = username;
+        this.token = token;
+    }
+    protected OutputPair doInBackground(String... params) {
+        UserGet userGet = new UserGet();
+        OutputPair output = userGet.getUserID(username, token);
+
+        return output;
     }
 }

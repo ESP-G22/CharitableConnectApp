@@ -2,6 +2,9 @@ package api;
 
 import android.graphics.Bitmap;
 import android.media.Image;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Event implements EventAttributes {
+public class Event implements EventAttributes, Parcelable {
     private int id;
     private UserProfile eventRequester;
     private String eventType;
@@ -407,7 +410,6 @@ public class Event implements EventAttributes {
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
-            conn.setDoOutput(true);
         } catch (IOException err) {
             return new LinkedList<>();
         }
@@ -447,7 +449,6 @@ public class Event implements EventAttributes {
         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
-        conn.setDoOutput(true);
 
         // Evaluate response code
         OutputPair status = Util.checkResponseCode(conn);
@@ -478,7 +479,6 @@ public class Event implements EventAttributes {
         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
-        conn.setDoOutput(true);
 
         // Evaluate response code
         OutputPair status = Util.checkResponseCode(conn);
@@ -489,11 +489,10 @@ public class Event implements EventAttributes {
         // If successful, output the events in a list
         InputStream inputStream = conn.getInputStream();
         JSONArray out = Util.getJSONResponse(inputStream);
-        JSONArray events = out.getJSONObject(0).getJSONArray("data");
         LinkedList<Event> listOfEvents = new LinkedList<>();
         for (int i = 0; i < out.length(); i++) {
             try {
-                listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
+                listOfEvents.add(new Event(out.getJSONObject(i).getInt("id"), eventRequester));
             } catch (Exception err) {
                 return listOfEvents;
             }
@@ -517,7 +516,6 @@ public class Event implements EventAttributes {
         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
-        conn.setDoOutput(true);
 
         // Evaluate response code
         OutputPair status = Util.checkResponseCode(conn);
@@ -538,5 +536,55 @@ public class Event implements EventAttributes {
             }
         }
         return listOfEvents;
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        Bundle b = new Bundle();
+        b.putParcelable("eventRequester", eventRequester);
+        b.putParcelable("rsvp", rsvp);
+
+        dest.writeInt(getID());
+        dest.writeBundle(b);
+        dest.writeString(getEventType());
+        dest.writeString(getTitle());
+        dest.writeString(getDescription());
+        dest.writeSerializable(getDatetime());
+        dest.writeString(getAddress1());
+        dest.writeString(getAddress2());
+        dest.writeString(getPostcode());
+
+        dest.writeInt(getOrganiserID());
+        dest.writeInt(getAttendeeCount());
+    }
+
+    public static final Parcelable.Creator<Event> CREATOR
+            = new Parcelable.Creator<Event>() {
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
+    private Event(Parcel in) {
+        id = in.readInt();
+        Bundle bundle = in.readBundle();
+        eventRequester = (UserProfile) bundle.getParcelable("eventRequester");
+        rsvp = (RSVP) bundle.getParcelable("rsvp");
+        eventType = in.readString();
+        title = in.readString();
+        description = in.readString();
+        datetime = (Date) in.readSerializable();
+        address1 = in.readString();
+        address2 = in.readString();
+        postcode = in.readString();
+        organiserID = in.readInt();
+        numAttendees = in.readInt();
     }
 }

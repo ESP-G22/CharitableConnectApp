@@ -2,6 +2,8 @@ package dev.n0ne1eft.charitableconnect;
 
 import android.os.Bundle;
 import android.view.View.OnClickListener;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.widget.Button;
 import android.view.LayoutInflater;
@@ -13,41 +15,29 @@ import android.widget.TextView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.concurrent.ExecutionException;
+
+import api.UserProfile;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ExploreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ExploreFragment extends Fragment {
+public class  ExploreFragment extends Fragment {
+    private static final String ARG_USER = "USER";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private UserProfile user;
 
     public ExploreFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ExploreFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ExploreFragment newInstance(String param1, String param2) {
+    public static ExploreFragment newInstance(UserProfile user) {
         ExploreFragment fragment = new ExploreFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(ARG_USER, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,15 +45,14 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        MainActivity activity = (MainActivity) getActivity();
+        user = activity.getUser();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
@@ -125,7 +114,6 @@ public class ExploreFragment extends Fragment {
             FeedFragment feedPageFragment = new FeedFragment("Subscribed");
             // Get the FragmentManager
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             // Replace the current fragment with the FeedPage fragment
             fragmentTransaction.replace(R.id.textView, new FeedFragment());
@@ -263,5 +251,4 @@ public class ExploreFragment extends Fragment {
         String input = t.getText().toString();
         return input;
     }
-
 }

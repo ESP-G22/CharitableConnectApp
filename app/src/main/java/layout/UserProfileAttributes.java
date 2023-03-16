@@ -58,6 +58,20 @@ public interface UserProfileAttributes {
      */
     List<Integer> getFollowedUsers();
 
+    /**
+     * Get the number of events the user is the organiser for.
+     *
+     * @return number of events.
+     */
+    int getEventCount();
+
+    /**
+     * Get the number of users who follow the user.
+     *
+     * @return follower count.
+     */
+    int getFollowerCount();
+
     // update attributes
     void setUsername(String username);
 
@@ -66,6 +80,4 @@ public interface UserProfileAttributes {
     void setBio(String bio);
 
     void setProfilePic(Image profilePic);
-
-    void setFollowedUsers(List<Integer> followedUsers);
 }

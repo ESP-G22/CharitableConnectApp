@@ -113,7 +113,6 @@ public class UserGet implements UserGetProperties {
     public OutputPair getUserID(String username, String token) {
         String authHeaderValue = Util.createToken(token);
 
-        // Establish connection and post JSON parameters
         HttpURLConnection conn;
         try {
             URL url = new URL(Util.ENDPOINT_USER_LIST);
@@ -122,7 +121,6 @@ public class UserGet implements UserGetProperties {
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Authorization", authHeaderValue);
-            conn.setDoOutput(true);
         } catch (IOException err) {
             return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
         }
