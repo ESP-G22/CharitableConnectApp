@@ -112,6 +112,7 @@ public class ProfileFragment extends Fragment {
             ImageButton t;
             t = new ImageButton(getActivity());
             t.setId(i);
+            t.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
             t.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -134,6 +135,7 @@ public class ProfileFragment extends Fragment {
             ImageButton t;
             t = new ImageButton(getActivity());
             t.setId(i);
+            t.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
             t.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -156,6 +158,7 @@ public class ProfileFragment extends Fragment {
             ImageButton t;
             t = new ImageButton(getActivity());
             t.setId(i);
+            t.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
             t.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
