@@ -83,7 +83,11 @@ public class Event implements EventAttributes, Parcelable {
     }
 
     private OutputPair getAttrs() {
-        return Util.getRequest(Util.getEventEndpoint(getID()), getAuthHeaderValue());
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair output = conn.get(Util.getEventEndpoint(getID()), getAuthHeaderValue());
+        conn.disconnect();
+
+        return output;
     }
 
     public RSVP getRsvp() {
@@ -264,42 +268,28 @@ public class Event implements EventAttributes, Parcelable {
         return getEventRequester().getID() == getOrganiserID();
     }
 
-    public List<RSVP> getRSVPs() throws MalformedURLException, IOException, JSONException {
+    public List<RSVP> getRSVPs() throws IOException, JSONException {
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        URL url = new URL(Util.getEventRSVPEndpoint(id));
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("Authorization", getAuthHeaderValue());
-        conn.setDoOutput(true);
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(Util.getEventRSVPEndpoint(id), getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             throw new IOException(status.getMessage());
         }
 
         // If successful, output the rsvps in a list
-        try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
-            JSONArray rsvps = out.getJSONObject(0).getJSONArray("data");
-            LinkedList<RSVP> listOfRSVPs = new LinkedList<>();
-            for (int i = 0; i < rsvps.length(); i++) {
-                try {
-                    listOfRSVPs.add(new RSVP(rsvps.getJSONObject(i).getInt("id"), eventRequester.getAuthHeaderValue()));
-                } catch (Exception err) {
-                    return listOfRSVPs;
-                }
+        JSONArray out = new JSONArray(status.getMessage());
+        JSONArray rsvps = out.getJSONObject(0).getJSONArray("data");
+        LinkedList<RSVP> listOfRSVPs = new LinkedList<>();
+        for (int i = 0; i < rsvps.length(); i++) {
+            try {
+                listOfRSVPs.add(new RSVP(rsvps.getJSONObject(i).getInt("id"), eventRequester.getAuthHeaderValue()));
+            } catch (Exception err) {
+                continue;
             }
-            return listOfRSVPs;
-        } catch (IOException err) {
-            return new LinkedList<>();
-        } catch (JSONException err) {
-            return new LinkedList<>();
         }
+        return listOfRSVPs;
     }
 
     /**
@@ -312,34 +302,20 @@ public class Event implements EventAttributes, Parcelable {
             return new OutputPair(false, "Only the organiser can remove events.");
         }
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.getUserEndpoint(id));
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.delete(Util.getEventEndpoint(id), getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
 
         // If successful, output the success to user
         try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
-            return Util.disconnect(conn, new OutputPair(true, out.getJSONObject(0).getString("msg")));
-        } catch (IOException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with getting token"));
+            JSONArray out = new JSONArray(status.getMessage());
+            return new OutputPair(true, out.getJSONObject(0).getString("msg"));
         } catch (JSONException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
+            return new OutputPair(false, "Problem with parsing JSON");
         }
     }
 
@@ -350,46 +326,24 @@ public class Event implements EventAttributes, Parcelable {
      * @param eventRequester User who requested the events.
      * @return All events that match, may be empty.
      */
-    public static List<Event> search(String phraseInTitle, UserProfile eventRequester) {
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_EVENT_SEARCH + "?searchTerm=" + phraseInTitle);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
-            conn.setDoOutput(true);
-        } catch (IOException err) {
-            return new LinkedList<>();
-        }
+    public static List<Event> search(String phraseInTitle, UserProfile eventRequester) throws IOException, JSONException {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(
+                Util.ENDPOINT_EVENT_SEARCH + "?searchTerm=" + phraseInTitle,
+                eventRequester.getAuthHeaderValue()
+        );
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
-            return new LinkedList<>();
+            throw new IOException(status.getMessage());
         }
 
         // If successful, output the events in a list
-        try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
-            System.out.println(out);
-            JSONArray events = out.getJSONObject(0).getJSONArray("data");
-            LinkedList<Event> listOfEvents = new LinkedList<>();
-            for (int i = 0; i < events.length(); i++) {
-                try {
-                    listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
-                } catch (Exception err) {
-                    return listOfEvents;
-                }
-            }
-            return listOfEvents;
-        } catch (IOException err) {
-            return new LinkedList<>();
-        } catch (JSONException err) {
-            return new LinkedList<>();
-        }
+        JSONArray out = new JSONArray(status.getMessage());
+        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+
+        return Event.JSONArrayToListOfEvents(events, eventRequester);
     }
 
     /**
@@ -401,138 +355,98 @@ public class Event implements EventAttributes, Parcelable {
      * @param eventRequester User who requested the events.
      * @return All events that match, may be empty.
      */
-    public static List<Event> getByEventType(String eventType, UserProfile eventRequester) {
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_EVENT_LIST + "?type=" + eventType);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
-        } catch (IOException err) {
-            return new LinkedList<>();
-        }
+    public static List<Event> getByEventType(String eventType, UserProfile eventRequester) throws IOException, JSONException {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(
+                Util.ENDPOINT_EVENT_LIST + "?type=" + eventType,
+                eventRequester.getAuthHeaderValue()
+        );
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
-        if (!status.isSuccess()) {
-            return new LinkedList<>();
-        }
-
-        // If successful, output the events in a list
-        try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
-            JSONArray events = out.getJSONObject(0).getJSONArray("data");
-            LinkedList<Event> listOfEvents = new LinkedList<>();
-            for (int i = 0; i < events.length(); i++) {
-                try {
-                    listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
-                } catch (Exception err) {
-                    return listOfEvents;
-                }
-            }
-            return listOfEvents;
-        } catch (IOException err) {
-            return new LinkedList<>();
-        } catch (JSONException err) {
-            return new LinkedList<>();
-        }
-    }
-
-    public static List<Event> getByDate(Date datetime, UserProfile eventRequester) throws MalformedURLException, IOException, JSONException {
-        HttpURLConnection conn;
-        URL url = new URL(Util.ENDPOINT_EVENT_LIST + "?date=" + Util.dateToString(datetime));
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
-
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             throw new IOException(status.getMessage());
         }
 
         // If successful, output the events in a list
-        InputStream inputStream = conn.getInputStream();
-        JSONArray out = Util.getJSONResponse(inputStream);
+        JSONArray out = new JSONArray(status.getMessage());
         JSONArray events = out.getJSONObject(0).getJSONArray("data");
-        LinkedList<Event> listOfEvents = new LinkedList<>();
-        for (int i = 0; i < out.length(); i++) {
-            try {
-                listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
-            } catch (Exception err) {
-                return listOfEvents;
-            }
-        }
-        return listOfEvents;
+
+        return Event.JSONArrayToListOfEvents(events, eventRequester);
     }
 
-    public static List<Event> getTrendingEvents(UserProfile eventRequester) throws MalformedURLException, IOException, JSONException {
-        HttpURLConnection conn;
-        URL url = new URL(Util.ENDPOINT_EVENT_LIST + "?sort=attendeeCount");
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
+    public static List<Event> getByDate(Date datetime, UserProfile eventRequester) throws IOException, JSONException {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(
+                Util.ENDPOINT_EVENT_LIST + "?date=" + Util.dateToString(datetime),
+                eventRequester.getAuthHeaderValue()
+        );
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             throw new IOException(status.getMessage());
         }
 
         // If successful, output the events in a list
-        InputStream inputStream = conn.getInputStream();
-        JSONArray out = Util.getJSONResponse(inputStream);
-        LinkedList<Event> listOfEvents = new LinkedList<>();
-        for (int i = 0; i < out.length(); i++) {
-            try {
-                listOfEvents.add(new Event(out.getJSONObject(i).getInt("id"), eventRequester));
-            } catch (Exception err) {
-                return listOfEvents;
-            }
+        JSONArray out = new JSONArray(status.getMessage());
+        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+
+        return Event.JSONArrayToListOfEvents(events, eventRequester);
+    }
+
+    public static List<Event> getTrendingEvents(UserProfile eventRequester) throws IOException, JSONException {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(
+                Util.ENDPOINT_EVENT_LIST + "?sort=attendeeCount",
+                eventRequester.getAuthHeaderValue()
+        );
+        conn.disconnect();
+
+        if (!status.isSuccess()) {
+            throw new IOException(status.getMessage());
         }
-        return listOfEvents;
+
+        // If successful, output the events in a list
+        JSONArray out = new JSONArray(status.getMessage());
+
+        return Event.JSONArrayToListOfEvents(out, eventRequester);
     }
     /**
      * Gets all currently advertised events.
      *
      * @param eventRequester User who requested the events.
      * @return list of events on the system, may be empty.
-     * @throws MalformedURLException If URL is invalid.
      * @throws IOException Response code error.
      * @throws JSONException Error parsing the JSON response.
      */
-    public static List<Event> getEventsList(UserProfile eventRequester) throws MalformedURLException, IOException, JSONException {
-        HttpURLConnection conn;
-        URL url = new URL(Util.ENDPOINT_EVENT_LIST);
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("Authorization", eventRequester.getAuthHeaderValue());
+    public static List<Event> getEventsList(UserProfile eventRequester) throws IOException, JSONException {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(
+                Util.ENDPOINT_EVENT_LIST,
+                eventRequester.getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             throw new IOException(status.getMessage());
         }
 
         // If successful, output the events in a list
-        InputStream inputStream = conn.getInputStream();
-        JSONArray out = Util.getJSONResponse(inputStream);
+        JSONArray out = new JSONArray(status.getMessage());
         JSONArray events = out.getJSONObject(0).getJSONArray("data");
+
+        return Event.JSONArrayToListOfEvents(events, eventRequester);
+    }
+
+    public static List<Event> JSONArrayToListOfEvents(JSONArray eventsInJSON, UserProfile eventRequester) throws JSONException {
         LinkedList<Event> listOfEvents = new LinkedList<>();
-        for (int i = 0; i < out.length(); i++) {
+        for (int i = 0; i < eventsInJSON.length(); i++) {
             try {
-                listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
+                listOfEvents.add(new Event(eventsInJSON.getJSONObject(i).getInt("id"), eventRequester));
             } catch (Exception err) {
-                return listOfEvents;
+                continue;
             }
         }
         return listOfEvents;

@@ -24,34 +24,20 @@ public class UserGet implements UserGetProperties {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_LOGIN);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.post(Util.ENDPOINT_LOGIN, input);
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             try {
                 JSONArray output = new JSONArray(status.getMessage());
                 System.out.println(status.getMessage());
                 JSONObject error = output.getJSONObject(0);
                 if (error.has("non_field_errors")) {
-                    status.setMessage(error.getString("non_field_errors"));
+                    status.setMessage("Incorrect credentials");
                 } else if (error.has("username")) {
-                    String msg = error.getString("username");
-                    status.setMessage("Username: " + msg);
+                    status.setMessage("Username is invalid");
                 } else if (error.has("password")) {
-                    String msg = error.getString("password");
-                    status.setMessage("Password: " + msg);
+                    status.setMessage("Password is invalid");
                 } else {
                     status.setMessage("Unknown error in getting response");
                 }
@@ -59,23 +45,25 @@ public class UserGet implements UserGetProperties {
                 status.setMessage("Unknown error in getting response");
             }
 
+            conn.disconnect();
             return status;
         }
 
         // If successful, output the token
         String token;
+        OutputPair status_token;
         try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
+            JSONArray out = new JSONArray(status.getMessage());
             JSONObject json = out.getJSONObject(0);
             token = json.getString("token");
 
-            return Util.disconnect(conn, new OutputPair(true, token));
-        } catch (IOException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with getting token"));
+            status_token = new OutputPair(true, token);
         } catch (JSONException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
+            status_token = new OutputPair(false, "Problem with parsing JSON");
         }
+
+        conn.disconnect();
+        return status_token;
     }
 
     public OutputPair register(String email, String username, String password) {
@@ -87,21 +75,10 @@ public class UserGet implements UserGetProperties {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_REGISTER);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.post(Util.ENDPOINT_REGISTER, input);
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
@@ -113,41 +90,27 @@ public class UserGet implements UserGetProperties {
     public OutputPair getUserID(String username, String token) {
         String authHeaderValue = Util.createToken(token);
 
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_USER_LIST);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", authHeaderValue);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(Util.ENDPOINT_USER_LIST, authHeaderValue);
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
 
         // If successful, output the users
         try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
+            JSONArray out = new JSONArray(status.getMessage());
             for (int i = 0; i < out.length(); i++) {
                 JSONObject curr = out.getJSONObject(i);
 
                 if (username.equals(curr.getString("username"))) {
                     int pk = curr.getInt("pk");
-                    return Util.disconnect(conn, new OutputPair(true, Integer.toString(pk)));
+                    return new OutputPair(true, Integer.toString(pk));
                 }
             }
-            return Util.disconnect(conn, new OutputPair(false, "Username not found."));
-        } catch (IOException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with getting token"));
+            return new OutputPair(false, "Username not found.");
         } catch (JSONException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
+            return new OutputPair(false, "Problem with parsing JSON");
         }
     }
 }

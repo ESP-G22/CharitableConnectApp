@@ -67,7 +67,10 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     }
 
     private OutputPair getAttrs() {
-        return Util.getRequest(Util.getUserEndpoint(getID()), getAuthHeaderValue());
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(Util.getUserEndpoint(getID()), getAuthHeaderValue());
+
+        return status;
     }
 
     /**
@@ -163,26 +166,14 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_RSVP_CREATE);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.post(Util.ENDPOINT_RSVP_CREATE, input, getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
-        return Util.disconnect(conn, new OutputPair(true, "RSVP successful."));
+        return new OutputPair(true, "RSVP successful.");
     }
 
     public OutputPair unsubscribeFromEvent(int rsvpID) {
@@ -192,26 +183,14 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.getRSVPEndpoint(rsvpID));
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("DELETE");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.delete(Util.getRSVPEndpoint(rsvpID), input, getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
-        return Util.disconnect(conn, new OutputPair(true, "RSVP removed."));
+        return new OutputPair(true, "RSVP removed.");
     }
 
     public OutputPair changePassword(String originalPassword, String newPassword1, String newPassword2) {
@@ -228,27 +207,15 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_CHANGE_PASSWORD);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("PUT");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.put(Util.ENDPOINT_CHANGE_PASSWORD, input, getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
 
-        return Util.disconnect(conn, new OutputPair(true, "Password changed."));
+        return new OutputPair(true, "Password changed.");
     }
 
     public int describeContents() {

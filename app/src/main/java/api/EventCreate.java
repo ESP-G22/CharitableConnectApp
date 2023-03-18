@@ -3,6 +3,7 @@ package api;
 import android.graphics.Bitmap;
 import android.media.Image;
 
+import org.json.HTTP;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -30,27 +31,15 @@ public class EventCreate implements EventCreateProperties {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_EVENT_CREATE);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", organiserAuthHeaderValue);
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, "Problem with sending request");
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.post(Util.ENDPOINT_EVENT_CREATE, input, organiserAuthHeaderValue);
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
 
-        Util.uploadImage(image, organiserAuthHeaderValue);
+        //Util.uploadImage(image, organiserAuthHeaderValue);
         // If successful, output the success message
         return new OutputPair(true, "Event has been created.");
     }

@@ -43,7 +43,7 @@ public class UserUnitTest {
         UserGet userGet = new UserGet();
         OutputPair out = userGet.login(testUsername, testIncorrectPassword);
         assertEquals(false, out.isSuccess());
-        //assertEquals("Unable to log in with provided credentials.", out.getMessage());
+        assertEquals("Incorrect credentials", out.getMessage());
     }
 
     @Test
@@ -54,10 +54,10 @@ public class UserUnitTest {
         //assertEquals("Password field is blank.\nUsername field is blank.", out.getMessage());
     }
 
-    @Ignore
+    @Test
     public void registerUser() {
         String email = "foo@bar.com";
-        String username = "username99";
+        String username = "username100";
         String password = "newpassword";
 
         UserGet userGet = new UserGet();

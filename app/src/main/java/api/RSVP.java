@@ -58,7 +58,11 @@ public class RSVP implements RSVPAttributes, Parcelable {
     }
 
     private OutputPair getAttrs() {
-        return Util.getRequest(Util.getRSVPEndpoint(getID()), getAuthHeaderValue());
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair output = conn.get(Util.getRSVPEndpoint(getID()), getAuthHeaderValue());
+        conn.disconnect();
+
+        return output;
     }
 
     public static OutputPair create(int userID, int eventID, String authHeaderValue) {
@@ -68,23 +72,10 @@ public class RSVP implements RSVPAttributes, Parcelable {
         params.put("event", eventID);
         JSONObject input = new JSONObject(params);
 
-        // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_RSVP_CREATE);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", authHeaderValue);
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.post(Util.ENDPOINT_RSVP_CREATE, input, authHeaderValue);
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
@@ -92,49 +83,32 @@ public class RSVP implements RSVPAttributes, Parcelable {
         // If successful, output the id
         int id;
         try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
+            JSONArray out = new JSONArray(status.getMessage());
             JSONObject json = out.getJSONObject(0).getJSONObject("data");
             id = json.getInt("id");
 
-            return Util.disconnect(conn, new OutputPair(true, Integer.toString(id)));
-        } catch (IOException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with getting token"));
+            return new OutputPair(true, Integer.toString(id));
         } catch (JSONException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
+            return new OutputPair(false, "Problem with parsing JSON");
         }
     }
 
     public OutputPair delete() {
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.getRSVPEndpoint(rsvpID));
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("DELETE");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-        } catch (IOException err) {
-            return new OutputPair(false, "This user cannot do this operation.");
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.delete(Util.getRSVPEndpoint(rsvpID), getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
 
         // If successful, output the users
         try {
-            InputStream inputStream = conn.getInputStream();
-            JSONArray out = Util.getJSONResponse(inputStream);
-            return Util.disconnect(conn, new OutputPair(true, out.getJSONObject(0).getString("msg")));
-        } catch (IOException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with getting token"));
+            JSONArray out = new JSONArray(status.getMessage());
+            return new OutputPair(true, out.getJSONObject(0).getString("msg"));
         } catch (JSONException err) {
-            return Util.disconnect(conn, new OutputPair(false, "Problem with parsing JSON"));
+            return new OutputPair(false, "Problem with parsing JSON");
         }
     }
 
