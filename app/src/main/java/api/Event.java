@@ -525,10 +525,10 @@ public class Event implements EventAttributes, Parcelable {
 
         // If successful, output the events in a list
         InputStream inputStream = conn.getInputStream();
-        JSONArray out = Util.getJSONResponse(inputStream);
-        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+        JSONArray events = Util.getJSONResponse(inputStream);
+        //JSONArray events = out.getJSONObject(0).getJSONArray("data");
         LinkedList<Event> listOfEvents = new LinkedList<>();
-        for (int i = 0; i < out.length(); i++) {
+        for (int i = 0; i < events.length(); i++) {
             try {
                 listOfEvents.add(new Event(events.getJSONObject(i).getInt("id"), eventRequester));
             } catch (Exception err) {
