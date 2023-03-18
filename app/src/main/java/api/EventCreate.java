@@ -19,14 +19,16 @@ public class EventCreate implements EventCreateProperties {
         HTTPConnection conn = new HTTPConnection();
         List<String> uuids = new LinkedList<>();
 
-        for (int i = 0; i < images.size(); i++) {
-            Bitmap image = images.get(i);
-            OutputPair status_images = conn.postImage(Util.ENDPOINT_IMAGE_UPLOAD, image, organiserAuthHeaderValue);
+        if (images != null) {
+            for (int i = 0; i < images.size(); i++) {
+                Bitmap image = images.get(i);
+                OutputPair status_images = conn.postImage(Util.ENDPOINT_IMAGE_UPLOAD, image, organiserAuthHeaderValue);
 
-            if (!status_images.isSuccess()) {
-                return status_images;
+                if (!status_images.isSuccess()) {
+                    return status_images;
+                }
+                uuids.add(status_images.getMessage());
             }
-            uuids.add(status_images.getMessage());
         }
 
         // Convert input into JSON

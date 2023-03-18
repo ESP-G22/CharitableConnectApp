@@ -1,10 +1,13 @@
 package eventtest;
 
+import org.json.JSONException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -21,31 +24,52 @@ import usertest.UserUnitTest;
 
 public class EventUnitTest {
     public static final int testEventID = 3;
-    public static final String testEventType = "Other";
-    public static final String testEventTitle = "Test Event";
-    public static final String testEventDesc = "This is a description.";
-    public static final Date testEventDateTime = new Date();
-    public static final String testEventAddress1 = "Computer Science";
-    public static final String testEventAddress2 = null;
-    public static final String testEventPostcode = "BA2 7AY";
+    public static final String testEventType1 = "Other";
+    public static final String testEventTitle1 = "Java unit testing";
+    public static final String testEventDesc1 = "This is a description.";
+    public static final Date testEventDateTime1 = new Date();
+    public static final String testEventAddress1_1 = "Computer Science";
+    public static final String testEventAddress2_1 = null;
+    public static final String testEventPostcode1 = "BA2 7AY";
 
     public UserProfile user;
+    public Event testEvent;
 
     @Before
     public void setOrganiserUser() throws Exception {
-        user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
+        user = new UserProfile(UserUnitTest.testToken1, UserUnitTest.testID1);
+    }
+
+    @Before
+    public void createEvent() throws IOException, JSONException {
+        EventCreate eventCreate = new EventCreate();
+        OutputPair out = eventCreate.createEvent(testEventType1, testEventTitle1, testEventDesc1,
+                testEventDateTime1, testEventAddress1_1, testEventAddress2_1,
+                testEventPostcode1, null, user.getAuthHeaderValue());
+        testEvent = Event.getByDate(testEventDateTime1, user).get(0);
+        assertTrue(out.isSuccess());
+        assertEquals("Event has been created.", out.getMessage());
+    }
+
+    @After
+    public void deleteEvent() {
+        OutputPair status = testEvent.delete();
+
+        assertTrue(status.isSuccess());
     }
 
     @Ignore
     public void correctCreateEvent() {
         try {
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
+            UserProfile user = new UserProfile(UserUnitTest.testToken1, UserUnitTest.testID1);
             EventCreate eventCreate = new EventCreate();
+            /*
             OutputPair out = eventCreate.createEvent(testEventType, testEventTitle, testEventDesc,
                     testEventDateTime, testEventAddress1, testEventAddress2,
                     testEventPostcode, null, user.getAuthHeaderValue());
             assertTrue(out.isSuccess());
             assertEquals("Event has been created.", out.getMessage());
+            */
         } catch (Exception err) {
             fail(err.getMessage());
         }
@@ -55,12 +79,11 @@ public class EventUnitTest {
      * How to get an event by its id.
      */
     @Test
-    public void getEvent() {
+    public void getAttributes() {
         try {
-            Event event = new Event(testEventID, user);
-            assertEquals(testEventTitle, event.getTitle());
-            assertEquals(testEventDesc, event.getDescription());
-            assertEquals(true, event.eventRequesterIsOrganiser());
+            assertEquals(testEventTitle1, testEvent.getTitle());
+            assertEquals(testEventDesc1, testEvent.getDescription());
+            assertEquals(true, testEvent.eventRequesterIsOrganiser());
         } catch (Exception err) {
             err.printStackTrace();
             fail(err.getMessage());
@@ -92,14 +115,18 @@ public class EventUnitTest {
         }
     }
 
-    @Ignore
-    public void deleteRSVP() {
+    @Test
+    public void rsvpCorrect() {
+        int rsvpID = createRSVP();
+        deleteRSVP(rsvpID);
+    }
+
+    public void deleteRSVP(int rsvpID) {
         try {
             // get rsvp
-            RSVP r = new RSVP(2, user.getAuthHeaderValue());
+            RSVP r = new RSVP(rsvpID, user.getAuthHeaderValue());
             // delete rsvp
             OutputPair out = r.delete();
-            System.out.println(out.getMessage());
             assertTrue(out.isSuccess());
         } catch (Exception err) {
             err.printStackTrace();
@@ -107,8 +134,7 @@ public class EventUnitTest {
         }
     }
 
-    @Ignore
-    public void createRSVP() {
+    public int createRSVP() {
         try {
             // create rsvp
             OutputPair out = RSVP.create(user.getID(), testEventID, user.getAuthHeaderValue());
@@ -117,11 +143,13 @@ public class EventUnitTest {
             int rsvpID = Integer.parseInt(out.getMessage());
             RSVP r = new RSVP(rsvpID, user.getAuthHeaderValue());
             assertEquals(testEventID, r.getEventID());
-            assertEquals(UserUnitTest.testID, r.getUserID());
+            assertEquals(UserUnitTest.testID1, r.getUserID());
+            return r.getUserID();
         } catch (Exception err) {
             err.printStackTrace();
             fail(err.getMessage());
         }
+        return -1;
     }
 
     @Test
@@ -162,7 +190,7 @@ public class EventUnitTest {
     public void getEventRSVPs() {
         try {
             Event e = new Event(3, user);
-            assertEquals(UserUnitTest.testID, e.getRSVPs().get(0).getUserID());
+            assertEquals(UserUnitTest.testID1, e.getRSVPs().get(0).getUserID());
         } catch (Exception err) {
             err.printStackTrace();
             fail(err.getMessage());

@@ -18,6 +18,13 @@ public class RSVP implements RSVPAttributes, Parcelable {
     private final int userID;
     private String authHeaderValue;
 
+    /**
+     * RSVP for a user to an event.
+     *
+     * @param rsvpID ID of rsvp.
+     * @param authHeaderValue The token of a user.
+     * @throws JSONException If the attributes cannot be parsed.
+     */
     public RSVP(int rsvpID, String authHeaderValue) throws JSONException {
         this.rsvpID = rsvpID;
         setAuthHeaderValue(authHeaderValue);
@@ -59,6 +66,15 @@ public class RSVP implements RSVPAttributes, Parcelable {
         return output;
     }
 
+    /**
+     * Create an RSVP to an event for a user.
+     *
+     * @param userID User that wants to rsvp.
+     * @param eventID Event to rsvp to.
+     * @param authHeaderValue Token of user.
+     *
+     * @return Status of request. If successful, the RSVP ID is in the message.
+     */
     public static OutputPair create(int userID, int eventID, String authHeaderValue) {
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
@@ -87,6 +103,11 @@ public class RSVP implements RSVPAttributes, Parcelable {
         }
     }
 
+    /**
+     * Remove a RSVP.
+     *
+     * @return Response.
+     */
     public OutputPair delete() {
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();

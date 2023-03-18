@@ -165,6 +165,25 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     public void setProfilePic(Image profilePic) {
     }
 
+    public OutputPair delete() {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.delete(Util.getUserEndpoint(id), getAuthHeaderValue());
+        conn.disconnect();
+
+        if (!status.isSuccess()) {
+            return status;
+        }
+
+        // If successful, output the success to user
+        try {
+            JSONArray out = new JSONArray(status.getMessage());
+            return new OutputPair(true, out.getJSONObject(0).getString("msg"));
+        } catch (JSONException err) {
+            return new OutputPair(false, "Problem with parsing JSON");
+        }
+    }
+
     /**
      * Subscribe to an event, using its ID.
      *

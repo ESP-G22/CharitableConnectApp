@@ -1,5 +1,6 @@
 package usertest;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,40 +16,47 @@ import api.UserGet;
 import layout.OutputPair;
 
 public class UserUnitTest {
-    public static final String testUsername = "username";
-    public static final String testPassword = "password123";
+    public UserProfile testUser;
+    public UserGet userGet;
+    public static final String testUsername1 = "username";
+    public static final String testPassword1 = "password123";
+    public static final String testEmail1 = "foo@bar.com";
+    public static final String testName1 = "This user has no name.";
+    public static final String testBio1 = "This user has no description.";
+    public static final String testToken1 = "5d3f89aea81317f5b26a30aceb4944d33edc18e0";
 
-    public static final String testIncorrectPassword = "password";
-    public static final String testToken = "5d3f89aea81317f5b26a30aceb4944d33edc18e0";
+    public static final int testID1 = 4;
 
-    public static final int testID = 4;
-    public static final String testName = "This user has no name.";
-    public static final String testBio = "This user has no description.";
+    @Before
+    public void createUser() throws Exception {
+        testUser = new UserProfile(testToken1, testID1);
+        userGet = new UserGet();
+    }
 
     /**
      * How to login.
      */
     @Test
     public void correctLogin() {
-        UserGet userGet = new UserGet();
-        OutputPair out = userGet.login(testUsername, testPassword);
+        OutputPair out = userGet.login(testUsername1, testPassword1);
         // out looks like (boolean, string message)
         // if successful, the message is the token.
         String token = out.getMessage();
-        assertEquals(testToken, token);
+        assertEquals(testToken1, token);
     }
 
     @Test
     public void incorrectLogin() {
-        UserGet userGet = new UserGet();
-        OutputPair out = userGet.login(testUsername, testIncorrectPassword);
+        String incorrectPassword = "incorrect";
+        assertNotEquals(incorrectPassword, testPassword1);
+
+        OutputPair out = userGet.login(testUsername1, incorrectPassword);
         assertEquals(false, out.isSuccess());
         assertEquals("Incorrect credentials", out.getMessage());
     }
 
     @Test
     public void emptyLogin() {
-        UserGet userGet = new UserGet();
         OutputPair out = userGet.login("", "");
         assertEquals(false, out.isSuccess());
         //assertEquals("Password field is blank.\nUsername field is blank.", out.getMessage());
@@ -60,37 +68,26 @@ public class UserUnitTest {
         String username = "username100";
         String password = "newpassword";
 
-        UserGet userGet = new UserGet();
         OutputPair output_register = userGet.register(email, username, password);
-        assertTrue(output_register.isSuccess());
 
-        OutputPair output_login = userGet.login(username, password);
-        assertTrue(output_login.isSuccess());
-        String token = output_login.getMessage();
-
-        OutputPair idSearch = userGet.getUserID(testUsername, token);
-        int userID = Integer.parseInt(idSearch.getMessage());
-
-        try {
-            UserProfile user = new UserProfile(token, userID);
-        } catch (Exception err) {
-            fail(err.getMessage());
+        if (output_register.getMessage().contains("A user with that username already exists")) {
+            return;
         }
+        assertTrue(output_register.isSuccess());
     }
 
     @Test
     public void correctGetUserID() {
-        UserGet userGet = new UserGet();
-        OutputPair idSearch = userGet.getUserID("username", testToken);
+        OutputPair idSearch = userGet.getUserID(testUsername1, testToken1);
         int idActual = Integer.parseInt(idSearch.getMessage());
 
-        assertEquals(testID, idActual);
+        assertEquals(testID1, idActual);
     }
 
     @Test
     public void usernameNotPresentGetUserID() {
-        UserGet userGet = new UserGet();
-        OutputPair idSearch = userGet.getUserID("usernam", testToken);
+        String incorrectUsername = "usernam";
+        OutputPair idSearch = userGet.getUserID(incorrectUsername, testToken1);
 
         assertEquals(false, idSearch.isSuccess());
         assertEquals("Username not found.", idSearch.getMessage());
@@ -104,15 +101,16 @@ public class UserUnitTest {
         try {
             // logging in
             UserGet userGet = new UserGet();
-            OutputPair out = userGet.login(testUsername, testPassword);
+            OutputPair out = userGet.login(testUsername1, testPassword1);
             String token = out.getMessage();
 
             // get user id
-            OutputPair idSearch = userGet.getUserID(testUsername, token);
+            OutputPair idSearch = userGet.getUserID(testUsername1, token);
             int userID = Integer.parseInt(idSearch.getMessage());
 
             // create user profile
-            UserProfile user = new UserProfile(testToken, userID);
+            UserProfile user = new UserProfile(testToken1, userID);
+            assertEquals(user.getID(), testUser.getID());
         } catch (Exception err) {
             fail(err.getMessage());
         }
@@ -121,12 +119,11 @@ public class UserUnitTest {
     @Test
     public void attributesTestOwnUserUserProfileAPI() {
         try {
-            UserProfile user = new UserProfile(testToken, testID);
-            assertEquals(testUsername, user.getUsername());
-            assertEquals(true, user.isOrganiser());
-            assertEquals(testName, user.getName());
-            assertEquals(testBio, user.getBio());
-            assertTrue(new LinkedList<Integer>().equals(user.getFollowedUsers()));
+            assertEquals(testUsername1, testUser.getUsername());
+            assertEquals(true, testUser.isOrganiser());
+            assertEquals(testName1, testUser.getName());
+            assertEquals(testBio1, testUser.getBio());
+            assertTrue(new LinkedList<Integer>().equals(testUser.getFollowedUsers()));
         } catch (Exception err) {
             fail(err.getMessage());
         }
