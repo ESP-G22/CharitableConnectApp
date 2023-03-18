@@ -8,13 +8,174 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="125dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="24dp"
+                android:text="Sports"
+                android:textAlignment="center"
+                android:textColor="#151515"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/textView15"
+                app:layout_constraintTop_toBottomOf="@+id/SportsButton" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="125dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="28dp"
+                android:text="Club Nights"
+                android:textAlignment="center"
+                android:textColor="#191818"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ClubButton" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="125dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="16dp"
+                android:text="Movies"
+                android:textAlignment="center"
+                android:textColor="#090909"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/textView13"
+                app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+            <Button
+                android:id="@+id/FoodButton"
+                android:layout_width="122dp"
+                android:layout_height="159dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="300dp"
+                android:text="Food Tasting"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="147dp"
+                android:layout_height="173dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="300dp"
+                android:elevation="2dp"
+                android:src="@drawable/foodattable"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/MoviesButton"
+                android:layout_width="126dp"
+                android:layout_height="163dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="428dp"
+                android:text="Movies"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.363"
+                app:layout_constraintStart_toEndOf="@+id/FoodButton" />
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="147dp"
+                android:layout_height="173dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="228dp"
+                android:layout_marginTop="300dp"
+                android:elevation="2dp"
+                android:src="@drawable/movies"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/ClubButton"
+                android:layout_width="117dp"
+                android:layout_height="151dp"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="104dp"
+                android:text="Club Nights"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+            <Button
+                android:id="@+id/SportsButton"
+                android:layout_width="125dp"
+                android:layout_height="149dp"
+                android:layout_marginTop="120dp"
+                android:layout_marginEnd="48dp"
+                android:text="Sports"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/MoviesButton" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="147dp"
+                android:layout_height="173dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="564dp"
+                android:elevation="2dp"
+                android:src="@drawable/club"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="147dp"
+                android:layout_height="173dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="228dp"
+                android:layout_marginTop="564dp"
+                android:elevation="2dp"
+                android:src="@drawable/paid_sports_listing_may_20"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="125dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:text="FoodTasting"
+                android:textAlignment="center"
+                android:textColor="#101010"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+
+            ]]>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -33,36 +194,6 @@
         app:layout_constraintTop_toBottomOf="@+id/ExploreText"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <Button
-        android:id="@+id/SportsButton"
-        android:layout_width="147dp"
-        android:layout_height="173dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginBottom="112dp"
-        android:text="Sports"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/ClubButton"
-        android:layout_width="147dp"
-        android:layout_height="173dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginBottom="112dp"
-        android:text="Club Nights"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/MoviesButton"
-        android:layout_width="147dp"
-        android:layout_height="173dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginBottom="8dp"
-        android:text="Movies"
-        app:layout_constraintBottom_toTopOf="@+id/SportsButton"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <TextView
         android:id="@+id/ExploreText"
         android:layout_width="151dp"
@@ -78,8 +209,8 @@
 
     <Button
         android:id="@+id/SubscribedButton"
-        android:layout_width="97dp"
-        android:layout_height="52dp"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
         android:layout_marginStart="44dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="25dp"
@@ -92,8 +223,8 @@
 
     <Button
         android:id="@+id/TrendingButton"
-        android:layout_width="100dp"
-        android:layout_height="53dp"
+        android:layout_width="96dp"
+        android:layout_height="49dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="44dp"
         android:text="TRENDING"
@@ -102,21 +233,11 @@
         app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
 
     <Button
-        android:id="@+id/FoodButton"
-        android:layout_width="147dp"
-        android:layout_height="173dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginBottom="8dp"
-        android:text="Food Tasting"
-        app:layout_constraintBottom_toTopOf="@+id/ClubButton"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
         android:id="@+id/DateButton"
-        android:layout_width="103dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="12dp"
+        android:layout_width="99dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         android:text="DATE"
         android:textSize="8sp"
         app:layout_constraintEnd_toStartOf="@+id/TrendingButton"
