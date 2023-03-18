@@ -6,14 +6,8 @@ import org.json.JSONObject;
 import layout.OutputPair;
 import layout.UserGetProperties;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.io.IOException;
 
 public class UserGet implements UserGetProperties {
     public OutputPair login(String username, String password) {

@@ -40,6 +40,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
@@ -337,9 +338,9 @@ class NewEventTask extends AsyncTask<String, String, OutputPair> {
     private String postcode;
     private String organiserAuthHeaderValue;
 
-    private Bitmap image;
+    private List<Bitmap> images;
 
-    public NewEventTask(String eventType, String title, String description, Date datetime, String address1, String address2, String postcode, Bitmap image,
+    public NewEventTask(String eventType, String title, String description, Date datetime, String address1, String address2, String postcode, List<Bitmap> images,
                         String organiserAuthHeaderValue) {
         super();
         this.eventType = eventType;
@@ -349,12 +350,12 @@ class NewEventTask extends AsyncTask<String, String, OutputPair> {
         this.address1 = address1;
         this.address2 = address2;
         this.postcode = postcode;
-        this.image = image;
+        this.images = images;
         this.organiserAuthHeaderValue = organiserAuthHeaderValue;
     }
     protected OutputPair doInBackground(String... params) {
         EventCreate create = new EventCreate();
-        OutputPair output = create.createEvent(eventType, title, description, datetime, address1, address2, postcode, image, organiserAuthHeaderValue);
+        OutputPair output = create.createEvent(eventType, title, description, datetime, address1, address2, postcode, images, organiserAuthHeaderValue);
 
         return output;
     }

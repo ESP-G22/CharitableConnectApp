@@ -1,5 +1,6 @@
 package api;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,12 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -36,10 +31,20 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     private String userType;
     private List<Integer> followedUsers;
 
+    private Bitmap avatar;
+
     private int eventCount;
 
     private int followerCount;
 
+    /**
+     * Create a user object to get information to display on their profile and subscribe to events.
+     *
+     * @param token Token the user used to login.
+     * @param id ID of user logging in.
+     *
+     * @throws Exception If the attributes cannot be obtained
+     */
     public UserProfile(String token, int id) throws Exception {
         this.token = token;
         this.id = id;
@@ -64,6 +69,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         this.followedUsers = Arrays.asList(mapper.readValue(attrs.getJSONArray("followedUsers").toString(), Integer[].class));
         this.eventCount = attrs.getInt("eventCount");
         this.followerCount = attrs.getInt("followerCount");
+        this.avatar = Util.getImage(attrs.getString("avatar"), getAuthHeaderValue());
     }
 
     private OutputPair getAttrs() {
@@ -159,6 +165,15 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     public void setProfilePic(Image profilePic) {
     }
 
+    /**
+     * Subscribe to an event, using its ID.
+     *
+     * The event is saved in the subscribed feed.
+     *
+     * @param eventID ID of event to subscribe to.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair subscribeToEvent(int eventID) {
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
@@ -176,6 +191,13 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return new OutputPair(true, "RSVP successful.");
     }
 
+    /**
+     * Unsubscribe from an event, using the rsvp ID.
+     *
+     * @param rsvpID ID of your rsvp to the event.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair unsubscribeFromEvent(int rsvpID) {
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
@@ -193,10 +215,21 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return new OutputPair(true, "RSVP removed.");
     }
 
+    /**
+     * Change the user's password.
+     *
+     * @param originalPassword What the password is pre-change.
+     * @param newPassword1 What the password is post-change.
+     * @param newPassword2 Double-entry verification of newPassword1.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair changePassword(String originalPassword, String newPassword1, String newPassword2) {
+        // Double entry verification.
         if (!newPassword1.equals(newPassword2)) {
             return new OutputPair(false, "Passwords must match.");
         }
+        // If the new password is the old password.
         if (newPassword1.equals(originalPassword)) {
             return new OutputPair(false, "New password is the same as the current password!");
         }

@@ -7,24 +7,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
-
-import layout.OutputPair;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Util {
     public static final String ENDPOINT = "https://api.cc.n0ne1eft.dev/";
@@ -80,11 +68,11 @@ public class Util {
     /**
      * Get specific image by their id.
      *
-     * @param id ID of image to get.
+     * @param uuid ID of image to get.
      * @return URL of image.
      */
-    public static String getImageEndpoint(int id) {
-        return ENDPOINT_IMAGE + Integer.valueOf(id).toString();
+    public static String getImageEndpoint(String uuid) {
+        return ENDPOINT_IMAGE + uuid;
     }
 
     public static String getEventRSVPEndpoint(int id) {
@@ -140,5 +128,23 @@ public class Util {
             return defaultFieldValue;
         }
         return attrs.getString(fieldName);
+    }
+
+    public static List<Bitmap> getImages(JSONArray uuids, String authHeaderValue) throws JSONException, IOException {
+        List<Bitmap> images = new LinkedList<Bitmap>();
+
+        for (int i = 0; i < uuids.length(); i++) {
+            images.add(Util.getImage(uuids.getString(i), authHeaderValue));
+        }
+
+        return images;
+    }
+
+    public static Bitmap getImage(String uuid, String authHeaderValue) throws IOException {
+        return null;
+        //HTTPConnection conn = new HTTPConnection();
+        //Bitmap image = conn.getImage(Util.getImageEndpoint(uuid), authHeaderValue);
+
+        //return image;
     }
 }

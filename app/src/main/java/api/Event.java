@@ -14,10 +14,6 @@ import layout.EventAttributes;
 import layout.OutputPair;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Event implements EventAttributes, Parcelable {
     private int id;
-    private UserProfile eventRequester;
+    private UserProfile eventRequester; // user who instantiated this event.
     private String eventType;
     private String title;
     private String description;
@@ -36,7 +32,8 @@ public class Event implements EventAttributes, Parcelable {
 
     private RSVP rsvp; // may be null if no rsvp
     private int organiserID;
-    //private int image; // need to find suitable image class
+
+    private List<Bitmap> images;
     private int numAttendees;
 
     /**
@@ -80,6 +77,7 @@ public class Event implements EventAttributes, Parcelable {
             JSONObject rsvp = attrs.getJSONObject("rsvp");
             this.rsvp = new RSVP(rsvp.getInt("id"), eventRequester.getAuthHeaderValue());
         }
+        this.images = Util.getImages(attrs.getJSONArray("images"), getAuthHeaderValue());
     }
 
     private OutputPair getAttrs() {
@@ -94,6 +92,11 @@ public class Event implements EventAttributes, Parcelable {
         return rsvp;
     }
 
+    /**
+     * Unsubscribe the event requester from this event.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair removeRsvp() {
         if (getRsvp() == null) {
             return new OutputPair(false, "User has not RSVPed.");
@@ -102,6 +105,11 @@ public class Event implements EventAttributes, Parcelable {
         return getEventRequester().unsubscribeFromEvent(getRsvp().getID());
     }
 
+    /**
+     * The event requester is subscribed to this event.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair addRsvp() {
         if (getRsvp() != null) {
             return new OutputPair(false, "User has already RSVPed.");
@@ -221,12 +229,12 @@ public class Event implements EventAttributes, Parcelable {
     }
 
     @Override
-    public Bitmap getImage() {
-        return null;
+    public List<Bitmap> getImages() {
+        return this.images;
     }
 
     @Override
-    public void setImage(Bitmap image) {
+    public void setImages(List<Bitmap> images) {
     }
 
     @Override
@@ -251,11 +259,9 @@ public class Event implements EventAttributes, Parcelable {
      */
     public int daysUntilEvent() {
         Date today = new Date();
-
         long diff = datetime.getTime() - today.getTime();
-        int days = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
-        return days;
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -268,6 +274,13 @@ public class Event implements EventAttributes, Parcelable {
         return getEventRequester().getID() == getOrganiserID();
     }
 
+    /**
+     * Get all RSVPs for this event.
+     *
+     * @return List of RSVPs.
+     * @throws IOException If the response could not be obtained.
+     * @throws JSONException For formatting the output.
+     */
     public List<RSVP> getRSVPs() throws IOException, JSONException {
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
@@ -286,7 +299,7 @@ public class Event implements EventAttributes, Parcelable {
             try {
                 listOfRSVPs.add(new RSVP(rsvps.getJSONObject(i).getInt("id"), eventRequester.getAuthHeaderValue()));
             } catch (Exception err) {
-                continue;
+                // Continue to next object to parse
             }
         }
         return listOfRSVPs;
@@ -325,6 +338,8 @@ public class Event implements EventAttributes, Parcelable {
      * @param phraseInTitle Phrase to filter by.
      * @param eventRequester User who requested the events.
      * @return All events that match, may be empty.
+     * @throws IOException If the response could not be obtained.
+     * @throws JSONException For formatting the output.
      */
     public static List<Event> search(String phraseInTitle, UserProfile eventRequester) throws IOException, JSONException {
         // Establish connection and post JSON parameters
@@ -349,11 +364,13 @@ public class Event implements EventAttributes, Parcelable {
     /**
      * Get all events that are within an event category.
      *
-     * Returns blank list, if there was an error or if no events found for that type.
+     * Returns blank list if no events found for that type.
      *
      * @param eventType Type to filter by.
      * @param eventRequester User who requested the events.
      * @return All events that match, may be empty.
+     * @throws IOException If the response could not be obtained.
+     * @throws JSONException For formatting the output.
      */
     public static List<Event> getByEventType(String eventType, UserProfile eventRequester) throws IOException, JSONException {
         // Establish connection and post JSON parameters
@@ -369,12 +386,22 @@ public class Event implements EventAttributes, Parcelable {
         }
 
         // If successful, output the events in a list
-        JSONArray out = new JSONArray(status.getMessage());
-        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+        JSONArray events = new JSONArray(status.getMessage());
 
         return Event.JSONArrayToListOfEvents(events, eventRequester);
     }
 
+    /**
+     * Get all events that are on a specific date.
+     *
+     * Returns blank list if no events found for that type.
+     *
+     * @param datetime Date to filter by.
+     * @param eventRequester User who requested the events.
+     * @return All events that match, may be empty.
+     * @throws IOException If the response could not be obtained.
+     * @throws JSONException For formatting the output.
+     */
     public static List<Event> getByDate(Date datetime, UserProfile eventRequester) throws IOException, JSONException {
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
@@ -389,12 +416,19 @@ public class Event implements EventAttributes, Parcelable {
         }
 
         // If successful, output the events in a list
-        JSONArray out = new JSONArray(status.getMessage());
-        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+        JSONArray events = new JSONArray(status.getMessage());
 
         return Event.JSONArrayToListOfEvents(events, eventRequester);
     }
 
+    /**
+     * Get all events, sorted by attendee count in descending order.
+     *
+     * @param eventRequester User who requested the events.
+     * @return All events that match, may be empty.
+     * @throws IOException If the response could not be obtained.
+     * @throws JSONException For formatting the output.
+     */
     public static List<Event> getTrendingEvents(UserProfile eventRequester) throws IOException, JSONException {
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
@@ -413,6 +447,7 @@ public class Event implements EventAttributes, Parcelable {
 
         return Event.JSONArrayToListOfEvents(out, eventRequester);
     }
+
     /**
      * Gets all currently advertised events.
      *
@@ -434,19 +469,18 @@ public class Event implements EventAttributes, Parcelable {
         }
 
         // If successful, output the events in a list
-        JSONArray out = new JSONArray(status.getMessage());
-        JSONArray events = out.getJSONObject(0).getJSONArray("data");
+        JSONArray events = new JSONArray(status.getMessage());
 
         return Event.JSONArrayToListOfEvents(events, eventRequester);
     }
 
-    public static List<Event> JSONArrayToListOfEvents(JSONArray eventsInJSON, UserProfile eventRequester) throws JSONException {
+    private static List<Event> JSONArrayToListOfEvents(JSONArray eventsInJSON, UserProfile eventRequester) {
         LinkedList<Event> listOfEvents = new LinkedList<>();
         for (int i = 0; i < eventsInJSON.length(); i++) {
             try {
                 listOfEvents.add(new Event(eventsInJSON.getJSONObject(i).getInt("id"), eventRequester));
             } catch (Exception err) {
-                continue;
+                // Go to the next object to parse
             }
         }
         return listOfEvents;

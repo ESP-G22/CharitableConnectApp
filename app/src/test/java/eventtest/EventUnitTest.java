@@ -1,6 +1,6 @@
 package eventtest;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,6 +29,13 @@ public class EventUnitTest {
     public static final String testEventAddress2 = null;
     public static final String testEventPostcode = "BA2 7AY";
 
+    public UserProfile user;
+
+    @Before
+    public void setOrganiserUser() throws Exception {
+        user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
+    }
+
     @Ignore
     public void correctCreateEvent() {
         try {
@@ -50,7 +57,6 @@ public class EventUnitTest {
     @Test
     public void getEvent() {
         try {
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             Event event = new Event(testEventID, user);
             assertEquals(testEventTitle, event.getTitle());
             assertEquals(testEventDesc, event.getDescription());
@@ -64,7 +70,6 @@ public class EventUnitTest {
     @Test
     public void daysUntilEvent() {
         try {
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             Event event = new Event(testEventID, user);
             System.out.println(event.daysUntilEvent());
         } catch (Exception err) {
@@ -79,7 +84,6 @@ public class EventUnitTest {
     @Test
     public void searchEvent() {
         try {
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             List<Event> output = Event.search("Test", user);
             assertEquals(testEventID, output.get(0).getID());
         } catch (Exception err) {
@@ -91,8 +95,6 @@ public class EventUnitTest {
     @Ignore
     public void deleteRSVP() {
         try {
-            // get user
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             // get rsvp
             RSVP r = new RSVP(2, user.getAuthHeaderValue());
             // delete rsvp
@@ -108,8 +110,6 @@ public class EventUnitTest {
     @Ignore
     public void createRSVP() {
         try {
-            // get user
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             // create rsvp
             OutputPair out = RSVP.create(user.getID(), testEventID, user.getAuthHeaderValue());
 
@@ -127,8 +127,6 @@ public class EventUnitTest {
     @Test
     public void getEventsList() {
         try {
-            // get user
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             List<Event> events = Event.getEventsList(user);
             System.out.println(events);
         } catch (Exception err) {
@@ -140,8 +138,6 @@ public class EventUnitTest {
     @Test
     public void getEventsByType() {
         try {
-            // get user
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             List<Event> events = Event.getByEventType("Other", user);
             System.out.println(events);
         } catch (Exception err) {
@@ -153,8 +149,6 @@ public class EventUnitTest {
     @Test
     public void getEventsByTrending() {
         try {
-            // get user
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             List<Event> events = Event.getTrendingEvents(user);
             System.out.println(events);
         } catch (Exception err) {
@@ -167,7 +161,6 @@ public class EventUnitTest {
     @Test
     public void getEventRSVPs() {
         try {
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
             Event e = new Event(3, user);
             assertEquals(UserUnitTest.testID, e.getRSVPs().get(0).getUserID());
         } catch (Exception err) {

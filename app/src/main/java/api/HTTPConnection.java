@@ -1,6 +1,7 @@
 package api;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 
 import org.json.JSONArray;
@@ -31,12 +32,23 @@ public class HTTPConnection {
 
     public HttpURLConnection conn;
 
+    /**
+     * For interacting between the API and frontend through HTTP requests.
+     */
     public HTTPConnection() {
         conn = null;
     }
 
     // REQUESTS
 
+    /**
+     * Send a POST request to a URL, with given parameters in JSON format.
+     *
+     * @param urlStr URL to send POST request to.
+     * @param input JSONObject of the body.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair post(String urlStr, JSONObject input) {
         try {
             URL url = new URL(urlStr);
@@ -56,6 +68,15 @@ public class HTTPConnection {
         return getResponse();
     }
 
+    /**
+     * Send a POST request to a URL, with given parameters in JSON format, and a token.
+     *
+     * @param urlStr URL to send POST request to.
+     * @param input JSONObject of the body.
+     * @param authHeaderValue Token to authenticate the request by.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair post(String urlStr, JSONObject input, String authHeaderValue) {
         try {
             URL url = new URL(urlStr);
@@ -76,6 +97,14 @@ public class HTTPConnection {
         return getResponse();
     }
 
+    /**
+     * Send a GET request to a URL, with a token.
+     *
+     * @param urlStr URL to send POST request to.
+     * @param authHeaderValue Token to authenticate the request by.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair get(String urlStr, String authHeaderValue) {
         try {
             URL url = new URL(urlStr);
@@ -91,6 +120,15 @@ public class HTTPConnection {
         return getResponse();
     }
 
+    /**
+     * Send a DELETE request to a URL, with given parameters in JSON format, and a token.
+     *
+     * @param urlStr URL to send POST request to.
+     * @param input JSONObject of the body.
+     * @param authHeaderValue Token to authenticate the request by.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair delete(String urlStr, JSONObject input, String authHeaderValue) {
         try {
             URL url = new URL(urlStr);
@@ -108,6 +146,14 @@ public class HTTPConnection {
         return getResponse();
     }
 
+    /**
+     * Send a DELETE request to a URL, with a token.
+     *
+     * @param urlStr URL to send POST request to.
+     * @param authHeaderValue Token to authenticate the request by.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair delete(String urlStr, String authHeaderValue) {
         try {
             URL url = new URL(urlStr);
@@ -123,6 +169,16 @@ public class HTTPConnection {
 
         return getResponse();
     }
+
+    /**
+     * Send a PUT request to a URL, with given parameters in JSON format, and a token.
+     *
+     * @param urlStr URL to send POST request to.
+     * @param input JSONObject of the body.
+     * @param authHeaderValue Token to authenticate the request by.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair put(String urlStr, JSONObject input, String authHeaderValue) {
         try {
             URL url = new URL(urlStr);
@@ -141,10 +197,10 @@ public class HTTPConnection {
 
     public OutputPair postImage(String urlStr, Bitmap image, String authHeaderValue) {
         // convert image to byte array for upload.
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] imageContents = stream.toByteArray();
-        image.recycle();
+        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        //byte[] imageContents = stream.toByteArray();
+        //image.recycle();
 
         try {
             URL url = new URL(urlStr);
@@ -156,40 +212,42 @@ public class HTTPConnection {
             conn.setDoInput(true);
             conn.setDoOutput(true);
             OutputStream out = conn.getOutputStream();
-            DataOutputStream imageStream = new DataOutputStream(out);
-            imageStream.write(imageContents, 0, imageContents.length);
+            image.compress(CompressFormat.JPEG, 50, out);
+            out.close();
         } catch (IOException err) {
             return new OutputPair(false, PROBLEM_WITH_SENDING_REQUEST_MSG);
         }
 
-        return getResponse();
+        OutputPair output = getResponse();
+
+        if (!output.isSuccess()) {
+            return output;
+        }
+
+        try {
+            JSONObject id = new JSONObject(output.getMessage());
+            output.setMessage(id.getString("id"));
+        } catch (JSONException err) {
+            return new OutputPair(false, EXTRACTING_RESPONSE_ERROR_MSG);
+        }
+
+        return output;
     }
 
     public Bitmap getImage(String urlStr, String authHeaderValue) throws IOException {
         try {
             URL url = new URL(urlStr);
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-Type", "image/jpeg");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Authorization", authHeaderValue);
-            //conn.setDoInput(true);
-            //conn.setDoOutput(true);
-            //Bitmap bitmap = BitmapFactory.decodeStream((InputStream) conn.getEntity().getContent());
+            Bitmap image = BitmapFactory.decodeStream(conn.getInputStream());
+
+            return image;
         } catch (IOException err) {
             throw new IOException(PROBLEM_WITH_SENDING_REQUEST_MSG);
         }
-
-        /*
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
-        if (!status.isSuccess()) {
-            throw new Exception(status.getMessage());
-        }
-
-        //BitmapFactory.decodeByteArray(null, 0, 1);
-         */
-        return null;
     }
 
 
@@ -259,6 +317,7 @@ public class HTTPConnection {
      * @throws JSONException If the response cannot be converted to JSON.
      */
     public static JSONArray getJSONResponse(InputStream stream) throws IOException, JSONException {
+        // Constructs string from input stream.
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder builder = new StringBuilder();
         String lines;
