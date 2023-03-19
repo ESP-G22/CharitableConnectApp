@@ -1,4 +1,5 @@
 package dev.n0ne1eft.charitableconnect;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -9,25 +10,26 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import api.Event;
-import api.UserGet;
+import api.EventCreate;
 import api.UserProfile;
-import layout.OutputPair;
 import layout.Pair;
 
 /**
@@ -76,7 +78,7 @@ public class FeedFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         //Call the eventShownfromExplore() function to handle the events shown
         eventshownfromExplore(v);
-        
+
         view = inflater.inflate(R.layout.fragment_feed, container, false);
 
         //Launch new event
@@ -101,8 +103,39 @@ public class FeedFragment extends Fragment {
             }
         });
 
+        LinearLayout linlayout = view.findViewById(R.id.linlayout);
+
+        List<Event> list;
+        Pair<String,List<Event>> a = getEventsByTitle("Feed");//Event.getEventsList(user);
+        list = a.arg2;
+
+        //View view2;
+        for (int i = 0; i < list.size(); i++) {
+            final Event event = list.get(i);
+
+            View view2 = getLayoutInflater().inflate(R.layout.event_card, null);
+            TextView textView = view2.findViewById(R.id.demoevent);
+            textView.setText(event.getTitle());
+            TextView textView2 = view2.findViewById(R.id.demoorg);
+            textView2.setText(event.getEventType());
+            linlayout.addView(view2);
+            view2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showEvent(event);
+                }
+            });
+        }
+
         return view;
     }
+
+    public void showEvent(Event event) {
+        System.out.println(event.getTitle());
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
+        navController.navigate(R.id.viewEventFragment);
+    }
+
     public void eventshownfromExplore(View v){
         pageTitle = "Trending";
         Pair<String, List<Event>> output = getEventsByTitle(pageTitle);
@@ -183,6 +216,7 @@ public class FeedFragment extends Fragment {
     }
 
 }
+
 
 class GetEventsTask extends AsyncTask<String, String, Pair<String, List<Event>>> {
     private String pageTitle;
