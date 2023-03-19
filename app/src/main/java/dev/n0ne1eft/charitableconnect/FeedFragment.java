@@ -120,19 +120,6 @@ public class FeedFragment extends Fragment {
 
         return view;
     }
-    public Pair<String, List<Event>> getAllEvents(String pageTitle) {
-        GetEventsTask task = new GetEventsTask(pageTitle, user);
-        System.out.println(user); // null
-        task.execute();
-        try {
-            Pair output = task.get();  // get return value from thread.
-            return output;
-        } catch (ExecutionException err) {
-            return new Pair("ExecutionError", null);
-        } catch (InterruptedException err) {
-            return new Pair("InterruptedError", null);
-        }
-    }//
     public void eventshownfromExplore(View v){
         pageTitle = "Trending";
         Pair<String, List<Event>> output = getEventsByTitle(pageTitle);
