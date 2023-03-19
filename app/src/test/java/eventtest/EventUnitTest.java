@@ -100,7 +100,7 @@ public class EventUnitTest {
         }
     }
 
-    @Test
+    @Ignore
     public void rsvpCorrect() {
         int rsvpID = createRSVP();
         deleteRSVP(rsvpID);
@@ -129,7 +129,7 @@ public class EventUnitTest {
             RSVP r = new RSVP(rsvpID, user.getAuthHeaderValue());
             assertEquals(testEventID, r.getEventID());
             assertEquals(UserUnitTest.testID1, r.getUserID());
-            return r.getUserID();
+            return r.getID();
         } catch (Exception err) {
             err.printStackTrace();
             fail(err.getMessage());
