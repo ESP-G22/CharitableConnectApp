@@ -114,6 +114,17 @@ public class Util {
         return formatter.parse(datetime);
     }
 
+    public static Date valuesToDate(int year, int month, int day, int hour, int minute) throws ParseException {
+        String y = Integer.toString(year);
+        String mo = String.format("%02d", month);
+        String d = String.format("%02d", day);
+
+        String h = String.format("%02d", hour);
+        String mi = String.format("%02d", minute);
+
+        return Util.stringToDate(y + "-" + mo + "-" + d + "T" + h + ":" + mi + ":00Z");
+    }
+
     /**
      * Set an optional attribute value after successfully receiving the response.
      *

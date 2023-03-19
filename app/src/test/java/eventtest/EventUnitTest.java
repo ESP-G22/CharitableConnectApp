@@ -8,6 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import api.Event;
 import api.EventCreate;
 import api.RSVP;
 import api.UserProfile;
+import api.Util;
 import errors.EmptyInputError;
 import errors.MaximumInputSizeError;
 import layout.OutputPair;
@@ -56,23 +58,6 @@ public class EventUnitTest {
         OutputPair status = testEvent.delete();
 
         assertTrue(status.isSuccess());
-    }
-
-    @Ignore
-    public void correctCreateEvent() {
-        try {
-            UserProfile user = new UserProfile(UserUnitTest.testToken1, UserUnitTest.testID1);
-            EventCreate eventCreate = new EventCreate();
-            /*
-            OutputPair out = eventCreate.createEvent(testEventType, testEventTitle, testEventDesc,
-                    testEventDateTime, testEventAddress1, testEventAddress2,
-                    testEventPostcode, null, user.getAuthHeaderValue());
-            assertTrue(out.isSuccess());
-            assertEquals("Event has been created.", out.getMessage());
-            */
-        } catch (Exception err) {
-            fail(err.getMessage());
-        }
     }
 
     /**
@@ -192,6 +177,17 @@ public class EventUnitTest {
             Event e = new Event(3, user);
             assertEquals(UserUnitTest.testID1, e.getRSVPs().get(0).getUserID());
         } catch (Exception err) {
+            err.printStackTrace();
+            fail(err.getMessage());
+        }
+    }
+
+    @Test
+    public void stringToDate() {
+        String date = "2023-03-19T23:59:00Z";
+        try {
+            Date dateObj = Util.stringToDate(date);
+        } catch (ParseException err) {
             err.printStackTrace();
             fail(err.getMessage());
         }
