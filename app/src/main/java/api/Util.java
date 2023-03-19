@@ -101,6 +101,12 @@ public class Util {
         return formatter.format(datetime);
     }
 
+    public static String dateToPrettyString(Date datetime) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YYYY @ HH:mm");
+
+        return formatter.format(datetime);
+    }
+
     /**
      * Converts string object to date object using correct date format.
      *

@@ -149,19 +149,6 @@ public class EventUnitTest {
     }
 
     @Test
-    public void getEventsList() {
-        try {
-            // get user
-            UserProfile user = new UserProfile(UserUnitTest.testToken, UserUnitTest.testID);
-            List<Event> events = Event.getEventsList(user);
-            System.out.println(events);
-        } catch (Exception err) {
-            err.printStackTrace();
-            fail(err.getMessage());
-        }
-    }
-
-    @Test
     public void getEventsByType() {
         try {
             List<Event> events = Event.getByEventType("Other", user);

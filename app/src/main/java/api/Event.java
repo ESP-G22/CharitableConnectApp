@@ -102,7 +102,14 @@ public class Event implements EventAttributes, Parcelable {
             return new OutputPair(false, "User has not RSVPed.");
         }
 
-        return getEventRequester().unsubscribeFromEvent(getRsvp().getID());
+        OutputPair output = getEventRequester().unsubscribeFromEvent(getRsvp().getID());
+
+        if (output.isSuccess()) {
+            rsvp = null;
+        }
+
+        return output;
+
     }
 
     /**
@@ -115,7 +122,25 @@ public class Event implements EventAttributes, Parcelable {
             return new OutputPair(false, "User has already RSVPed.");
         }
 
-        return getEventRequester().subscribeToEvent(getID());
+        OutputPair output = getEventRequester().subscribeToEvent(getID());
+
+        if (output.isSuccess()) {
+            HTTPConnection conn = new HTTPConnection();
+            OutputPair attrs_status = conn.get(Util.getEventEndpoint(getID()), getEventRequester().getAuthHeaderValue());
+            conn.disconnect();
+
+            try {
+                JSONArray arr = new JSONArray(attrs_status.getMessage());
+                JSONObject attrs = arr.getJSONObject(0);
+                JSONObject rsvp = attrs.getJSONObject("rsvp");
+                this.rsvp = new RSVP(rsvp.getInt("id"), eventRequester.getAuthHeaderValue());
+            } catch (JSONException err) {
+                return new OutputPair(true, "RSVP created but cannot get the new RSVP.");
+            }
+
+        }
+
+        return output;
     }
 
     /**
@@ -250,6 +275,23 @@ public class Event implements EventAttributes, Parcelable {
     @Override
     public void setOrganiserID(int organiserID) {
 
+    }
+    public String getShortInfo() {
+        String dateStr = Util.dateToPrettyString(getDatetime());
+
+        String status = (daysUntilEvent() >= 0)
+                ? "In " + String.valueOf(daysUntilEvent()) + " days": "Already happened";
+
+        return dateStr + " · " + status;
+    }
+
+    public String getInfo() {
+        String addr2 = getAddress2();
+
+        if (addr2 == null) {
+            addr2 = "";
+        }
+        return getDescription() + "\nADDRESS\n" + getAddress1() + "\n" + addr2 + "\n" + getPostcode();
     }
 
     /**

@@ -165,6 +165,16 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     public void setProfilePic(Image profilePic) {
     }
 
+    public String getInfo() {
+        int subs = getFollowedUsers().size();
+        String subsStr = (subs == 1) ? "1 Sub": Integer.toString(subs) + " Subs";
+
+        int events = getEventCount();
+        String eventsStr = (events == 1) ? "1 Event": Integer.toString(events) + " Events";
+
+        return subsStr + " · " + eventsStr;
+    }
+
     public OutputPair delete() {
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
