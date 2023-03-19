@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 import api.Event;
-import api.EventCreate;
 import api.UserProfile;
 import layout.Pair;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +59,7 @@ public class FeedFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +107,7 @@ public class FeedFragment extends Fragment {
 
         //View view2;
         for (int i = 0; i < list.size(); i++) {
-            final Event event = list.get(i);
+            final Event event = list.get(i); // allows each event to go into each onclick
 
             View view2 = getLayoutInflater().inflate(R.layout.event_card, null);
             TextView textView = view2.findViewById(R.id.demoevent);
@@ -133,7 +129,11 @@ public class FeedFragment extends Fragment {
     public void showEvent(Event event) {
         System.out.println(event.getTitle());
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
-        navController.navigate(R.id.viewEventFragment);
+        //navController.navigate(R.id.viewEventFragment);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("EVENT", event);
+        navController.navigate(R.id.viewEventFragment, bundle);
     }
 
     public void eventshownfromExplore(View v){
@@ -145,7 +145,7 @@ public class FeedFragment extends Fragment {
         }
         List<Event> events = output.arg2;
 
-        if (pageTitle == "Subscribed") {
+        if ("Subscribed".equals(pageTitle)) {
             //Only events we are subscribed to their organizer are shown
 
         } else if ("Date".equals(pageTitle)){
@@ -177,7 +177,6 @@ public class FeedFragment extends Fragment {
 
     public Pair<String, List<Event>> getEventsByTitle(String pageTitle) {
         GetEventsTask task = new GetEventsTask(pageTitle, user);
-        System.out.println(user); // null
         task.execute();
         try {
             Pair output = task.get();  // get return value from thread.

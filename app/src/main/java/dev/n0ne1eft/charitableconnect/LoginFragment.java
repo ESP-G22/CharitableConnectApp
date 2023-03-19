@@ -17,10 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import api.UserGet;
-import api.UserProfile;
 import layout.OutputPair;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 /**
