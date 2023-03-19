@@ -1,5 +1,5 @@
 package dev.n0ne1eft.charitableconnect;
-import android.annotation.SuppressLint;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -21,8 +21,10 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import api.Event;
@@ -67,7 +69,6 @@ public class FeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
         MainActivity activity = (MainActivity) getActivity();
         user = activity.getUser();
-
     }
 
     @Override
@@ -108,18 +109,33 @@ public class FeedFragment extends Fragment {
         Pair<String,List<Event>> a = getEventsByTitle("Feed");//Event.getEventsList(user);
         list = a.arg2;
 
-        View view2;
+        //View view2;
         for (int i = 0; i < list.size(); i++) {
-            view2 = getLayoutInflater().inflate(R.layout.event_card, null);
+            final Event event = list.get(i);
+
+            View view2 = getLayoutInflater().inflate(R.layout.event_card, null);
             TextView textView = view2.findViewById(R.id.demoevent);
-            textView.setText(list.get(i).getTitle());
+            textView.setText(event.getTitle());
             TextView textView2 = view2.findViewById(R.id.demoorg);
-            textView2.setText(list.get(i).getEventType());
+            textView2.setText(event.getEventType());
             linlayout.addView(view2);
+            view2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showEvent(event);
+                }
+            });
         }
 
         return view;
     }
+
+    public void showEvent(Event event) {
+        System.out.println(event.getTitle());
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
+        navController.navigate(R.id.viewEventFragment);
+    }
+
     public void eventshownfromExplore(View v){
         pageTitle = "Trending";
         Pair<String, List<Event>> output = getEventsByTitle(pageTitle);

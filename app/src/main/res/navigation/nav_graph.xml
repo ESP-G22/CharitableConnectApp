@@ -25,4 +25,9 @@
         android:name="dev.n0ne1eft.charitableconnect.NewEventFragment"
         android:label="Create New Event"
         tools:layout="@layout/fragment_new_event" />
+    <fragment
+        android:id="@+id/viewEventFragment"
+        android:name="dev.n0ne1eft.charitableconnect.ViewEventFragment"
+        android:label="View Event"
+        tools:layout="@layout/fragment_view_event" />
 </navigation>
