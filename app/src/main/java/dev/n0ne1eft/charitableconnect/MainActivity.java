@@ -6,6 +6,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.concurrent.ExecutionException;
@@ -38,23 +40,15 @@ public class MainActivity extends AppCompatActivity {
             String token = extras.getString("TOKEN");
             int userID = extras.getInt("USERID");
 
-            user = findUser(token, userID); // null check
+            user = findUser(token, userID);
+
+            if (user == null) {
+                Toast.makeText(this, "Could not get user.", Toast.LENGTH_LONG).show();
+                finish();
+            }
         }
 
         setContentView(R.layout.activity_main);
-        /*
-        exploreFragment = ExploreFragment.newInstance(user);
-        feedFragment = new FeedFragment();
-        profileFragment = ProfileFragment.newInstance(user);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.exploreFragment, exploreFragment)
-                .add(R.id.profileFragment, profileFragment)
-                .add(R.id.feedFragment, feedFragment)
-                .commit();
-
-         */
 
         //Navigation Bar Code
         bottomNav = findViewById(R.id.bottom_nav);

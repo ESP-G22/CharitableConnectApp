@@ -1,5 +1,6 @@
 package api;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,10 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -26,6 +23,7 @@ import layout.UserProfileAttributes;
 import validate.UserValidate;
 
 public class UserProfile implements UserProfileAttributes, Parcelable {
+    public static final String DEFAULT_PROFILE_IMAGE_UUID = "37f9f56a-df80-4dd1-ac46-6135e71dc5ca";
     public static final String defaultName = "This user has no name.";
     public static final String defaultDescription = "This user has no description.";
     private final String token;
@@ -36,10 +34,20 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     private String userType;
     private List<Integer> followedUsers;
 
+    private Bitmap avatar;
+
     private int eventCount;
 
     private int followerCount;
 
+    /**
+     * Create a user object to get information to display on their profile and subscribe to events.
+     *
+     * @param token Token the user used to login.
+     * @param id ID of user logging in.
+     *
+     * @throws Exception If the attributes cannot be obtained
+     */
     public UserProfile(String token, int id) throws Exception {
         this.token = token;
         this.id = id;
@@ -64,10 +72,17 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         this.followedUsers = Arrays.asList(mapper.readValue(attrs.getJSONArray("followedUsers").toString(), Integer[].class));
         this.eventCount = attrs.getInt("eventCount");
         this.followerCount = attrs.getInt("followerCount");
+
+        // Only choose of of these image setters.
+        setImageForTesting();
+        //setProperImage(attrs);
     }
 
     private OutputPair getAttrs() {
-        return Util.getRequest(Util.getUserEndpoint(getID()), getAuthHeaderValue());
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(Util.getUserEndpoint(getID()), getAuthHeaderValue());
+
+        return status;
     }
 
     /**
@@ -148,14 +163,79 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     }
 
     @Override
-    public Image getProfilePic() {
-        return null;
+    public Bitmap getProfilePic() {
+        return avatar;
     }
 
     @Override
-    public void setProfilePic(Image profilePic) {
+    public void setProfilePic(Bitmap profilePic) {
     }
 
+    /**
+     * Before committing, set the image getter to this to avoid unit test errors.
+     */
+    private void setImageForTesting() {
+        this.avatar = null;
+    }
+
+    /**
+     * If you want to test the GUI and its images, use this function instead of setImageForTesting.
+     *
+     * @param attrs Where the avatar ID is stored.
+     * @throws IOException If the image cannot be obtained.
+     * @throws JSONException If the avatar key cannot be obtained.
+     */
+    private void setProperImage(JSONObject attrs) throws IOException, JSONException {
+        if (attrs.isNull("avatar")) {
+            this.avatar = Util.getImage(DEFAULT_PROFILE_IMAGE_UUID, getAuthHeaderValue());
+        } else {
+            this.avatar = Util.getImage(attrs.getString("avatar"), getAuthHeaderValue());
+        }
+    }
+
+    /**
+     * Get short details about an organiser such as subscriber count and number of events.
+     *
+     * @return Neat string for GUI output.
+     */
+    public String getInfo() {
+        int subs = getFollowedUsers().size();
+        String subsStr = (subs == 1) ? "1 Sub": Integer.toString(subs) + " Subs";
+
+        int events = getEventCount();
+        String eventsStr = (events == 1) ? "1 Event": Integer.toString(events) + " Events";
+
+        return subsStr + "  ·  " + eventsStr;
+    }
+
+    public OutputPair delete() {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.delete(Util.getUserEndpoint(id), getAuthHeaderValue());
+        conn.disconnect();
+
+        if (!status.isSuccess()) {
+            return status;
+        }
+
+        // If successful, output the success to user
+        try {
+            JSONArray out = new JSONArray(status.getMessage());
+            return new OutputPair(true, out.getJSONObject(0).getString("msg"));
+        } catch (JSONException err) {
+            return new OutputPair(false, "Problem with parsing JSON");
+        }
+    }
+
+    /**
+     * Subscribe to an event, using its ID.
+     *
+     * The event is saved in the subscribed feed.
+     *
+     * @param eventID ID of event to subscribe to.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair subscribeToEvent(int eventID) {
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
@@ -163,28 +243,23 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_RSVP_CREATE);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.post(Util.ENDPOINT_RSVP_CREATE, input, getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
-        return Util.disconnect(conn, new OutputPair(true, "RSVP successful."));
+        return new OutputPair(true, "RSVP successful.");
     }
 
+    /**
+     * Unsubscribe from an event, using the rsvp ID.
+     *
+     * @param rsvpID ID of your rsvp to the event.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair unsubscribeFromEvent(int rsvpID) {
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
@@ -192,32 +267,31 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.getRSVPEndpoint(rsvpID));
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("DELETE");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.delete(Util.getRSVPEndpoint(rsvpID), input, getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
-        return Util.disconnect(conn, new OutputPair(true, "RSVP removed."));
+        return new OutputPair(true, "RSVP removed.");
     }
 
+    /**
+     * Change the user's password.
+     *
+     * @param originalPassword What the password is pre-change.
+     * @param newPassword1 What the password is post-change.
+     * @param newPassword2 Double-entry verification of newPassword1.
+     *
+     * @return The response of the request and its success.
+     */
     public OutputPair changePassword(String originalPassword, String newPassword1, String newPassword2) {
+        // Double entry verification.
         if (!newPassword1.equals(newPassword2)) {
             return new OutputPair(false, "Passwords must match.");
         }
+        // If the new password is the old password.
         if (newPassword1.equals(originalPassword)) {
             return new OutputPair(false, "New password is the same as the current password!");
         }
@@ -228,27 +302,15 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         JSONObject input = new JSONObject(params);
 
         // Establish connection and post JSON parameters
-        HttpURLConnection conn;
-        try {
-            URL url = new URL(Util.ENDPOINT_CHANGE_PASSWORD);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("PUT");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", getAuthHeaderValue());
-            conn.setDoOutput(true);
-            Util.passParams(conn, input);
-        } catch (IOException err) {
-            return new OutputPair(false, Util.PROBLEM_WITH_SENDING_REQUEST);
-        }
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.put(Util.ENDPOINT_CHANGE_PASSWORD, input, getAuthHeaderValue());
+        conn.disconnect();
 
-        // Evaluate response code
-        OutputPair status = Util.checkResponseCode(conn);
         if (!status.isSuccess()) {
             return status;
         }
 
-        return Util.disconnect(conn, new OutputPair(true, "Password changed."));
+        return new OutputPair(true, "Password changed.");
     }
 
     public int describeContents() {

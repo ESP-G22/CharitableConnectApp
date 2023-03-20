@@ -1,5 +1,6 @@
 package layout;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface UserProfileAttributes {
      * A profile picture of the user. Shown on profile page.
      * @return profile picture.
      */
-    Image getProfilePic();
+    Bitmap getProfilePic();
 
     /**
      * Get the level of user. 'ADMIN' for admin, 'ORGANISER' for organiser, 'USER' for attendee.
@@ -79,5 +80,5 @@ public interface UserProfileAttributes {
 
     void setBio(String bio);
 
-    void setProfilePic(Image profilePic);
+    void setProfilePic(Bitmap profilePic);
 }

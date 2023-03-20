@@ -3,6 +3,7 @@ package layout;
 import android.graphics.Bitmap;
 import android.media.Image;
 import java.util.Date;
+import java.util.List;
 
 public interface EventAttributes {
     static final String NO_ADDRESS2 = "N/A";
@@ -59,11 +60,11 @@ public interface EventAttributes {
     String getPostcode();
 
     /**
-     * Image chosen by event organiser to show event.
+     * Images chosen by event organiser to show event.
      *
-     * @return image
+     * @return images
      */
-    Bitmap getImage();
+    List<Bitmap> getImages();
 
     int getAttendeeCount();
 
@@ -84,5 +85,5 @@ public interface EventAttributes {
 
     void setPostcode(String postcode);
 
-    void setImage(Bitmap image);
+    void setImages(List<Bitmap> images);
 }

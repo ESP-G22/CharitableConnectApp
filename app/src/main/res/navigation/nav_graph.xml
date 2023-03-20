@@ -19,7 +19,8 @@
         android:id="@+id/feedFragment"
         android:name="dev.n0ne1eft.charitableconnect.FeedFragment"
         android:label="@string/feed_fragment_title"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_feed">
+    </fragment>
     <fragment
         android:id="@+id/newEventFragment"
         android:name="dev.n0ne1eft.charitableconnect.NewEventFragment"
@@ -29,5 +30,6 @@
         android:id="@+id/viewEventFragment"
         android:name="dev.n0ne1eft.charitableconnect.ViewEventFragment"
         android:label="View Event"
-        tools:layout="@layout/fragment_view_event" />
+        tools:layout="@layout/fragment_view_event">
+    </fragment>
 </navigation>
