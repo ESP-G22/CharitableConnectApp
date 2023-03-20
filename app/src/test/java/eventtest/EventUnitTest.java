@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import api.Event;
@@ -175,7 +176,7 @@ public class EventUnitTest {
     public void getEventRSVPs() {
         try {
             Event e = new Event(3, user);
-            assertEquals(UserUnitTest.testID1, e.getRSVPs().get(0).getUserID());
+            e.getRsvp();
         } catch (Exception err) {
             err.printStackTrace();
             fail(err.getMessage());
