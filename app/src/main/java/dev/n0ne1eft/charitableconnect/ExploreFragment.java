@@ -121,7 +121,7 @@ public class ExploreFragment extends Fragment {
         });
         return view;
     }
-    public String changeToFeedPageSubscribed(View v) {
+    public void changeToFeedPageSubscribed(View v) {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.SubscribedButton) {
             // Create a new instance of the FeedPage fragment
@@ -135,13 +135,9 @@ public class ExploreFragment extends Fragment {
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();
-            // Return an empty string
-            return "Subscribed";
         }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
     }
-    public String changeToFeedPageDate(View v) {
+    public void changeToFeedPageDate(View v) {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.DateButton) {
             // Create a new instance of the FeedPage fragment
@@ -155,11 +151,7 @@ public class ExploreFragment extends Fragment {
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();
-            // Return an empty string
-            return "Date";
         }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
     }
     public void changeToFeedPageTrending(View v) {
         // Check if the button clicked is the one that triggers the page change
@@ -169,7 +161,7 @@ public class ExploreFragment extends Fragment {
 
         goToFeed("Trending");
     }
-    public String changeToFeedPageFoodTasting(View v) {
+    public void changeToFeedPageFoodTasting(View v) {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.FoodButton) {
             // Create a new instance of the FeedPage fragment
@@ -183,13 +175,9 @@ public class ExploreFragment extends Fragment {
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();
-            // Return an empty string
-            return "FoodTasting";
         }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
     }
-    public String changeToFeedPageMovies(View v) {
+    public void changeToFeedPageMovies(View v) {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.MoviesButton) {
             // Create a new instance of the FeedPage fragment
@@ -203,13 +191,9 @@ public class ExploreFragment extends Fragment {
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();
-            // Return an empty string
-            return "Movies";
         }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
     }
-    public String changeToFeedPageClubNights(View v) {
+    public void changeToFeedPageClubNights(View v) {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.ClubButton) {
             // Create a new instance of the FeedPage fragment
@@ -223,13 +207,9 @@ public class ExploreFragment extends Fragment {
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();
-            // Return an empty string
-            return "Club";
         }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
     }
-    public String changeToFeedPageSports(View v) {
+    public void changeToFeedPageSports(View v) {
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.SportsButton) {
             // Create a new instance of the FeedPage fragment
@@ -243,11 +223,7 @@ public class ExploreFragment extends Fragment {
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();
-            // Return an empty string
-            return "Sports";
         }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
     }
     public String handletext(View v){
         EditText t = v.findViewById(R.id.SearchButton);
