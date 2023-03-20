@@ -23,8 +23,6 @@
     <string name="skip_section">Skip ></string>
     <string name="continue_to_section">Continue ></string>
     <string name="rsvp_event">RSVP</string>
-<<<<<<< Updated upstream
-=======
     <string name="CONTENT">CONTENT</string>
     <string name="SAVE">SAVE</string>
     <string name="no_date_selected">No date</string>
@@ -66,5 +64,4 @@
     <string name="prof_desc">Profile description</string>
     <string name="event_count">5</string>
     <string name="subCount">5</string>
->>>>>>> Stashed changes
 </resources>
