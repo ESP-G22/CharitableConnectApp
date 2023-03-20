@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ExploreFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -103,7 +101,7 @@
                 android:elevation="2dp"
                 android:src="@drawable/movies"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
                 android:id="@+id/ClubButton"
@@ -135,7 +133,7 @@
                 android:elevation="2dp"
                 android:src="@drawable/club"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/imageView12"
@@ -147,7 +145,7 @@
                 android:elevation="2dp"
                 android:src="@drawable/paid_sports_listing_may_20"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/textView13"
@@ -162,9 +160,6 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-
-            ]]>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
@@ -190,7 +185,6 @@
         android:text="Search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/dateText"
         app:layout_constraintTop_toBottomOf="@+id/ExploreText"
         app:layout_constraintVertical_chainStyle="packed" />
 
