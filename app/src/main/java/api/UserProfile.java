@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -21,6 +23,7 @@ import layout.UserProfileAttributes;
 import validate.UserValidate;
 
 public class UserProfile implements UserProfileAttributes, Parcelable {
+    public static final String DEFAULT_PROFILE_IMAGE_UUID = "37f9f56a-df80-4dd1-ac46-6135e71dc5ca";
     public static final String defaultName = "This user has no name.";
     public static final String defaultDescription = "This user has no description.";
     private final String token;
@@ -69,7 +72,10 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         this.followedUsers = Arrays.asList(mapper.readValue(attrs.getJSONArray("followedUsers").toString(), Integer[].class));
         this.eventCount = attrs.getInt("eventCount");
         this.followerCount = attrs.getInt("followerCount");
-        this.avatar = Util.getImage(attrs.getString("avatar"), getAuthHeaderValue());
+
+        // Only choose of of these image setters.
+        setImageForTesting();
+        //setProperImage(attrs);
     }
 
     private OutputPair getAttrs() {
@@ -157,14 +163,41 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     }
 
     @Override
-    public Image getProfilePic() {
-        return null;
+    public Bitmap getProfilePic() {
+        return avatar;
     }
 
     @Override
-    public void setProfilePic(Image profilePic) {
+    public void setProfilePic(Bitmap profilePic) {
     }
 
+    /**
+     * Before committing, set the image getter to this to avoid unit test errors.
+     */
+    private void setImageForTesting() {
+        this.avatar = null;
+    }
+
+    /**
+     * If you want to test the GUI and its images, use this function instead of setImageForTesting.
+     *
+     * @param attrs Where the avatar ID is stored.
+     * @throws IOException If the image cannot be obtained.
+     * @throws JSONException If the avatar key cannot be obtained.
+     */
+    private void setProperImage(JSONObject attrs) throws IOException, JSONException {
+        if (attrs.isNull("avatar")) {
+            this.avatar = Util.getImage(DEFAULT_PROFILE_IMAGE_UUID, getAuthHeaderValue());
+        } else {
+            this.avatar = Util.getImage(attrs.getString("avatar"), getAuthHeaderValue());
+        }
+    }
+
+    /**
+     * Get short details about an organiser such as subscriber count and number of events.
+     *
+     * @return Neat string for GUI output.
+     */
     public String getInfo() {
         int subs = getFollowedUsers().size();
         String subsStr = (subs == 1) ? "1 Sub": Integer.toString(subs) + " Subs";
@@ -172,7 +205,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         int events = getEventCount();
         String eventsStr = (events == 1) ? "1 Event": Integer.toString(events) + " Events";
 
-        return subsStr + " · " + eventsStr;
+        return subsStr + "  ·  " + eventsStr;
     }
 
     public OutputPair delete() {

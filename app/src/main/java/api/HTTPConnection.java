@@ -246,6 +246,7 @@ public class HTTPConnection {
 
             return image;
         } catch (IOException err) {
+            err.printStackTrace();
             throw new IOException(PROBLEM_WITH_SENDING_REQUEST_MSG);
         }
     }

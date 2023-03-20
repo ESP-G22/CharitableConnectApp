@@ -158,10 +158,9 @@ public class Util {
     }
 
     public static Bitmap getImage(String uuid, String authHeaderValue) throws IOException {
-        return null;
-        //HTTPConnection conn = new HTTPConnection();
-        //Bitmap image = conn.getImage(Util.getImageEndpoint(uuid), authHeaderValue);
+        HTTPConnection conn = new HTTPConnection();
+        Bitmap image = conn.getImage(Util.getImageEndpoint(uuid), authHeaderValue);
 
-        //return image;
+        return image;
     }
 }

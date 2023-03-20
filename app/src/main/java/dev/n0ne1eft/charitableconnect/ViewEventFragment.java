@@ -1,25 +1,24 @@
 package dev.n0ne1eft.charitableconnect;
 
-import android.icu.util.Output;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import api.Event;
 import api.UserProfile;
-import kotlinx.coroutines.scheduling.Task;
 import layout.OutputPair;
-import layout.Pair;
 
 public class ViewEventFragment extends Fragment {
     private UserProfile user;
@@ -127,6 +126,8 @@ public class ViewEventFragment extends Fragment {
         TextView organiserInfoBox = (TextView) view.findViewById(R.id.organiserInfoText);
         Button rsvpButton = (Button) view.findViewById(R.id.rsvpButton);
         Button favouriteButton = (Button) view.findViewById(R.id.favouriteButton);
+        ImageView eventImage = (ImageView) view.findViewById(R.id.eventImage);
+        ImageView organiserImage = (ImageView) view.findViewById(R.id.organiserAvatar);
 
         titleBox.setText(event.getTitle());
         descriptionBox.setText(event.getInfo());
@@ -136,6 +137,20 @@ public class ViewEventFragment extends Fragment {
 
         rsvpButton.setText(getRSVPText(event.getRsvp() != null));
         favouriteButton.setText(getFavouriteText(user.getFollowedUsers().contains(organiser.getID())));
+
+        // set event images
+        List<Bitmap> images = event.getImages();
+        if (images != null) {
+            Bitmap image;
+            image = images.get(0);
+            eventImage.setImageBitmap(image);
+        }
+
+        // set profile image
+        Bitmap userImage = organiser.getProfilePic();
+        if (userImage != null) {
+            organiserImage.setImageBitmap(userImage);
+        }
     }
 
     public String getRSVPText(boolean hasRSVP) {

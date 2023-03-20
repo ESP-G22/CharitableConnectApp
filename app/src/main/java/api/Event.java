@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Event implements EventAttributes, Parcelable {
+    public static final String DEFAULT_IMAGE_UUID = "3070b7ae-396c-420d-8579-9445c5216bbb";
     private int id;
     private UserProfile eventRequester; // user who instantiated this event.
     private String eventType;
@@ -77,7 +78,10 @@ public class Event implements EventAttributes, Parcelable {
             JSONObject rsvp = attrs.getJSONObject("rsvp");
             this.rsvp = new RSVP(rsvp.getInt("id"), eventRequester.getAuthHeaderValue());
         }
-        this.images = Util.getImages(attrs.getJSONArray("images"), getAuthHeaderValue());
+
+        // Only choose of of these image setters.
+        setImageForTesting();
+        //setProperImage(attrs);
     }
 
     private OutputPair getAttrs() {
@@ -274,24 +278,57 @@ public class Event implements EventAttributes, Parcelable {
 
     @Override
     public void setOrganiserID(int organiserID) {
-
     }
+
+    /**
+     * If you want to test the GUI and its images, use this function instead of setImageForTesting.
+     *
+     * @param attrs Where the event IDs are stored.
+     * @throws IOException If the image cannot be obtained.
+     * @throws JSONException If the images key cannot be obtained.
+     */
+    private void setProperImage(JSONObject attrs) throws IOException, JSONException {
+        this.images = Util.getImages(attrs.getJSONArray("images"), getAuthHeaderValue());
+
+        if (images.isEmpty()) {
+            this.images.add(Util.getImage(DEFAULT_IMAGE_UUID, getAuthHeaderValue()));
+        }
+    }
+
+    /**
+     * Before committing, set the image getter to this to avoid unit test errors.
+     */
+    private void setImageForTesting() {
+        this.images = null;
+    }
+
     public String getShortInfo() {
         String dateStr = Util.dateToPrettyString(getDatetime());
 
-        String status = (daysUntilEvent() >= 0)
-                ? "In " + String.valueOf(daysUntilEvent()) + " days": "Already happened";
+        String status;
+        int days = daysUntilEvent();
 
-        return dateStr + " · " + status;
+        if (days < 0) {
+            status = "";
+        } else if (days == 0) {
+            status = " · Today";
+        } else {
+            status = " · In " + Integer.toString(days)  + " days";
+        }
+
+        return dateStr + status;
     }
 
     public String getInfo() {
         String addr2 = getAddress2();
+        String addr2Txt;
 
-        if (addr2 == null) {
-            addr2 = "";
+        if ("N/A".equals(addr2)) {
+            addr2Txt = "";
+        } else {
+            addr2Txt = addr2 + "\n";
         }
-        return getDescription() + "\nADDRESS\n" + getAddress1() + "\n" + addr2 + "\n" + getPostcode();
+        return getDescription() + "\n\nADDRESS\n\n" + getAddress1() + "\n" + addr2Txt + getPostcode();
     }
 
     /**
