@@ -10,8 +10,6 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="-38dp">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ScrollView
         android:id="@+id/newEventScroll"
         android:layout_width="392dp"

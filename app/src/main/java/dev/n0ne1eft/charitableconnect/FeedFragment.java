@@ -57,6 +57,8 @@ public class FeedFragment extends Fragment {
         } else {
             pageTitle = "Feed";
         }
+        MainActivity activity = (MainActivity) getActivity();
+        user = activity.getUser();
     }
 
     @Override
@@ -97,7 +99,7 @@ public class FeedFragment extends Fragment {
         LinearLayout linlayout = view.findViewById(R.id.linlayout);
 
         List<Event> list;
-        Pair<String,List<Event>> a = getEventsByTitle("Feed");//Event.getEventsList(user);
+        Pair<String,List<Event>> a = getEventsByTitle(pageTitle);
         list = a.arg2;
 
         //View view2;
@@ -122,7 +124,6 @@ public class FeedFragment extends Fragment {
     }
 
     public void showEvent(Event event) {
-        System.out.println(event.getTitle());
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
         //navController.navigate(R.id.viewEventFragment);
 

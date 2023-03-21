@@ -6,16 +6,70 @@
     android:layout_height="match_parent"
     tools:context=".ExploreFragment">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <Button
+        android:id="@+id/SubscribedButton"
+        android:layout_width="105dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:text="SUBSCRIBED"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
 
-        <ScrollView
+    <Button
+        android:id="@+id/DateButton"
+        android:layout_width="105dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:text="DATE"
+        android:textSize="10sp"
+        app:layout_constraintStart_toEndOf="@+id/SubscribedButton"
+        app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
+
+    <Button
+        android:id="@+id/TrendingButton"
+        android:layout_width="105dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="32dp"
+        android:text="TRENDING"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
+
+    <EditText
+        android:id="@+id/SearchButton"
+        android:layout_width="333dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ExploreText" />
+
+    <TextView
+        android:id="@+id/ExploreText"
+        android:layout_width="157dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="Explore"
+        android:textColor="#191818"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
             android:layout_width="match_parent"
             android:layout_height="1000dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/DateButton">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -25,7 +79,7 @@
                     android:id="@+id/textView16"
                     android:layout_width="125dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="236dp"
+                    android:layout_marginStart="224dp"
                     android:layout_marginTop="16dp"
                     android:text="Sports"
                     android:textAlignment="center"
@@ -53,7 +107,7 @@
                     android:id="@+id/textView14"
                     android:layout_width="125dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="64dp"
+                    android:layout_marginStart="52dp"
                     android:layout_marginTop="16dp"
                     android:text="Movies"
                     android:textAlignment="center"
@@ -69,7 +123,7 @@
                     android:layout_height="173dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="40dp"
-                    android:layout_marginTop="228dp"
+                    android:layout_marginTop="20dp"
                     android:clickable="true"
                     android:contentDescription="Go to food tasting feed."
                     android:elevation="2dp"
@@ -83,8 +137,8 @@
                     android:layout_width="147dp"
                     android:layout_height="173dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="228dp"
-                    android:layout_marginTop="228dp"
+                    android:layout_marginStart="210dp"
+                    android:layout_marginTop="20dp"
                     android:clickable="true"
                     android:contentDescription="Go to movies feed."
                     android:elevation="2dp"
@@ -99,7 +153,7 @@
                     android:layout_height="173dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="40dp"
-                    android:layout_marginTop="472dp"
+                    android:layout_marginTop="260dp"
                     android:clickable="true"
                     android:contentDescription="Go to clubs feed."
                     android:elevation="2dp"
@@ -113,8 +167,8 @@
                     android:layout_width="147dp"
                     android:layout_height="173dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="228dp"
-                    android:layout_marginTop="472dp"
+                    android:layout_marginStart="210dp"
+                    android:layout_marginTop="260dp"
                     android:clickable="true"
                     android:contentDescription="Go to sports feed."
                     android:elevation="2dp"
@@ -136,68 +190,6 @@
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/foodImage" />
-
-                <Button
-                    android:id="@+id/SubscribedButton"
-                    android:layout_width="105dp"
-                    android:layout_height="54dp"
-                    android:layout_marginStart="24dp"
-                    android:text="SUBSCRIBED"
-                    android:textSize="10sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
-
-                <Button
-                    android:id="@+id/DateButton"
-                    android:layout_width="110dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="4dp"
-                    android:text="DATE"
-                    android:textSize="10sp"
-                    app:layout_constraintStart_toEndOf="@+id/SubscribedButton"
-                    app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
-
-                <Button
-                    android:id="@+id/TrendingButton"
-                    android:layout_width="101dp"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="TRENDING"
-                    android:textSize="10sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
-
-                <EditText
-                    android:id="@+id/SearchButton"
-                    android:layout_width="333dp"
-                    android:layout_height="59dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:hint="Search"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ExploreText" />
-
-                <TextView
-                    android:id="@+id/ExploreText"
-                    android:layout_width="157dp"
-                    android:layout_height="46dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:text="Explore"
-                    android:textColor="#191818"
-                    android:textSize="34sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-
-
-
-    </FrameLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
