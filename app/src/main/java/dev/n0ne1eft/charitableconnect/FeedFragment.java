@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class FeedFragment extends Fragment {
     private String pageTitle;
+    private boolean byTitle;
 
     private UserProfile user;
 
@@ -54,8 +55,10 @@ public class FeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             pageTitle = getArguments().getString("TITLE"); // from bundle in explore buttons.
+            byTitle = getArguments().getBoolean("SEARCH_BY_TITLE");
         } else {
             pageTitle = "Feed";
+            byTitle = false;
         }
         MainActivity activity = (MainActivity) getActivity();
         user = activity.getUser();
@@ -72,7 +75,11 @@ public class FeedFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_feed, container, false);
 
         TextView title = (TextView) view.findViewById(R.id.feedTitleText);
-        title.setText(pageTitle);
+        if (byTitle) {
+            title.setText("Results for \"" + pageTitle + "\"");
+        } else {
+            title.setText(pageTitle);
+        }
 
         //Launch new event
         FloatingActionButton newEventButton = view.findViewById(R.id.launchNewEventButton);
@@ -102,6 +109,10 @@ public class FeedFragment extends Fragment {
         Pair<String,List<Event>> a = getEventsByTitle(pageTitle);
         list = a.arg2;
 
+        if (list.isEmpty()) {
+            Toast.makeText(getActivity(), "No events found for \"" + pageTitle + "\"", Toast.LENGTH_SHORT).show();
+        }
+
         //View view2;
         for (int i = 0; i < list.size(); i++) {
             final Event event = list.get(i); // allows each event to go into each onclick
@@ -125,7 +136,6 @@ public class FeedFragment extends Fragment {
 
     public void showEvent(Event event) {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
-        //navController.navigate(R.id.viewEventFragment);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("EVENT", event);
@@ -171,7 +181,7 @@ public class FeedFragment extends Fragment {
     }
 
     public Pair<String, List<Event>> getEventsByTitle(String pageTitle) {
-        GetEventsTask task = new GetEventsTask(pageTitle, user);
+        GetEventsTask task = new GetEventsTask(pageTitle, byTitle, user);
         task.execute();
         try {
             Pair output = task.get();  // get return value from thread.
@@ -214,40 +224,46 @@ public class FeedFragment extends Fragment {
 
 class GetEventsTask extends AsyncTask<String, String, Pair<String, List<Event>>> {
     private String pageTitle;
+    private boolean byTitle;
     private UserProfile userRequester;
 
-    public GetEventsTask(String pageTitle, UserProfile userRequester) {
+    public GetEventsTask(String pageTitle, boolean byTitle, UserProfile userRequester) {
         super();
         this.pageTitle = pageTitle;
+        this.byTitle = byTitle;
         this.userRequester = userRequester;
     }
 
     protected Pair<String, List<Event>> doInBackground(String... params) {
         List<Event> events;
         try {
-            if ("Subscribed".equals(pageTitle)) {
-                // TODO: get subscribed events
-                events = Event.getEventsList(userRequester);
-                //Only events we are subscribed to their organizer are shown
-            } else if ("Date".equals(pageTitle)) {
-                events = Event.getByDate(new Date(), userRequester);
-            } else if ("Trending".equals(pageTitle)) {
-                events = Event.getTrendingEvents(userRequester);
-            } else if ("FoodTasting".equals(pageTitle)) {
-                //Only food tasting events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
-            } else if ("Movies".equals(pageTitle)) {
-                //Only movie events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
-            } else if ("Club".equals(pageTitle)) {
-                //Only club events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
-            } else if ("Sports".equals(pageTitle)) {
-                //Only sports events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
+            if (byTitle) {
+                events = Event.search(pageTitle, userRequester);
             } else {
-                //All events are shown as before
-                events = Event.getEventsList(userRequester);
+                if ("Subscribed".equals(pageTitle)) {
+                    List<Integer> ids = userRequester.getSubscribedEvents();
+                    events = Event.idsToEvents(ids, userRequester);
+                    //Only events we are subscribed to their organizer are shown
+                } else if ("Date".equals(pageTitle)) {
+                    events = Event.getByDate(new Date(), userRequester);
+                } else if ("Trending".equals(pageTitle)) {
+                    events = Event.getTrendingEvents(userRequester);
+                } else if ("FoodTasting".equals(pageTitle)) {
+                    //Only food tasting events are shown
+                    events = Event.getByEventType(pageTitle, userRequester);
+                } else if ("Movies".equals(pageTitle)) {
+                    //Only movie events are shown
+                    events = Event.getByEventType(pageTitle, userRequester);
+                } else if ("Club".equals(pageTitle)) {
+                    //Only club events are shown
+                    events = Event.getByEventType(pageTitle, userRequester);
+                } else if ("Sports".equals(pageTitle)) {
+                    //Only sports events are shown
+                    events = Event.getByEventType(pageTitle, userRequester);
+                } else {
+                    //All events are shown as before
+                    events = Event.getEventsList(userRequester);
+                }
             }
         } catch (Exception err) {
             err.printStackTrace();

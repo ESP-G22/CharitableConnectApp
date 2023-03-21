@@ -565,6 +565,34 @@ public class Event implements EventAttributes, Parcelable {
         return listOfEvents;
     }
 
+    public static List<Event> idsToEvents(List<Integer> eventIDs, UserProfile eventRequester) throws Exception {
+        List<Event> output = new LinkedList<>();
+
+        for (int i = 0; i < eventIDs.size(); i++) {
+            output.add(new Event(eventIDs.get(i), eventRequester));
+        }
+
+        return output;
+    }
+
+    public static List<Event> getEventsFromOrganiser(int organiserID, UserProfile eventRequester) throws IOException, JSONException{
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(
+                Util.ENDPOINT_EVENT_LIST + "?organiser=" + Integer.toString(organiserID),
+                eventRequester.getAuthHeaderValue());
+        conn.disconnect();
+
+        if (!status.isSuccess()) {
+            throw new IOException(status.getMessage());
+        }
+
+        // If successful, output the events in a list
+        JSONArray events = new JSONArray(status.getMessage());
+
+        return Event.JSONArrayToListOfEvents(events, eventRequester);
+    }
+
     public int describeContents() {
         return 0;
     }

@@ -277,6 +277,31 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return new OutputPair(true, "RSVP removed.");
     }
 
+    public List<Integer> getSubscribedEvents() throws IOException, JSONException {
+        // Establish connection and post JSON parameters
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.get(Util.ENDPOINT_RSVP_SUBSCRIBED, getAuthHeaderValue());
+        conn.disconnect();
+
+        if (!status.isSuccess()) {
+            throw new IOException(status.getMessage());
+        }
+
+        // If successful, output the events in a list
+        JSONArray output = new JSONArray(status.getMessage());
+        JSONArray rsvps = output.getJSONObject(0).getJSONArray("rsvps");
+        LinkedList<Integer> listOfEventIDs = new LinkedList<>();
+
+        for (int i = 0; i < rsvps.length(); i++) {
+            try {
+                listOfEventIDs.add(rsvps.getJSONObject(i).getInt("event"));
+            } catch (Exception err) {
+                // Go to the next object to parse
+            }
+        }
+        return listOfEventIDs;
+    }
+
     /**
      * Change the user's password.
      *

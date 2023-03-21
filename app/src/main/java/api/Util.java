@@ -33,6 +33,8 @@ public class Util {
 
     public static final String ENDPOINT_IMAGE_UPLOAD = ENDPOINT_IMAGE + "upload";
 
+    public static final String ENDPOINT_RSVP_SUBSCRIBED = ENDPOINT_RSVP + "subscribed";
+
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     /**
