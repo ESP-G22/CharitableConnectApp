@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.icu.util.Output;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -29,15 +31,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import api.EventCreate;
+import api.UserGet;
+import api.UserProfile;
+import api.Util;
+import layout.OutputPair;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,8 +67,12 @@ public class NewEventFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private View view;
     private Image temp;
+    private List<Bitmap> allImagesAttached;
+    private Map<View, Bitmap> allCards;
+    private UserProfile user;
     private LinearLayout linearLayout;
     private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
     ActivityResultLauncher<Intent> someActivityResultLauncher;
     private Button dateBut;
     private Button timeBut;
@@ -94,6 +115,11 @@ public class NewEventFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        MainActivity activity = (MainActivity) getActivity();
+        user = activity.getUser();
+
+        allImagesAttached = new LinkedList<>();
+        allCards = new HashMap<>();
     }
 
     @Override
@@ -165,6 +191,24 @@ public class NewEventFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OutputPair output = createNewEvent();
+
+                if (!(output.isSuccess())) {
+                    Toast.makeText(getActivity(), output.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // Resetting inputs
+                EditText titleBox = (EditText) view.findViewById(R.id.titleEditText);
+                EditText descriptionBox = (EditText) view.findViewById(R.id.descriptionText);
+                EditText address1Box = (EditText) view.findViewById(R.id.address1EditText);
+                EditText postcodeBox = (EditText) view.findViewById(R.id.address1EditText);
+                titleBox.setText("");
+                descriptionBox.setText("");
+                address1Box.setText("");
+                postcodeBox.setText("");
+
+                Toast.makeText(getActivity(), output.getMessage(), Toast.LENGTH_LONG).show();
                 //Launch feed
                 NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
                 //Send data back to feed
@@ -209,7 +253,6 @@ public class NewEventFragment extends Fragment {
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
         datePickerDialog = new DatePickerDialog(getActivity(), dateSetListener, year, month, day);
-
     }
 
     private String makeDateString(int day, int month, int year){
@@ -244,7 +287,7 @@ public class NewEventFragment extends Fragment {
                 timeBut.setText(String.format(Locale.getDefault(), "%02d:%02d",hour,minute));
             }
         };
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), onTimeSetListener, hour, minute, true);
+        timePickerDialog = new TimePickerDialog(getActivity(), onTimeSetListener, hour, minute, true);
         timePickerDialog.setTitle("Select Time");
         timePickerDialog.show();
 
@@ -273,6 +316,9 @@ public class NewEventFragment extends Fragment {
         //Edit card
         card.setPadding(0, 0, 12, 0);
 
+        allImagesAttached.add(image);
+        allCards.put(card, image);
+
         //Add image to image view
         imageView.setImageBitmap(image);
         //Add image to card
@@ -281,12 +327,101 @@ public class NewEventFragment extends Fragment {
         card.addView(deleteBut);
         //Add to layout
         linearLayout.addView(card);
+
     }
 
     public void deleteImage(View v){
         //Get card that v belongs to
         View card = (View)v.getParent();
+
+        Bitmap image = allCards.get(card);
+        allImagesAttached.remove(image);
+        allCards.remove(card);
+
         //Remove it from layout
         linearLayout.removeView(card);
+    }
+
+    public OutputPair createNewEvent() {
+        EditText titleBox = (EditText) view.findViewById(R.id.titleEditText);
+        EditText descriptionBox = (EditText) view.findViewById(R.id.descriptionText);
+        EditText address1Box = (EditText) view.findViewById(R.id.address1EditText);
+        EditText postcodeBox = (EditText) view.findViewById(R.id.postcodeEditText);
+
+        System.out.println(allImagesAttached);
+        List<Bitmap> images = allImagesAttached;
+        String title = titleBox.getText().toString();
+        String description = descriptionBox.getText().toString();
+        String address1 = address1Box.getText().toString();
+        String postcode = postcodeBox.getText().toString();
+
+        // Need input boxes for these
+        String address2 = null;
+        String eventType = "Other";
+
+        // Get date
+        DatePicker dateWidget = datePickerDialog.getDatePicker();
+        int day = dateWidget.getDayOfMonth();
+        int month = dateWidget.getMonth() + 1;
+        int year = dateWidget.getYear();
+
+        // Get time inputted from time button that is updated to the event time.
+        String[] time = timeBut.getText().toString().split(":");
+        int hour = Integer.parseInt(time[0]);
+        int minute = Integer.parseInt(time[1]);
+
+        Date datetime;
+        try {
+            datetime = Util.valuesToDate(year, month, day, hour, minute);
+        } catch (ParseException err) {
+            return new OutputPair(false, "Cannot parse event time and date.");
+        }
+
+        NewEventTask create = new NewEventTask(
+                eventType, title, description, datetime, address1, address2,
+                postcode, images, user.getAuthHeaderValue()
+        );
+        create.execute();
+        try {
+            OutputPair output_create = create.get();  // get return value from thread.
+            return output_create;
+        } catch (ExecutionException err) {
+            return new OutputPair(false, "ExecutionError");
+        } catch (InterruptedException err) {
+            return new OutputPair(false, "InterruptedError");
+        }
+    }
+}
+
+class NewEventTask extends AsyncTask<String, String, OutputPair> {
+    private String eventType;
+    private String title;
+    private String description;
+    private Date datetime;
+    private String address1;
+    private String address2;
+    private String postcode;
+    private String organiserAuthHeaderValue;
+
+    private List<Bitmap> images;
+
+    public NewEventTask(String eventType, String title, String description, Date datetime, String address1, String address2, String postcode, List<Bitmap> images,
+                        String organiserAuthHeaderValue) {
+        super();
+        this.eventType = eventType;
+        this.title = title;
+        this.description = description;
+        this.datetime = datetime;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.postcode = postcode;
+        this.images = images;
+        this.organiserAuthHeaderValue = organiserAuthHeaderValue;
+    }
+    protected OutputPair doInBackground(String... params) {
+        EventCreate create = new EventCreate();
+        OutputPair output = create.createEvent(eventType, title, description, datetime, address1, address2, postcode, images, organiserAuthHeaderValue);
+
+        return output;
     }
 }

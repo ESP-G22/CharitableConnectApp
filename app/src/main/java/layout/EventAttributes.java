@@ -1,7 +1,9 @@
 package layout;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import java.util.Date;
+import java.util.List;
 
 public interface EventAttributes {
     static final String NO_ADDRESS2 = "N/A";
@@ -22,11 +24,11 @@ public interface EventAttributes {
     int getOrganiserID();
 
     /**
-     * Category of event, as represented by an integer.
+     * Category of event.
      *
      * @return type
      */
-    int getEventType();
+    String getEventType();
 
     /**
      * Title of event.
@@ -58,18 +60,18 @@ public interface EventAttributes {
     String getPostcode();
 
     /**
-     * Image chosen by event organiser to show event.
+     * Images chosen by event organiser to show event.
      *
-     * @return image
+     * @return images
      */
-    Image getImage();
+    List<Bitmap> getImages();
 
     int getAttendeeCount();
 
     // update event attributes through source
     void setOrganiserID(int organiserID);
 
-    void setEventType(int eventType);
+    void setEventType(String eventType);
 
     void setTitle(String title);
 
@@ -83,5 +85,5 @@ public interface EventAttributes {
 
     void setPostcode(String postcode);
 
-    void setImage(Image image);
+    void setImages(List<Bitmap> images);
 }

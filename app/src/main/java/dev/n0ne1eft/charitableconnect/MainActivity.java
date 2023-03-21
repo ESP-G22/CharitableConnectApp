@@ -1,25 +1,53 @@
 package dev.n0ne1eft.charitableconnect;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.concurrent.ExecutionException;
+
+import api.UserProfile;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
+
+    private ExploreFragment exploreFragment;
+    private ProfileFragment profileFragment;
+    private FeedFragment feedFragment;
+
+    private UserProfile user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            user = (UserProfile) savedInstanceState.getParcelable("USER");
+            //exploreFragment = (ExploreFragment) getSupportFragmentManager().getFragment(savedInstanceState, "explore");
+            //profileFragment = (ProfileFragment) getSupportFragmentManager().getFragment(savedInstanceState, "profile");
+            //feedFragment = (FeedFragment) getSupportFragmentManager().getFragment(savedInstanceState, "feed");
+        } else {
+            // Getting the user who logged in
+            Bundle extras = getIntent().getExtras();
+            if (extras == null) {
+                // throw error if user cannot be found from parameter pass?
+            }
+            String token = extras.getString("TOKEN");
+            int userID = extras.getInt("USERID");
+
+            user = findUser(token, userID);
+
+            if (user == null) {
+                Toast.makeText(this, "Could not get user.", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+
         setContentView(R.layout.activity_main);
 
         //Navigation Bar Code
@@ -31,5 +59,38 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNav, navController);
 
         //bottomNav.setBackgroundColor(getResources().getColor(R.color.navBarColor, getTheme()));
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //Save the fragment's instance
+        //getSupportFragmentManager().putFragment(outState, "explore", exploreFragment);
+        //getSupportFragmentManager().putFragment(outState, "profile", profileFragment);
+        //getSupportFragmentManager().putFragment(outState, "feed", feedFragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public UserProfile findUser(String token, int userID) {
+        GetUserTask output = new GetUserTask(token, userID);
+        output.execute();
+        try {
+            UserProfile user = output.get();  // get return value from thread.
+            return user;
+        } catch (ExecutionException err) {
+            err.printStackTrace();
+            return null;
+        } catch (InterruptedException err) {
+            err.printStackTrace();
+            return null;
+        }
+    }
+
+    public UserProfile getUser() {
+        return user;
     }
 }

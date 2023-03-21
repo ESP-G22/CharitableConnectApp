@@ -1,5 +1,6 @@
 package layout;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface UserProfileAttributes {
      * A profile picture of the user. Shown on profile page.
      * @return profile picture.
      */
-    Image getProfilePic();
+    Bitmap getProfilePic();
 
     /**
      * Get the level of user. 'ADMIN' for admin, 'ORGANISER' for organiser, 'USER' for attendee.
@@ -58,6 +59,20 @@ public interface UserProfileAttributes {
      */
     List<Integer> getFollowedUsers();
 
+    /**
+     * Get the number of events the user is the organiser for.
+     *
+     * @return number of events.
+     */
+    int getEventCount();
+
+    /**
+     * Get the number of users who follow the user.
+     *
+     * @return follower count.
+     */
+    int getFollowerCount();
+
     // update attributes
     void setUsername(String username);
 
@@ -65,7 +80,5 @@ public interface UserProfileAttributes {
 
     void setBio(String bio);
 
-    void setProfilePic(Image profilePic);
-
-    void setFollowedUsers(List<Integer> followedUsers);
+    void setProfilePic(Bitmap profilePic);
 }
