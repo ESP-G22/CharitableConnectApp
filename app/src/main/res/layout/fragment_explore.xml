@@ -10,214 +10,193 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="1000dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="125dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="64dp"
-                android:layout_marginTop="24dp"
-                android:text="Sports"
-                android:textAlignment="center"
-                android:textColor="#151515"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/textView15"
-                app:layout_constraintTop_toBottomOf="@+id/SportsButton" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="125dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="28dp"
-                android:text="Club Nights"
-                android:textAlignment="center"
-                android:textColor="#191818"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ClubButton" />
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="125dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="236dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Sports"
+                    android:textAlignment="center"
+                    android:textColor="#151515"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sportsImage" />
 
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="125dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="64dp"
-                android:layout_marginTop="16dp"
-                android:text="Movies"
-                android:textAlignment="center"
-                android:textColor="#090909"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/textView13"
-                app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="125dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Club Nights"
+                    android:textAlignment="center"
+                    android:textColor="#191818"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/clubImage" />
 
-            <Button
-                android:id="@+id/FoodButton"
-                android:layout_width="122dp"
-                android:layout_height="159dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="300dp"
-                android:text="Food Tasting"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="125dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="64dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Movies"
+                    android:textAlignment="center"
+                    android:textColor="#090909"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/textView13"
+                    app:layout_constraintTop_toBottomOf="@+id/moviesImage" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="147dp"
-                android:layout_height="173dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="300dp"
-                android:elevation="2dp"
-                android:src="@drawable/foodattable"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/foodImage"
+                    android:layout_width="147dp"
+                    android:layout_height="173dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="228dp"
+                    android:clickable="true"
+                    android:contentDescription="Go to food tasting feed."
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:src="@drawable/foodattable"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/MoviesButton"
-                android:layout_width="126dp"
-                android:layout_height="163dp"
-                android:layout_marginStart="64dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginBottom="376dp"
-                android:text="Movies"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/FoodButton" />
+                <ImageView
+                    android:id="@+id/moviesImage"
+                    android:layout_width="147dp"
+                    android:layout_height="173dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="228dp"
+                    android:layout_marginTop="228dp"
+                    android:clickable="true"
+                    android:contentDescription="Go to movies feed."
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:src="@drawable/movies"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="147dp"
-                android:layout_height="173dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="228dp"
-                android:layout_marginTop="300dp"
-                android:elevation="2dp"
-                android:src="@drawable/movies"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                <ImageView
+                    android:id="@+id/clubImage"
+                    android:layout_width="147dp"
+                    android:layout_height="173dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="472dp"
+                    android:clickable="true"
+                    android:contentDescription="Go to clubs feed."
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:src="@drawable/club"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/ClubButton"
-                android:layout_width="117dp"
-                android:layout_height="151dp"
-                android:layout_marginStart="44dp"
-                android:layout_marginTop="104dp"
-                android:text="Club Nights"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                <ImageView
+                    android:id="@+id/sportsImage"
+                    android:layout_width="147dp"
+                    android:layout_height="173dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="228dp"
+                    android:layout_marginTop="472dp"
+                    android:clickable="true"
+                    android:contentDescription="Go to sports feed."
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:src="@drawable/paid_sports_listing_may_20"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/SportsButton"
-                android:layout_width="125dp"
-                android:layout_height="149dp"
-                android:layout_marginTop="576dp"
-                android:layout_marginEnd="32dp"
-                android:text="Sports"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="125dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="16dp"
+                    android:text="FoodTasting"
+                    android:textAlignment="center"
+                    android:textColor="#101010"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/foodImage" />
 
-            <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="147dp"
-                android:layout_height="173dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="564dp"
-                android:elevation="2dp"
-                android:src="@drawable/club"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                <Button
+                    android:id="@+id/SubscribedButton"
+                    android:layout_width="105dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="24dp"
+                    android:text="SUBSCRIBED"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
 
-            <ImageView
-                android:id="@+id/imageView12"
-                android:layout_width="147dp"
-                android:layout_height="173dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="228dp"
-                android:layout_marginTop="564dp"
-                android:elevation="2dp"
-                android:src="@drawable/paid_sports_listing_may_20"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                <Button
+                    android:id="@+id/DateButton"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="4dp"
+                    android:text="DATE"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toEndOf="@+id/SubscribedButton"
+                    app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
 
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="125dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp"
-                android:text="FoodTasting"
-                android:textAlignment="center"
-                android:textColor="#101010"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                <Button
+                    android:id="@+id/TrendingButton"
+                    android:layout_width="101dp"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="32dp"
+                    android:text="TRENDING"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
 
-            <Button
-                android:id="@+id/SubscribedButton"
-                android:layout_width="105dp"
-                android:layout_height="54dp"
-                android:layout_marginStart="24dp"
-                android:text="SUBSCRIBED"
-                android:textSize="10sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
+                <EditText
+                    android:id="@+id/SearchButton"
+                    android:layout_width="333dp"
+                    android:layout_height="59dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:hint="Search"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ExploreText" />
 
-            <Button
-                android:id="@+id/DateButton"
-                android:layout_width="110dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="4dp"
-                android:text="DATE"
-                android:textSize="10sp"
-                app:layout_constraintStart_toEndOf="@+id/SubscribedButton"
-                app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
+                <TextView
+                    android:id="@+id/ExploreText"
+                    android:layout_width="157dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Explore"
+                    android:textColor="#191818"
+                    android:textSize="34sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
-            <Button
-                android:id="@+id/TrendingButton"
-                android:layout_width="101dp"
-                android:layout_height="52dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="32dp"
-                android:text="TRENDING"
-                android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
 
-            <EditText
-                android:id="@+id/SearchButton"
-                android:layout_width="333dp"
-                android:layout_height="59dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:hint="Search"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ExploreText" />
-
-            <TextView
-                android:id="@+id/ExploreText"
-                android:layout_width="151dp"
-                android:layout_height="64dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="56dp"
-                android:text="Explore"
-                android:textColor="#191818"
-                android:textSize="34sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 
