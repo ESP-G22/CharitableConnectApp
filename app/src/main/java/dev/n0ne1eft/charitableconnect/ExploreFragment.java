@@ -10,10 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import java.util.concurrent.ExecutionException;
 
@@ -52,203 +55,73 @@ public class  ExploreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
-        Button button1 = view.findViewById(R.id.SubscribedButton);
-        button1.setOnClickListener(new View.OnClickListener() {
+        Button subscribedButton = view.findViewById(R.id.SubscribedButton);
+        subscribedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeToFeedPageSubscribed(v);
+                goToFeed("Subscribed");
             }
         });
-        Button button2 = view.findViewById(R.id.DateButton);
-        button2.setOnClickListener(new View.OnClickListener() {
+        Button dateButton = view.findViewById(R.id.DateButton);
+        dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeToFeedPageDate(v);
+                goToFeed("Date");
             }
         });
         Button button3 = view.findViewById(R.id.TrendingButton);
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeToFeedPageTrending(v);
+                goToFeed("Trending");
             }
         });
-        Button button4 = view.findViewById(R.id.FoodButton);
+        ImageView button4 = (ImageView) view.findViewById(R.id.foodImage);
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeToFeedPageFoodTasting(v);
+                goToFeed("FoodTasting");
             }
         });
-        Button button5 = view.findViewById(R.id.MoviesButton);
+        ImageView button5 = (ImageView) view.findViewById(R.id.moviesImage);
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeToFeedPageMovies(v);
+                goToFeed("Movies");
             }
         });
-        Button button6 = view.findViewById(R.id.ClubButton);
+        ImageView button6 = (ImageView) view.findViewById(R.id.clubImage);
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeToFeedPageClubNights(v);
+                goToFeed("Club");
             }
         });
-        Button button7 = view.findViewById(R.id.SportsButton);
+        ImageView button7 = (ImageView) view.findViewById(R.id.sportsImage);
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeToFeedPageSports(v);
+                goToFeed("Sports");
             }
         });
-        return inflater.inflate(R.layout.fragment_explore, container, false);
-    }
-    public String changeToFeedPageSubscribed(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.SubscribedButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Subscribed");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-            // Return an empty string
-            return "Subscribed";
-        }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
-    }
-    public String changeToFeedPageDate(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.DateButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Date");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-            // Return an empty string
-            return "Date";
-        }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
-    }
-    public String changeToFeedPageTrending(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.TrendingButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Trending");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-            // Return an empty string
-            return "Trending";
-        }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
-    }
-    public String changeToFeedPageFoodTasting(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.FoodButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("FoodTasting");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-            // Return an empty string
-            return "FoodTasting";
-        }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
-    }
-    public String changeToFeedPageMovies(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.MoviesButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Movies");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-            // Return an empty string
-            return "Movies";
-        }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
-    }
-    public String changeToFeedPageClubNights(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.ClubButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Club");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-            // Return an empty string
-            return "Club";
-        }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
-    }
-    public String changeToFeedPageSports(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.SportsButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Sports");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-            // Return an empty string
-            return "Sports";
-        }
-        // Return null if the button clicked is not the one that triggers the page change
-        return null;
+        return view;
     }
     public String handletext(View v){
         EditText t = v.findViewById(R.id.SearchButton);
         String input = t.getText().toString();
         return input;
+    }
+
+    public void goToFeed(String category) {
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("TITLE", category);
+        navController.navigate(R.id.feedFragment, bundle);
     }
 }

@@ -92,7 +92,7 @@ public class ProfileFragment extends Fragment {
                 // Start a FragmentTransaction
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 // Replace the current fragment with the FeedPage fragment
-                fragmentTransaction.replace(R.id.textView, new FeedFragment());
+                fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
                 fragmentTransaction.addToBackStack(null);
                 // Commit the transaction
                 fragmentTransaction.commit();
@@ -115,7 +115,7 @@ public class ProfileFragment extends Fragment {
                 // Start a FragmentTransaction
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 // Replace the current fragment with the FeedPage fragment
-                fragmentTransaction.replace(R.id.textView, new FeedFragment());
+                fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
                 fragmentTransaction.addToBackStack(null);
                 // Commit the transaction
                 fragmentTransaction.commit();
@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment {
                 // Start a FragmentTransaction
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 // Replace the current fragment with the FeedPage fragment
-                fragmentTransaction.replace(R.id.textView, new FeedFragment());
+                fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
                 fragmentTransaction.addToBackStack(null);
                 // Commit the transaction
                 fragmentTransaction.commit();
@@ -159,7 +159,7 @@ public class ProfileFragment extends Fragment {
             // Start a FragmentTransaction
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
+            fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();
@@ -179,7 +179,7 @@ public class ProfileFragment extends Fragment {
             // Start a FragmentTransaction
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.textView, new FeedFragment());
+            fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
             fragmentTransaction.addToBackStack(null);
             // Commit the transaction
             fragmentTransaction.commit();

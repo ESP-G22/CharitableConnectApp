@@ -29,8 +29,6 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FeedFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class FeedFragment extends Fragment {
     private String pageTitle;
@@ -51,20 +49,14 @@ public class FeedFragment extends Fragment {
     public FeedFragment() {
         // Required empty public constructor
     }
-    public static FeedFragment newInstance(String param1, String param2) {
-        FeedFragment fragment = new FeedFragment();
-        Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainActivity activity = (MainActivity) getActivity();
-        user = activity.getUser();
+        if (getArguments() != null) {
+            pageTitle = getArguments().getString("TITLE"); // from bundle in explore buttons.
+        } else {
+            pageTitle = "Feed";
+        }
     }
 
     @Override
@@ -72,10 +64,13 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
-        //Call the eventShownfromExplore() function to handle the events shown
-        eventshownfromExplore(v);
+
+        //eventshownfromExplore(v);
 
         view = inflater.inflate(R.layout.fragment_feed, container, false);
+
+        TextView title = (TextView) view.findViewById(R.id.feedTitleText);
+        title.setText(pageTitle);
 
         //Launch new event
         FloatingActionButton newEventButton = view.findViewById(R.id.launchNewEventButton);
@@ -147,27 +142,26 @@ public class FeedFragment extends Fragment {
 
         if ("Subscribed".equals(pageTitle)) {
             //Only events we are subscribed to their organizer are shown
-
         } else if ("Date".equals(pageTitle)){
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Date");
         } else if ("Trending".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Trending");
         } else if ("FoodTasting".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("FoodTasting");
         } else if ("Movies".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Movies");
         } else if ("Club".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Club");
         } else if ("Sports".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Sports");
         } else {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Feed");
         }
 
