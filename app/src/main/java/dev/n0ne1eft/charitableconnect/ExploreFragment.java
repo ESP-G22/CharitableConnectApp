@@ -111,45 +111,6 @@ public class  ExploreFragment extends Fragment {
         });
         return view;
     }
-    public void changeToFeedPageSubscribed(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.SubscribedButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Subscribed");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-        }
-    }
-    public void changeToFeedPageDate(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.DateButton) {
-            // Create a new instance of the FeedPage fragment
-            FeedFragment feedPageFragment = new FeedFragment("Date");
-            // Get the FragmentManager
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            // Start a FragmentTransaction
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the FeedPage fragment
-            fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
-            fragmentTransaction.addToBackStack(null);
-            // Commit the transaction
-            fragmentTransaction.commit();
-        }
-    }
-    public void changeToFeedPageTrending(View v) {
-        // Check if the button clicked is the one that triggers the page change
-        if (v.getId() != R.id.TrendingButton) {
-            return;
-        }
-
-        goToFeed("Trending");
-    }
     public String handletext(View v){
         EditText t = v.findViewById(R.id.SearchButton);
         String input = t.getText().toString();

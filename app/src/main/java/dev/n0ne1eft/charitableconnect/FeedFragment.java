@@ -45,8 +45,6 @@ public class FeedFragment extends Fragment {
             this.pageTitle = "";
         }
     }
-    private View view;
-
 
     public FeedFragment() {
         // Required empty public constructor
@@ -145,25 +143,25 @@ public class FeedFragment extends Fragment {
         if ("Subscribed".equals(pageTitle)) {
             //Only events we are subscribed to their organizer are shown
         } else if ("Date".equals(pageTitle)){
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Date");
         } else if ("Trending".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Trending");
         } else if ("FoodTasting".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("FoodTasting");
         } else if ("Movies".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Movies");
         } else if ("Club".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Club");
         } else if ("Sports".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Sports");
         } else {
-            TextView textView2 = v.findViewById(R.id.textView2);
+            TextView textView2 = v.findViewById(R.id.feedTitleText);
             textView2.setText("Feed");
         }
 
