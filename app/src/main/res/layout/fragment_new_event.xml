@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     app:layout_constraintHorizontal_chainStyle="packed"
     app:layout_constraintVertical_chainStyle="packed"
-    tools:context=".NewEventFragment"
-    tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="-38dp">
+    tools:context=".NewEventFragment">
 
     <ScrollView
         android:id="@+id/newEventScroll"

@@ -196,11 +196,6 @@ public class HTTPConnection {
     }
 
     public OutputPair postImage(String urlStr, Bitmap image, String authHeaderValue) {
-        // convert image to byte array for upload.
-        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        //image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        //byte[] imageContents = stream.toByteArray();
-        //image.recycle();
 
         try {
             URL url = new URL(urlStr);
@@ -263,6 +258,7 @@ public class HTTPConnection {
     private OutputPair getResponse() {
         try {
             int responseCode = conn.getResponseCode();
+            System.out.println(responseCode);
             if (responseCode == 404) {
                 return new OutputPair(false, ERROR_404_MSG);
             }

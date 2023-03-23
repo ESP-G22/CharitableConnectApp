@@ -80,8 +80,8 @@ public class Event implements EventAttributes, Parcelable {
         }
 
         // Only choose of of these image setters.
-        setImageForTesting();
-        //setProperImage(attrs);
+        //setImageForTesting();
+        setProperImage(attrs);
     }
 
     private OutputPair getAttrs() {

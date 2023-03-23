@@ -74,7 +74,6 @@ public interface UserProfileAttributes {
     int getFollowerCount();
 
     // update attributes
-    void setUsername(String username);
 
     void setName(String name);
 

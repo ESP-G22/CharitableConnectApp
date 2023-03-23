@@ -24,7 +24,6 @@ public class UserGet implements UserGetProperties {
         if (!status.isSuccess()) {
             try {
                 JSONArray output = new JSONArray(status.getMessage());
-                System.out.println(status.getMessage());
                 JSONObject error = output.getJSONObject(0);
                 if (error.has("non_field_errors")) {
                     status.setMessage("Incorrect credentials");
@@ -61,6 +60,16 @@ public class UserGet implements UserGetProperties {
     }
 
     public OutputPair register(String email, String username, String password) {
+        // Check for empty input
+        if ("".equals(username)) {
+            return new OutputPair(false, "Username cannot be empty.");
+        }
+        if ("".equals(password)) {
+            return new OutputPair(false, "Password cannot be empty.");
+        }
+        if ("".equals(email)) {
+            return new OutputPair(false, "Email cannot be empty.");
+        }
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("email", email);
@@ -74,9 +83,20 @@ public class UserGet implements UserGetProperties {
         conn.disconnect();
 
         if (!status.isSuccess()) {
+            try {
+                JSONArray output = new JSONArray(status.getMessage());
+                JSONObject error = output.getJSONObject(0);
+                if (error.has("email")) {
+                    status.setMessage(error.getString("email"));
+                } else {
+                    status.setMessage("Unknown error in getting response");
+                }
+            } catch (JSONException err) {
+                status.setMessage("Unknown error in getting response");
+            }
+
             return status;
         }
-
         // If successful, output the success message
         return new OutputPair(true, "User has been added. You can now login.");
     }

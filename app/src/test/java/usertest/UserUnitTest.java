@@ -59,7 +59,7 @@ public class UserUnitTest {
     public void emptyLogin() {
         OutputPair out = userGet.login("", "");
         assertEquals(false, out.isSuccess());
-        //assertEquals("Password field is blank.\nUsername field is blank.", out.getMessage());
+        assertEquals("Username is invalid", out.getMessage());
     }
 
     @Test
@@ -127,5 +127,20 @@ public class UserUnitTest {
         } catch (Exception err) {
             fail(err.getMessage());
         }
+    }
+
+    @Test
+    public void changeDescription() {
+        String newdesc = "I am a movie fanatic!";
+        if (newdesc.equals(testUser.getBio())) {
+            newdesc = "I am a Quiz master.";
+        }
+        OutputPair status = testUser.editProfile(null, newdesc, null);
+
+        if (!status.isSuccess()) {
+            fail(status.getMessage());
+        }
+
+        assertEquals(testUser.getBio(), newdesc);
     }
 }

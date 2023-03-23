@@ -1,6 +1,7 @@
 package api;
 
 import android.graphics.Bitmap;
+import android.icu.util.Output;
 import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -74,8 +75,8 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         this.followerCount = attrs.getInt("followerCount");
 
         // Only choose of of these image setters.
-        setImageForTesting();
-        //setProperImage(attrs);
+        //setImageForTesting();
+        setProperImage(attrs);
     }
 
     private OutputPair getAttrs() {
@@ -114,10 +115,6 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     }
 
     @Override
-    public void setUsername(String username) {
-    }
-
-    @Override
     public List<Integer> getFollowedUsers() {
         return followedUsers;
     }
@@ -139,7 +136,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
 
     @Override
     public void setName(String name) {
-        UserValidate.checkName(name);
+        this.name = name;
     }
 
     @Override
@@ -147,6 +144,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
 
     @Override
     public void setBio(String bio) {
+        this.bio = bio;
     }
 
     @Override
@@ -169,6 +167,61 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
 
     @Override
     public void setProfilePic(Bitmap profilePic) {
+        this.avatar = profilePic;
+    }
+
+    public OutputPair editProfile(String name, String bio, Bitmap profilePic) {
+        HTTPConnection conn = new HTTPConnection();
+        String uuid = null;
+
+        if (profilePic != null) {
+            OutputPair status_image = conn.postImage(
+                    Util.ENDPOINT_IMAGE_UPLOAD, profilePic, getAuthHeaderValue()
+            );
+
+            if (!status_image.isSuccess()) {
+                return status_image;
+            }
+            uuid = status_image.getMessage();
+        }
+        Map<String, Object> params = new LinkedHashMap<>();
+        if (name != null) {
+            params.put("name", name);
+        }
+        if (bio != null) {
+            params.put("description", bio);
+        }
+        if (uuid != null) {
+            params.put("avatar", uuid);
+        }
+        JSONObject input = new JSONObject(params);
+
+        if (params.isEmpty()) {
+            return new OutputPair(true, "No details changed");
+        }
+
+        OutputPair status = conn.put(Util.getUserEndpoint(getID()), input, getAuthHeaderValue());
+        conn.disconnect();
+
+        if (!status.isSuccess()) {
+            return status;
+        }
+
+        if (name != null) {
+            setName(name);
+        }
+        if (bio != null) {
+            setBio(bio);
+        }
+        if (uuid != null) {
+            try {
+                setProfilePic(Util.getImage(uuid, getAuthHeaderValue()));
+            } catch (Exception err) {
+                return new OutputPair(false, "Could not set image locally");
+            }
+        }
+
+        return new OutputPair(true, "Profile details updated");
     }
 
     /**
