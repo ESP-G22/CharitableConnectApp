@@ -62,13 +62,13 @@ public class UserGet implements UserGetProperties {
     public OutputPair register(String email, String username, String password) {
         // Check for empty input
         if ("".equals(username)) {
-            return new OutputPair(false, "Username cannot be empty.");
+            return new OutputPair(false, "Username cannot be empty");
         }
         if ("".equals(password)) {
-            return new OutputPair(false, "Password cannot be empty.");
+            return new OutputPair(false, "Password cannot be empty");
         }
         if ("".equals(email)) {
-            return new OutputPair(false, "Email cannot be empty.");
+            return new OutputPair(false, "Email cannot be empty");
         }
         // Convert input into JSON
         Map<String, Object> params = new LinkedHashMap<>();
@@ -98,7 +98,7 @@ public class UserGet implements UserGetProperties {
             return status;
         }
         // If successful, output the success message
-        return new OutputPair(true, "User has been added. You can now login.");
+        return new OutputPair(true, "User has been added. You can now login");
     }
 
     public OutputPair getUserID(String username, String token) {
@@ -122,7 +122,7 @@ public class UserGet implements UserGetProperties {
                     return new OutputPair(true, Integer.toString(pk));
                 }
             }
-            return new OutputPair(false, "Username not found.");
+            return new OutputPair(false, "Username not found");
         } catch (JSONException err) {
             return new OutputPair(false, "Problem with parsing JSON");
         }

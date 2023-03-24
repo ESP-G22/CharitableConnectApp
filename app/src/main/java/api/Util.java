@@ -150,7 +150,7 @@ public class Util {
     }
 
     public static List<Bitmap> getImages(JSONArray uuids, String authHeaderValue) throws JSONException, IOException {
-        List<Bitmap> images = new LinkedList<Bitmap>();
+        List<Bitmap> images = new LinkedList<>();
 
         for (int i = 0; i < uuids.length(); i++) {
             images.add(Util.getImage(uuids.getString(i), authHeaderValue));

@@ -174,6 +174,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         HTTPConnection conn = new HTTPConnection();
         String uuid = null;
 
+        /*
         if (profilePic != null) {
             OutputPair status_image = conn.postImage(
                     Util.ENDPOINT_IMAGE_UPLOAD, profilePic, getAuthHeaderValue()
@@ -184,6 +185,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
             }
             uuid = status_image.getMessage();
         }
+        */
         Map<String, Object> params = new LinkedHashMap<>();
         if (name != null) {
             params.put("name", name);

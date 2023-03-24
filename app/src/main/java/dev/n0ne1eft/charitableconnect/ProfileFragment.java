@@ -125,7 +125,7 @@ public class ProfileFragment extends Fragment {
                     fragmentTransaction.commit();
                 }
             });
-            Subs.addView(t);
+            //Subs.addView(t);
         }
         LinearLayout posts = (LinearLayout)view.findViewById(R.id.postLayout);
         setEventPanel(events.get("POSTS"), posts);
@@ -189,6 +189,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public String changeToAdvSet(View v) {
+        Toast.makeText(getActivity(), getString(R.string.FEATURE_NOT_IMPLEMENTED), Toast.LENGTH_LONG);
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.adSet) {
             // Create a new instance of the FeedPage fragment
@@ -209,6 +210,7 @@ public class ProfileFragment extends Fragment {
         return null;
     }
     public String changeToEditProfile(View v) {
+        Toast.makeText(getActivity(), getString(R.string.FEATURE_NOT_IMPLEMENTED), Toast.LENGTH_LONG);
         // Check if the button clicked is the one that triggers the page change
         if (v.getId() == R.id.editButton) {
             // Create a new instance of the FeedPage fragment
