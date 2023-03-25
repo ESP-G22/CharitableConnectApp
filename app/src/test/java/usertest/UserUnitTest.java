@@ -22,7 +22,7 @@ public class UserUnitTest {
     public static final String testPassword1 = "password123";
     public static final String testEmail1 = "foo@bar.com";
     public static final String testName1 = "Bob";
-    public static final String testBio1 = "This user has no description.";
+    public static final String testBio1 = "I am a movie fanatic!";
     public static final String testToken1 = "5d3f89aea81317f5b26a30aceb4944d33edc18e0";
 
     public static final int testID1 = 4;

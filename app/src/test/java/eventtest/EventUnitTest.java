@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,17 +27,26 @@ import usertest.UserUnitTest;
 
 
 public class EventUnitTest {
-    public static final int testEventID = 3;
+    public static final int testEventID = 173;
     public static final String testEventType1 = "Other";
     public static final String testEventTitle1 = "Java unit testing";
     public static final String testEventDesc1 = "This is a description.";
-    public static final Date testEventDateTime1 = new Date();
+    public static final Date now = new Date();
+    public static Date testEventDateTime1 = null;
     public static final String testEventAddress1_1 = "Computer Science";
     public static final String testEventAddress2_1 = null;
     public static final String testEventPostcode1 = "BA2 7AY";
 
     public UserProfile user;
     public Event testEvent;
+
+    public void setDate() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(now);
+        c.add(Calendar.DATE, 1);
+
+        testEventDateTime1 = c.getTime();
+    }
 
     @Before
     public void setOrganiserUser() throws Exception {
@@ -45,13 +55,16 @@ public class EventUnitTest {
 
     @Before
     public void createEvent() throws IOException, JSONException {
+        setDate();
         EventCreate eventCreate = new EventCreate();
         OutputPair out = eventCreate.createEvent(testEventType1, testEventTitle1, testEventDesc1,
                 testEventDateTime1, testEventAddress1_1, testEventAddress2_1,
                 testEventPostcode1, null, user.getAuthHeaderValue());
-        testEvent = Event.getByDate(testEventDateTime1, user).get(0);
-        assertTrue(out.isSuccess());
+        if (!out.isSuccess()) {
+            fail(out.getMessage());
+        }
         assertEquals("Event has been created.", out.getMessage());
+        testEvent = Event.getByDate(testEventDateTime1, user).get(0);
     }
 
     @After
@@ -67,6 +80,7 @@ public class EventUnitTest {
     @Test
     public void getAttributes() {
         try {
+            System.out.println(testEvent.getTitle());
             assertEquals(testEventTitle1, testEvent.getTitle());
             assertEquals(testEventDesc1, testEvent.getDescription());
             assertEquals(true, testEvent.eventRequesterIsOrganiser());
@@ -93,7 +107,7 @@ public class EventUnitTest {
     @Test
     public void searchEvent() {
         try {
-            List<Event> output = Event.search("Test", user);
+            List<Event> output = Event.search("Quiz", user);
             assertEquals(testEventID, output.get(0).getID());
         } catch (Exception err) {
             err.printStackTrace();
@@ -175,7 +189,7 @@ public class EventUnitTest {
     @Test
     public void getEventRSVPs() {
         try {
-            Event e = new Event(3, user);
+            Event e = new Event(testEventID, user);
             e.getRsvp();
         } catch (Exception err) {
             err.printStackTrace();
