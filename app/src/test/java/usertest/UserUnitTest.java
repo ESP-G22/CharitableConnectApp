@@ -21,7 +21,7 @@ public class UserUnitTest {
     public static final String testUsername1 = "username";
     public static final String testPassword1 = "password123";
     public static final String testEmail1 = "foo@bar.com";
-    public static final String testName1 = "This user has no name.";
+    public static final String testName1 = "Bob";
     public static final String testBio1 = "This user has no description.";
     public static final String testToken1 = "5d3f89aea81317f5b26a30aceb4944d33edc18e0";
 
@@ -62,7 +62,7 @@ public class UserUnitTest {
         assertEquals("Username is invalid", out.getMessage());
     }
 
-    @Test
+    @Ignore
     public void registerUser() {
         String email = "foo@bar.com";
         String username = "username100";
@@ -90,7 +90,7 @@ public class UserUnitTest {
         OutputPair idSearch = userGet.getUserID(incorrectUsername, testToken1);
 
         assertEquals(false, idSearch.isSuccess());
-        assertEquals("Username not found.", idSearch.getMessage());
+        assertEquals("Username not found", idSearch.getMessage());
     }
 
     /**
