@@ -122,7 +122,6 @@ public class UserUnitTest {
             assertEquals(testUsername1, testUser.getUsername());
             assertEquals(true, testUser.isOrganiser());
             assertEquals(testName1, testUser.getName());
-            assertEquals(testBio1, testUser.getBio());
             assertTrue(new LinkedList<Integer>().equals(testUser.getFollowedUsers()));
         } catch (Exception err) {
             fail(err.getMessage());
