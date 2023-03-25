@@ -1,8 +1,11 @@
 package api;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import org.json.JSONObject;
+
+import java.io.File;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -15,6 +18,23 @@ import layout.OutputPair;
 public class EventCreate implements EventCreateProperties {
     public OutputPair createEvent(String eventType, String title, String description, Date datetime, String address1, String address2, String postcode, List<Bitmap> images,
                                   String organiserAuthHeaderValue) {
+        // Check for empty input
+        if ("".equals(title)) {
+            return new OutputPair(false, "Title cannot be empty");
+        }
+        if ("".equals(description)) {
+            return new OutputPair(false, "Description cannot be empty");
+        }
+        if ("".equals(address1)) {
+            return new OutputPair(false, "Address cannot be empty");
+        }
+        if ("".equals(postcode)) {
+            return new OutputPair(false, "Postcode cannot be empty");
+        }
+        Date today = new Date();
+        if (datetime.compareTo(today) < 0) {
+            return new OutputPair(false, "Cannot set an event in the past!");
+        }
 
         HTTPConnection conn = new HTTPConnection();
         List<String> uuids = new LinkedList<>();

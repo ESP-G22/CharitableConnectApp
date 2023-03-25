@@ -32,6 +32,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class FeedFragment extends Fragment {
     private String pageTitle;
+    private String titleKeyword;
+    private boolean byTitle;
 
     private UserProfile user;
 
@@ -53,10 +55,13 @@ public class FeedFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            pageTitle = getArguments().getString("TITLE"); // from bundle in explore buttons.
+            titleKeyword = getArguments().getString("TITLE"); // from bundle in explore buttons.
+            byTitle = getArguments().getBoolean("SEARCH_BY_TITLE");
         } else {
-            pageTitle = "Feed";
+            titleKeyword = "Feed";
+            byTitle = false;
         }
+        pageTitle = getTitle();
         MainActivity activity = (MainActivity) getActivity();
         user = activity.getUser();
     }
@@ -88,7 +93,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (user.isAttendee()) {
-                    Toast.makeText(getActivity(), "Only organisers can create events.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.USER_CREATING_EVENT_ERROR, Toast.LENGTH_LONG).show();
                     return;
                 }
                 NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
@@ -99,8 +104,14 @@ public class FeedFragment extends Fragment {
         LinearLayout linlayout = view.findViewById(R.id.linlayout);
 
         List<Event> list;
-        Pair<String,List<Event>> a = getEventsByTitle(pageTitle);
+        Pair<String,List<Event>> a = getEventsByTitle(titleKeyword);
         list = a.arg2;
+
+        if (list.isEmpty()) {
+            System.out.println(titleKeyword);
+            String msg = getEmptyMessage();
+            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+        }
 
         //View view2;
         for (int i = 0; i < list.size(); i++) {
@@ -125,7 +136,6 @@ public class FeedFragment extends Fragment {
 
     public void showEvent(Event event) {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
-        //navController.navigate(R.id.viewEventFragment);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("EVENT", event);
@@ -171,7 +181,7 @@ public class FeedFragment extends Fragment {
     }
 
     public Pair<String, List<Event>> getEventsByTitle(String pageTitle) {
-        GetEventsTask task = new GetEventsTask(pageTitle, user);
+        GetEventsTask task = new GetEventsTask(pageTitle, byTitle, user);
         task.execute();
         try {
             Pair output = task.get();  // get return value from thread.
@@ -208,46 +218,100 @@ public class FeedFragment extends Fragment {
         }
         */
     }
+    public String getTitle() {
+        if (byTitle) {
+            return "Results for \"" + titleKeyword + "\"";
+        }
 
+        switch(titleKeyword) {
+            case "sports":
+                return getString(R.string.category_sports);
+            case "community":
+                return getString(R.string.category_community);
+            case "localBusiness":
+                return getString(R.string.category_local_business);
+            case "climate":
+                return getString(R.string.category_climate);
+            case "date":
+                return "Today";
+            case "trending":
+                return "Trending";
+            case "subscribed":
+                return "Subscribed";
+            default:
+                return "Feed";
+        }
+    }
+
+    public String getEmptyMessage() {
+        if (byTitle) {
+            return "No results containing \"" + titleKeyword + "\"";
+        }
+
+        switch(titleKeyword) {
+            case "sports":
+                return "No events found for " + pageTitle;
+            case "community":
+                return "No events found for " + pageTitle;
+            case "localBusiness":
+                return "No events found for " + pageTitle;
+            case "climate":
+                return "No events found for " + pageTitle;
+            case "date":
+                return "No events found today";
+            case "trending":
+                return "No trending events found";
+            case "subscribed":
+                return "No subscribed events, get subscribing!";
+            default:
+                return "No events in feed";
+        }
+    }
 }
 
 
 class GetEventsTask extends AsyncTask<String, String, Pair<String, List<Event>>> {
-    private String pageTitle;
+    private String keyword;
+    private boolean byTitle;
     private UserProfile userRequester;
 
-    public GetEventsTask(String pageTitle, UserProfile userRequester) {
+    public GetEventsTask(String keyword, boolean byTitle, UserProfile userRequester) {
         super();
-        this.pageTitle = pageTitle;
+        this.keyword = keyword;
+        this.byTitle = byTitle;
         this.userRequester = userRequester;
     }
 
     protected Pair<String, List<Event>> doInBackground(String... params) {
         List<Event> events;
         try {
-            if ("Subscribed".equals(pageTitle)) {
-                // TODO: get subscribed events
-                events = Event.getEventsList(userRequester);
-                //Only events we are subscribed to their organizer are shown
-            } else if ("Date".equals(pageTitle)) {
-                events = Event.getByDate(new Date(), userRequester);
-            } else if ("Trending".equals(pageTitle)) {
-                events = Event.getTrendingEvents(userRequester);
-            } else if ("FoodTasting".equals(pageTitle)) {
-                //Only food tasting events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
-            } else if ("Movies".equals(pageTitle)) {
-                //Only movie events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
-            } else if ("Club".equals(pageTitle)) {
-                //Only club events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
-            } else if ("Sports".equals(pageTitle)) {
-                //Only sports events are shown
-                events = Event.getByEventType(pageTitle, userRequester);
+            if (byTitle) {
+                events = Event.search(keyword, userRequester);
             } else {
-                //All events are shown as before
-                events = Event.getEventsList(userRequester);
+                if ("subscribed".equals(keyword)) {
+                    List<Integer> ids = userRequester.getSubscribedEvents();
+                    events = Event.idsToEvents(ids, userRequester);
+                    //Only events we are subscribed to their organizer are shown
+                } else if ("date".equals(keyword)) {
+                    events = Event.getByDate(new Date(), userRequester);
+                } else if ("trending".equals(keyword)) {
+                    events = Event.getTrendingEvents(userRequester);
+                } else if ("localBusiness".equals(keyword)) {
+                    //Only food tasting events are shown
+                    events = Event.getByEventType("LocalBusiness", userRequester);
+                } else if ("climate".equals(keyword)) {
+                    //Only movie events are shown
+                    events = Event.getByEventType("Climate", userRequester);
+                } else if ("community".equals(keyword)) {
+                    //Only club events are shown
+                    events = Event.getByEventType("Community", userRequester);
+                } else if ("sports".equals(keyword)) {
+                    //Only sports events are shown
+                    events = Event.getByEventType("Sports", userRequester);
+                } else {
+                    //All events are shown as before
+                    events = Event.getEventsList(userRequester);
+                }
             }
         } catch (Exception err) {
             err.printStackTrace();

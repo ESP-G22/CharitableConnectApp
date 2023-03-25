@@ -47,7 +47,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="Search"
+        android:hint="Search by Event Title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ExploreText" />
 
@@ -76,12 +76,12 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textView16"
+                    android:id="@+id/sportsText"
                     android:layout_width="125dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="224dp"
                     android:layout_marginTop="16dp"
-                    android:text="Sports"
+                    android:text="@string/category_sports"
                     android:textAlignment="center"
                     android:textColor="#151515"
                     android:textSize="20sp"
@@ -90,75 +90,75 @@
                     app:layout_constraintTop_toBottomOf="@+id/sportsImage" />
 
                 <TextView
-                    android:id="@+id/textView15"
+                    android:id="@+id/communityText"
                     android:layout_width="125dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="48dp"
                     android:layout_marginTop="16dp"
-                    android:text="Club Nights"
+                    android:text="@string/category_community"
                     android:textAlignment="center"
                     android:textColor="#191818"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/clubImage" />
+                    app:layout_constraintTop_toBottomOf="@+id/communityImage" />
 
                 <TextView
-                    android:id="@+id/textView14"
-                    android:layout_width="125dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="52dp"
+                    android:id="@+id/localBusinessesText"
+                    android:layout_width="140dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="40dp"
                     android:layout_marginTop="16dp"
-                    android:text="Movies"
+                    android:text="@string/category_local_business"
                     android:textAlignment="center"
                     android:textColor="#090909"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/textView13"
-                    app:layout_constraintTop_toBottomOf="@+id/moviesImage" />
+                    app:layout_constraintStart_toEndOf="@+id/climateText"
+                    app:layout_constraintTop_toBottomOf="@+id/localBusinessesImage" />
 
                 <ImageView
-                    android:id="@+id/foodImage"
+                    android:id="@+id/climateImage"
                     android:layout_width="147dp"
                     android:layout_height="173dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="20dp"
                     android:clickable="true"
-                    android:contentDescription="Go to food tasting feed."
+                    android:contentDescription="Go to climate feed."
                     android:elevation="2dp"
                     android:focusable="true"
-                    android:src="@drawable/foodattable"
+                    android:src="@drawable/climate"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/moviesImage"
+                    android:id="@+id/localBusinessesImage"
                     android:layout_width="147dp"
                     android:layout_height="173dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="210dp"
                     android:layout_marginTop="20dp"
                     android:clickable="true"
-                    android:contentDescription="Go to movies feed."
+                    android:contentDescription="Go to local businesses feed."
                     android:elevation="2dp"
                     android:focusable="true"
-                    android:src="@drawable/movies"
+                    android:src="@drawable/localbusiness"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/clubImage"
+                    android:id="@+id/communityImage"
                     android:layout_width="147dp"
                     android:layout_height="173dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="260dp"
                     android:clickable="true"
-                    android:contentDescription="Go to clubs feed."
+                    android:contentDescription="Go to community feed."
                     android:elevation="2dp"
                     android:focusable="true"
-                    android:src="@drawable/club"
+                    android:src="@drawable/community"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -178,18 +178,18 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView13"
+                    android:id="@+id/climateText"
                     android:layout_width="125dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="48dp"
                     android:layout_marginTop="16dp"
-                    android:text="FoodTasting"
+                    android:text="@string/category_climate"
                     android:textAlignment="center"
                     android:textColor="#101010"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/foodImage" />
+                    app:layout_constraintTop_toBottomOf="@+id/climateImage" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

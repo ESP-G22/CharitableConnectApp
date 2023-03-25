@@ -65,5 +65,21 @@
     <string name="address_1_title">Address Line 1</string>
     <string name="postcode_hint">Postcode of the event\'s address</string>
     <string name="postcode_title">Postcode</string>
-
+    <string name="my_posts_content_description">My posts</string>
+    <string name="upcoming_events_content_description">Upcoming Events</string>
+    <string name="events_in_feed_content_description">Events in Feed</string>
+    <string name="feed_title">Feed</string>
+    <string name="new_event_content_description">Create a new event</string>
+    <string name="feed_scroll_content_description">Scroll to see events</string>
+    <string name="category_climate">Climate</string>
+    <string name="category_local_business">Local Business</string>
+    <string name="category_community">Community</string>
+    <string name="category_sports">Sports</string>
+    <string-array name="categories">
+        <item>Other</item>
+        <item>@string/category_climate</item>
+        <item>@string/category_local_business</item>
+        <item>@string/category_sports</item>
+        <item>@string/category_community</item>
+    </string-array>
 </resources>

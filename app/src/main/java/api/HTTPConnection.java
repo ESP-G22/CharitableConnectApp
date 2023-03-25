@@ -10,7 +10,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -196,12 +199,6 @@ public class HTTPConnection {
     }
 
     public OutputPair postImage(String urlStr, Bitmap image, String authHeaderValue) {
-        // convert image to byte array for upload.
-        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        //image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        //byte[] imageContents = stream.toByteArray();
-        //image.recycle();
-
         try {
             URL url = new URL(urlStr);
             conn = (HttpURLConnection) url.openConnection();
@@ -215,10 +212,12 @@ public class HTTPConnection {
             image.compress(CompressFormat.JPEG, 50, out);
             out.close();
         } catch (IOException err) {
+            err.printStackTrace();
             return new OutputPair(false, PROBLEM_WITH_SENDING_REQUEST_MSG);
         }
 
         OutputPair output = getResponse();
+        System.out.println(output.getMessage());
 
         if (!output.isSuccess()) {
             return output;
@@ -263,6 +262,7 @@ public class HTTPConnection {
     private OutputPair getResponse() {
         try {
             int responseCode = conn.getResponseCode();
+            System.out.println(responseCode);
             if (responseCode == 404) {
                 return new OutputPair(false, ERROR_404_MSG);
             }

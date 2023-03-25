@@ -1,9 +1,8 @@
 package dev.n0ne1eft.charitableconnect;
 
 import android.os.Bundle;
-import android.view.View.OnClickListener;
+import android.view.KeyEvent;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.widget.Button;
 import android.view.LayoutInflater;
@@ -11,14 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import java.util.concurrent.ExecutionException;
 
 import api.UserProfile;
 
@@ -64,51 +58,65 @@ public class  ExploreFragment extends Fragment {
         subscribedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Subscribed");
+                goToFeed("subscribed", false);
             }
         });
         Button dateButton = view.findViewById(R.id.DateButton);
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Date");
+                goToFeed("date", false);
             }
         });
         Button button3 = view.findViewById(R.id.TrendingButton);
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Trending");
+                goToFeed("trending", false);
             }
         });
-        ImageView button4 = (ImageView) view.findViewById(R.id.foodImage);
+        ImageView button4 = (ImageView) view.findViewById(R.id.climateImage);
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("FoodTasting");
+                goToFeed("climate", false);
             }
         });
-        ImageView button5 = (ImageView) view.findViewById(R.id.moviesImage);
+        ImageView button5 = (ImageView) view.findViewById(R.id.localBusinessesImage);
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Movies");
+                goToFeed("localBusiness", false);
             }
         });
-        ImageView button6 = (ImageView) view.findViewById(R.id.clubImage);
+        ImageView button6 = (ImageView) view.findViewById(R.id.communityImage);
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Club");
+                goToFeed("community", false);
             }
         });
         ImageView button7 = (ImageView) view.findViewById(R.id.sportsImage);
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Sports");
+                goToFeed("sports", false);
             }
         });
+
+        EditText search = (EditText) view.findViewById(R.id.SearchButton);
+        search.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    goToFeed(search.getText().toString(), true);
+                    // Perform action on key press
+                    return true;
+                }
+                return false;
+            }
+        });
+
         return view;
     }
     public String handletext(View v){
@@ -117,11 +125,12 @@ public class  ExploreFragment extends Fragment {
         return input;
     }
 
-    public void goToFeed(String category) {
+    public void goToFeed(String category, boolean byTitle) {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
 
         Bundle bundle = new Bundle();
         bundle.putString("TITLE", category);
+        bundle.putBoolean("SEARCH_BY_TITLE", byTitle);
         navController.navigate(R.id.feedFragment, bundle);
     }
 }
