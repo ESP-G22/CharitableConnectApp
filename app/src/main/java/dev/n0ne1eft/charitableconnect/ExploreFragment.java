@@ -2,9 +2,7 @@ package dev.n0ne1eft.charitableconnect;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View.OnClickListener;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.widget.Button;
 import android.view.LayoutInflater;
@@ -12,15 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import java.util.concurrent.ExecutionException;
 
 import api.UserProfile;
 
@@ -66,49 +58,49 @@ public class  ExploreFragment extends Fragment {
         subscribedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Subscribed", false);
+                goToFeed("subscribed", false);
             }
         });
         Button dateButton = view.findViewById(R.id.DateButton);
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Date", false);
+                goToFeed("date", false);
             }
         });
         Button button3 = view.findViewById(R.id.TrendingButton);
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Trending", false);
+                goToFeed("trending", false);
             }
         });
-        ImageView button4 = (ImageView) view.findViewById(R.id.foodImage);
+        ImageView button4 = (ImageView) view.findViewById(R.id.climateImage);
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("FoodTasting", false);
+                goToFeed("climate", false);
             }
         });
-        ImageView button5 = (ImageView) view.findViewById(R.id.moviesImage);
+        ImageView button5 = (ImageView) view.findViewById(R.id.localBusinessesImage);
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Movies", false);
+                goToFeed("localBusiness", false);
             }
         });
-        ImageView button6 = (ImageView) view.findViewById(R.id.clubImage);
+        ImageView button6 = (ImageView) view.findViewById(R.id.communityImage);
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Club", false);
+                goToFeed("community", false);
             }
         });
         ImageView button7 = (ImageView) view.findViewById(R.id.sportsImage);
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToFeed("Sports", false);
+                goToFeed("sports", false);
             }
         });
 

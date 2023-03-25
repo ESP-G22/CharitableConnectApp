@@ -85,9 +85,11 @@ public class UserGet implements UserGetProperties {
         if (!status.isSuccess()) {
             try {
                 JSONArray output = new JSONArray(status.getMessage());
-                JSONObject error = output.getJSONObject(0);
+                JSONObject msg = output.getJSONObject(0);
+                JSONObject error = msg.getJSONObject("error");
+
                 if (error.has("email")) {
-                    status.setMessage(error.getString("email"));
+                    status.setMessage("Invalid email address");
                 } else {
                     status.setMessage("Unknown error in getting response");
                 }

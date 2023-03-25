@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -38,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -174,6 +176,14 @@ public class NewEventFragment extends Fragment {
             @Override
             public void onClick(View v) {selectImage(v);}
         });
+
+        // Set dropdown for event types
+        Spinner eventTypesWidget = view.findViewById(R.id.eventTypeDropdown);
+        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(
+                getContext(), R.array.categories, android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        eventTypesWidget.setAdapter(adapter);
 
         //Select date
         initDatePicker();
@@ -372,16 +382,17 @@ public class NewEventFragment extends Fragment {
         EditText descriptionBox = (EditText) view.findViewById(R.id.descriptionText);
         EditText address1Box = (EditText) view.findViewById(R.id.address1EditText);
         EditText postcodeBox = (EditText) view.findViewById(R.id.postcodeEditText);
+        Spinner eventTypeSpinner = (Spinner) view.findViewById(R.id.eventTypeDropdown);
 
         List<Bitmap> images = allImagesAttached;
         String title = titleBox.getText().toString();
         String description = descriptionBox.getText().toString();
         String address1 = address1Box.getText().toString();
         String postcode = postcodeBox.getText().toString();
+        String eventType = eventTypeSpinner.getSelectedItem().toString();
 
         // Need input boxes for these
         String address2 = null;
-        String eventType = "Other";
 
         // Get date
         DatePicker dateWidget = datePickerDialog.getDatePicker();
@@ -398,7 +409,7 @@ public class NewEventFragment extends Fragment {
         try {
             datetime = Util.valuesToDate(year, month, day, hour, minute);
         } catch (ParseException err) {
-            return new OutputPair(false, "Cannot parse event time and date.");
+            return new OutputPair(false, getString(R.string.PARSING_DATETIME_ERROR));
         }
 
         NewEventTask create = new NewEventTask(

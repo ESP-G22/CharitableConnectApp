@@ -71,5 +71,15 @@
     <string name="feed_title">Feed</string>
     <string name="new_event_content_description">Create a new event</string>
     <string name="feed_scroll_content_description">Scroll to see events</string>
-
+    <string name="category_climate">Climate</string>
+    <string name="category_local_business">Local Business</string>
+    <string name="category_community">Community</string>
+    <string name="category_sports">Sports</string>
+    <string-array name="categories">
+        <item>Other</item>
+        <item>@string/category_climate</item>
+        <item>@string/category_local_business</item>
+        <item>@string/category_sports</item>
+        <item>@string/category_community</item>
+    </string-array>
 </resources>
