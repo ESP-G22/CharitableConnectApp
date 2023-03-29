@@ -59,7 +59,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
             throw new Exception(out.getMessage());
         }
 
-        // Set attributes
+        // Set attributes from profile get request
         JSONArray arr = new JSONArray(out.getMessage());
         JSONObject attrs = arr.getJSONObject(0);
 
@@ -69,8 +69,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         this.userType = attrs.getString("userType");
 
         ObjectMapper mapper = new ObjectMapper();
-        this.followedUsers = new LinkedList<>();
-        this.followedUsers = Arrays.asList(mapper.readValue(attrs.getJSONArray("followedUsers").toString(), Integer[].class));
+        this.followedUsers = new LinkedList<>(Arrays.asList(mapper.readValue(attrs.getJSONArray("followedUsers").toString(), Integer[].class)));
         this.eventCount = attrs.getInt("eventCount");
         this.followerCount = attrs.getInt("followerCount");
 
@@ -79,9 +78,24 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         //setProperImage(attrs);
     }
 
+    /**
+     * Get user profile ID endpoint
+     *
+     * @return URL string
+     */
+    public String getUserEndpoint() {
+        return Util.getUserEndpoint(getID());
+    }
+
+    /**
+     * Get all attrs from user profile ID endpoint.
+     *
+     * @return JSON string where the keys are the attribute names and the
+     * values are the attribute values.
+     */
     private OutputPair getAttrs() {
         HTTPConnection conn = new HTTPConnection();
-        OutputPair status = conn.get(Util.getUserEndpoint(getID()), getAuthHeaderValue());
+        OutputPair status = conn.get(getUserEndpoint(), getAuthHeaderValue());
 
         return status;
     }
@@ -202,7 +216,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
             return new OutputPair(true, "No details changed");
         }
 
-        OutputPair status = conn.put(Util.getUserEndpoint(getID()), input, getAuthHeaderValue());
+        OutputPair status = conn.put(getUserEndpoint(), input, getAuthHeaderValue());
         conn.disconnect();
 
         if (!status.isSuccess()) {
@@ -266,7 +280,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     public OutputPair delete() {
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
-        OutputPair status = conn.delete(Util.getUserEndpoint(id), getAuthHeaderValue());
+        OutputPair status = conn.delete(getUserEndpoint(), getAuthHeaderValue());
         conn.disconnect();
 
         if (!status.isSuccess()) {
@@ -391,6 +405,63 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         }
 
         return new OutputPair(true, "Password changed.");
+    }
+
+    public boolean isSubscribedTo(UserProfile user) {
+        return getFollowedUsers().contains(user.getID());
+    }
+    public OutputPair subscribe(UserProfile followedUser) {
+        if (followedUser.getID() == getID()) {
+            return new OutputPair(false, "You cannot subscribe to yourself!");
+        }
+        if (isSubscribedTo(followedUser)) {
+            return new OutputPair(false, "You have already subscribed to " + followedUser.getUsername());
+        }
+
+        OutputPair status = updateFollowedUsers();
+        System.out.println(status.getMessage());
+
+        if (status.isSuccess()) {
+            followedUsers.add(followedUser.getID());
+            followedUser.setFollowerCount(getFollowerCount() + 1);
+        }
+
+        return status;
+    }
+
+    public OutputPair unsubscribe(UserProfile followedUser) {
+        if (!isSubscribedTo(followedUser)) {
+            return new OutputPair(
+                    false,
+                    "Cannot unsubscribe when you have not subscribed to" + followedUser.getUsername()
+            );
+        }
+
+        OutputPair status = updateFollowedUsers();
+
+        if (status.isSuccess()) {
+            int idx = getFollowedUsers().indexOf(followedUser.getID());
+            followedUsers.remove(idx);
+            followedUser.setFollowerCount(getFollowerCount() - 1);
+        }
+
+        return status;
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    private OutputPair updateFollowedUsers() {
+        // Convert input into JSON
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put("followedUsers", followedUsers);
+        JSONObject input = new JSONObject(params);
+
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.put(getUserEndpoint(), input, getAuthHeaderValue());
+
+        return status;
     }
 
     public int describeContents() {

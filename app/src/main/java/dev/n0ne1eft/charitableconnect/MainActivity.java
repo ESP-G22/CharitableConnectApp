@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            user = (UserProfile) savedInstanceState.getParcelable("USER");
+            user = savedInstanceState.getParcelable("USER");
             //exploreFragment = (ExploreFragment) getSupportFragmentManager().getFragment(savedInstanceState, "explore");
             //profileFragment = (ProfileFragment) getSupportFragmentManager().getFragment(savedInstanceState, "profile");
             //feedFragment = (FeedFragment) getSupportFragmentManager().getFragment(savedInstanceState, "feed");

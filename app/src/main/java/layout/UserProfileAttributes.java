@@ -2,6 +2,8 @@ package layout;
 
 import android.graphics.Bitmap;
 import android.media.Image;
+
+import java.util.LinkedList;
 import java.util.List;
 
 public interface UserProfileAttributes {

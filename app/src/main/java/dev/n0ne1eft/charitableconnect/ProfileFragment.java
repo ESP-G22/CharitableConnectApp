@@ -72,16 +72,16 @@ public class ProfileFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         TextView subC = view.findViewById(R.id.subC);
-            subC.setText(Integer.toString(user.getFollowerCount()));
+        subC.setText(Integer.toString(user.getFollowerCount()));
 
         TextView eventC = view.findViewById(R.id.eventC);
         eventC.setText(Integer.toString(user.getEventCount()));
 
         TextView profDesc = view.findViewById(R.id.profDesc);
-            profDesc.setText(user.getBio());
+        profDesc.setText(user.getBio());
 
         TextView profName = view.findViewById(R.id.ProfileName);
-            profName.setText(user.getUsername());
+        profName.setText(user.getUsername());
 
         ImageView profilePic = (ImageView) view.findViewById(R.id.DisplayPic);
         if (user.getProfilePic() != null) {
@@ -89,46 +89,30 @@ public class ProfileFragment extends Fragment {
         }
 
         Button editButton = view.findViewById(R.id.editButton);
-            editButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) { changeToEditProfile(v); }
+        editButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                changeToEditProfile(v);
+            }
         });
 
         Button adSButton = view.findViewById(R.id.adSet);
-            editButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) { changeToAdvSet(v); }
+        editButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                changeToAdvSet(v);
+            }
         });
         //ScrollView layout = view.findViewById(R.id.subsScrollView);
 
         Map<String, List<Event>> events = getEvents();
 
-        LinearLayout upCL = (LinearLayout)view.findViewById(R.id.upcLayout);
+        LinearLayout upCL = (LinearLayout) view.findViewById(R.id.upcLayout);
         setEventPanel(events.get("UPCOMING"), upCL);
 
-        LinearLayout Subs = (LinearLayout)view.findViewById(R.id.subsLayout);
-        for (int i=0; i<100; i++ ) {
-            ImageButton t;
-            t = new ImageButton(getActivity());
-            t.setId(i);
-            t.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
-            t.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FeedFragment feedPageFragment = new FeedFragment();
-                    // Get the FragmentManager
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    // Start a FragmentTransaction
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    // Replace the current fragment with the FeedPage fragment
-                    fragmentTransaction.replace(R.id.feedTitleText, new FeedFragment());
-                    fragmentTransaction.addToBackStack(null);
-                    // Commit the transaction
-                    fragmentTransaction.commit();
-                }
-            });
-            //Subs.addView(t);
-        }
-        LinearLayout posts = (LinearLayout)view.findViewById(R.id.postLayout);
-        setEventPanel(events.get("POSTS"), posts);
+        LinearLayout myPostsLayout = (LinearLayout) view.findViewById(R.id.postLayout);
+        setEventPanel(events.get("POSTS"), myPostsLayout);
+
+        LinearLayout Subs = (LinearLayout) view.findViewById(R.id.subsLayout);
+        setEventPanel(events.get("SUBSCRIPTIONS"), Subs);
 
         return view;
     }
@@ -138,6 +122,7 @@ public class ProfileFragment extends Fragment {
         Map<String, List<Event>> output = new HashMap<>();
         GetMyEventsTask task1 = new GetMyEventsTask(user);
         GetUpcomingEventsTask task2 = new GetUpcomingEventsTask(user);
+        GetSubscriptionEventsTask task3 = new GetSubscriptionEventsTask(user);
 
         Pair<String, List<Event>> task1_status;
         task1.execute();
@@ -152,6 +137,14 @@ public class ProfileFragment extends Fragment {
         try {
             task2_status = task2.get();  // get return value from thread.
             output.put("UPCOMING", task2_status.arg2);
+        } catch (ExecutionException err) {
+        } catch (InterruptedException err) {
+        }
+        Pair<String, List<Event>> task3_status;
+        task3.execute();
+        try {
+            task3_status = task3.get();  // get return value from thread.
+            output.put("SUBSCRIPTIONS", task3_status.arg2);
         } catch (ExecutionException err) {
         } catch (InterruptedException err) {
         }
@@ -269,6 +262,34 @@ class GetMyEventsTask extends AsyncTask<String, String, Pair<String, List<Event>
         } catch (Exception err) {
             err.printStackTrace();
             return new Pair(err.getMessage(), new LinkedList<Event>());
+        }
+
+        return new Pair("success", events);
+    }
+}
+
+class GetSubscriptionEventsTask extends AsyncTask<String, String, Pair<String, List<Event>>> {
+    private UserProfile userRequester;
+
+    public GetSubscriptionEventsTask(UserProfile userRequester) {
+        super();
+        this.userRequester = userRequester;
+    }
+
+    protected Pair<String, List<Event>> doInBackground(String... params) {
+        List<Event> events = new LinkedList<>();
+
+        for (int id : userRequester.getFollowedUsers()) {
+            try {
+                List<Event> subEvents = Event.getEventsFromOrganiser(id, userRequester);
+
+                for (Event e : subEvents) {
+                    events.add(e);
+                }
+            } catch (Exception err) {
+                err.printStackTrace();
+                return new Pair(err.getMessage(), new LinkedList<Event>());
+            }
         }
 
         return new Pair("success", events);

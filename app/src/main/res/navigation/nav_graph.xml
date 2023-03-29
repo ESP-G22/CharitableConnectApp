@@ -25,7 +25,11 @@
         android:id="@+id/newEventFragment"
         android:name="dev.n0ne1eft.charitableconnect.NewEventFragment"
         android:label="Create New Event"
-        tools:layout="@layout/fragment_new_event" />
+        tools:layout="@layout/fragment_new_event">
+    <action
+        android:id="@+id/action_newEventToFeed"
+        app:destination="@id/feedFragment" />
+    </fragment>
     <fragment
         android:id="@+id/viewEventFragment"
         android:name="dev.n0ne1eft.charitableconnect.ViewEventFragment"

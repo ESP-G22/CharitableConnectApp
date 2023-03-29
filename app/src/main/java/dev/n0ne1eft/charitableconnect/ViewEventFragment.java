@@ -85,7 +85,20 @@ public class ViewEventFragment extends Fragment {
         view.findViewById(R.id.favouriteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Button favouriteButton = (Button) view.findViewById(R.id.favouriteButton);
 
+                OutputPair status;
+                if ("Subscribe".equals(favouriteButton.getText().toString())) {
+                    status = subscribe();
+                } else {
+                    status = unsubscribe();
+                }
+
+                Toast.makeText(getActivity(), status.getMessage(), Toast.LENGTH_LONG).show();
+
+                if (status.isSuccess()) {
+                    favouriteButton.setText(getFavouriteText(user.getFollowedUsers().contains(event.getOrganiserID())));
+                }
             }
         });
 
@@ -107,6 +120,32 @@ public class ViewEventFragment extends Fragment {
 
     public OutputPair removeRSVP() {
         RemoveRSVPTask task = new RemoveRSVPTask(event);
+        task.execute();
+        try {
+            OutputPair output = task.get();  // get return value from thread.
+            return output;
+        } catch (ExecutionException err) {
+            return new OutputPair(false, "Execution Error");
+        } catch (InterruptedException err) {
+            return new OutputPair(false, "Interrupted Error");
+        }
+    }
+
+    public OutputPair subscribe() {
+        SubscribeTask task = new SubscribeTask(user, event.getOrganiserID());
+        task.execute();
+        try {
+            OutputPair output = task.get();  // get return value from thread.
+            return output;
+        } catch (ExecutionException err) {
+            return new OutputPair(false, "Execution Error");
+        } catch (InterruptedException err) {
+            return new OutputPair(false, "Interrupted Error");
+        }
+    }
+
+    public OutputPair unsubscribe() {
+        UnsubscribeTask task = new UnsubscribeTask(user, event.getOrganiserID());
         task.execute();
         try {
             OutputPair output = task.get();  // get return value from thread.
@@ -183,5 +222,58 @@ class RemoveRSVPTask extends AsyncTask<String, String, OutputPair> {
     }
     protected OutputPair doInBackground(String... params) {
         return event.removeRsvp();
+    }
+}
+
+class SubscribeTask extends AsyncTask<String, String, OutputPair> {
+    private UserProfile user;
+    private int organiserID;
+
+    public SubscribeTask(UserProfile user, int organiserID) {
+        super();
+        this.user = user;
+        this.organiserID = organiserID;
+    }
+    protected OutputPair doInBackground(String... params) {
+        UserProfile organiser;
+        try {
+            organiser = new UserProfile(user.getToken(), organiserID);
+        } catch (Exception err) {
+            return new OutputPair(false, "Could not get organiser");
+        }
+        OutputPair status = user.subscribe(organiser);
+
+        if (status.isSuccess()) {
+            status.setMessage("Subscribed to " + organiser.getUsername());
+        }
+
+        return status;
+    }
+}
+
+class UnsubscribeTask extends AsyncTask<String, String, OutputPair> {
+    private UserProfile user;
+    private int organiserID;
+
+    public UnsubscribeTask(UserProfile user, int organiserID) {
+        super();
+        this.user = user;
+        this.organiserID = organiserID;
+    }
+    protected OutputPair doInBackground(String... params) {
+        UserProfile organiser;
+        try {
+            organiser = new UserProfile(user.getToken(), organiserID);
+        } catch (Exception err) {
+            return new OutputPair(false, "Could not get organiser");
+        }
+
+        OutputPair status = user.unsubscribe(organiser);
+
+        if (status.isSuccess()) {
+            status.setMessage("Unsubscribed from " + organiser.getUsername());
+        }
+
+        return status;
     }
 }

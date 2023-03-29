@@ -108,7 +108,6 @@ public class FeedFragment extends Fragment {
         list = a.arg2;
 
         if (list.isEmpty()) {
-            System.out.println(titleKeyword);
             String msg = getEmptyMessage();
             Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
         }
@@ -121,7 +120,7 @@ public class FeedFragment extends Fragment {
             TextView textView = view2.findViewById(R.id.demoevent);
             textView.setText(event.getTitle());
             TextView textView2 = view2.findViewById(R.id.demoorg);
-            textView2.setText(event.getEventType());
+            textView2.setText(event.getShortInfo());
             linlayout.addView(view2);
             view2.setOnClickListener(new View.OnClickListener() {
                 @Override

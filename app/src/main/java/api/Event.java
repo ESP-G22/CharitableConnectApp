@@ -84,6 +84,12 @@ public class Event implements EventAttributes, Parcelable {
         //setProperImage(attrs);
     }
 
+    /**
+     * Get all attrs from user profile ID endpoint.
+     *
+     * @return JSON string where the keys are the attribute names and the
+     * values are the attribute values.
+     */
     private OutputPair getAttrs() {
         HTTPConnection conn = new HTTPConnection();
         OutputPair output = conn.get(Util.getEventEndpoint(getID()), getAuthHeaderValue());
@@ -92,6 +98,13 @@ public class Event implements EventAttributes, Parcelable {
         return output;
     }
 
+    /**
+     * Get RSVP to the event for the user requester.
+     *
+     * null if the user has not RSVPed.
+     *
+     * @return RSVP created.
+     */
     public RSVP getRsvp() {
         return rsvp;
     }
@@ -102,18 +115,28 @@ public class Event implements EventAttributes, Parcelable {
      * @return The response of the request and its success.
      */
     public OutputPair removeRsvp() {
-        if (getRsvp() == null) {
+        if (userRequesterHasNotRSVPed()) {
             return new OutputPair(false, "User has not RSVPed.");
         }
 
         OutputPair output = getEventRequester().unsubscribeFromEvent(getRsvp().getID());
 
         if (output.isSuccess()) {
+            // set RSVP for user to empty
             rsvp = null;
         }
 
         return output;
 
+    }
+
+    /**
+     * Has the user requester RSVPed to the event?
+     *
+     * @return true if the user has not RSVPed.
+     */
+    public boolean userRequesterHasNotRSVPed() {
+        return getRsvp() == null;
     }
 
     /**
@@ -136,7 +159,7 @@ public class Event implements EventAttributes, Parcelable {
             try {
                 JSONArray arr = new JSONArray(attrs_status.getMessage());
                 JSONObject attrs = arr.getJSONObject(0);
-                JSONObject rsvp = attrs.getJSONObject("rsvp");
+                JSONObject rsvp = attrs.getJSONObject("rsvp");  // RSVP JSON objecy
                 this.rsvp = new RSVP(rsvp.getInt("id"), eventRequester.getAuthHeaderValue());
             } catch (JSONException err) {
                 return new OutputPair(true, "RSVP created but cannot get the new RSVP.");
@@ -239,12 +262,10 @@ public class Event implements EventAttributes, Parcelable {
 
     @Override
     public void setAddress1(String address1) {
-
     }
 
     @Override
     public void setAddress2(String address2) {
-
     }
 
     @Override
@@ -314,6 +335,10 @@ public class Event implements EventAttributes, Parcelable {
             status = " · Today";
         } else {
             status = " · In " + Integer.toString(days)  + " days";
+        }
+
+        if (eventRequesterIsOrganiser()) {
+            return dateStr + status + " · " + Integer.toString(getAttendeeCount()) + " going";
         }
 
         return dateStr + status;
