@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
@@ -156,11 +157,13 @@ public class ProfileFragment extends Fragment {
         for (int i = 0; i < events.size(); i++) {
             final Event event = events.get(i); // allows each event to go into each onclick
 
-            View eventWidget = getLayoutInflater().inflate(R.layout.event_card, null);
+            RelativeLayout eventWidget = (RelativeLayout) getLayoutInflater().inflate(R.layout.event_card, null);
 
             TextView titleText = eventWidget.findViewById(R.id.demoevent);
             titleText.setText(event.getTitle());
-
+            ImageButton deleteBut = new ImageButton(getContext());
+            deleteBut.setBackgroundResource(R.drawable.ic_delete_icon_shift);
+            eventWidget.addView(deleteBut);
             TextView infoText = eventWidget.findViewById(R.id.demoorg);
             infoText.setText(event.getShortInfo());
 
