@@ -9,20 +9,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import layout.OutputPair;
 
+/**
+ * Simple way for contacting a HTTP API.
+ * 1) Create an instance
+ * 2) Use the correct request method, passing in the endpoint.
+ * 3) Close the connection.
+ */
 public class HTTPConnection {
     public static final String PROBLEM_WITH_SENDING_REQUEST_MSG = "Problem with sending the request.\n" +
             "Are you connected to the Internet?";
@@ -198,6 +200,15 @@ public class HTTPConnection {
         return getResponse();
     }
 
+    /**
+     * Post an image to a upload endpoint, with authorization.
+     *
+     * @param urlStr Upload endpoint.
+     * @param image Image to upload.
+     * @param authHeaderValue Authorization.
+     *
+     * @return Response of request. If successful, the uuid is returned in the message.
+     */
     public OutputPair postImage(String urlStr, Bitmap image, String authHeaderValue) {
         try {
             URL url = new URL(urlStr);
@@ -217,7 +228,6 @@ public class HTTPConnection {
         }
 
         OutputPair output = getResponse();
-        System.out.println(output.getMessage());
 
         if (!output.isSuccess()) {
             return output;
@@ -233,6 +243,14 @@ public class HTTPConnection {
         return output;
     }
 
+    /**
+     * Get an image from a url, with authorization.
+     *
+     * @param urlStr URL where the image is.
+     * @param authHeaderValue Authorization.
+     * @return Bitmap image.
+     * @throws IOException If the image cannot be retrieved from the URL.
+     */
     public Bitmap getImage(String urlStr, String authHeaderValue) throws IOException {
         try {
             URL url = new URL(urlStr);
@@ -241,9 +259,8 @@ public class HTTPConnection {
             conn.setRequestProperty("Content-Type", "image/jpeg");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Authorization", authHeaderValue);
-            Bitmap image = BitmapFactory.decodeStream(conn.getInputStream());
 
-            return image;
+            return BitmapFactory.decodeStream(conn.getInputStream());
         } catch (IOException err) {
             err.printStackTrace();
             throw new IOException(PROBLEM_WITH_SENDING_REQUEST_MSG);
@@ -262,7 +279,7 @@ public class HTTPConnection {
     private OutputPair getResponse() {
         try {
             int responseCode = conn.getResponseCode();
-            System.out.println(responseCode);
+
             if (responseCode == 404) {
                 return new OutputPair(false, ERROR_404_MSG);
             }
@@ -290,7 +307,7 @@ public class HTTPConnection {
     private OutputPair passParams(JSONObject params) {
         try {
             OutputStream wr = conn.getOutputStream();
-            wr.write(params.toString().getBytes("UTF-8"));
+            wr.write(params.toString().getBytes(StandardCharsets.UTF_8));
             wr.flush();
             wr.close();
         } catch (IOException err) {

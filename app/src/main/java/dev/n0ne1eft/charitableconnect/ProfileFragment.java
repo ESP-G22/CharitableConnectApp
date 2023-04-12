@@ -1,17 +1,15 @@
 package dev.n0ne1eft.charitableconnect;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.media.Image;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import android.app.Activity;
-import android.app.ActionBar.LayoutParams;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +19,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 
 import api.Event;
 import api.UserProfile;
+import layout.OutputPair;
 import layout.Pair;
 
 /**
@@ -45,6 +41,9 @@ import layout.Pair;
 public class ProfileFragment extends Fragment {
     private static final String ARG_USER = "USER";
     private UserProfile user;
+    private List<Event> upcomingEvents;
+    private List<Event> myEvents;
+    private List<Event> subscriptionEvents;
 
     private View view;
 
@@ -104,16 +103,11 @@ public class ProfileFragment extends Fragment {
         });
         //ScrollView layout = view.findViewById(R.id.subsScrollView);
 
+        // set events on profile
         Map<String, List<Event>> events = getEvents();
-
-        LinearLayout upCL = (LinearLayout) view.findViewById(R.id.upcLayout);
-        setEventPanel(events.get("UPCOMING"), upCL);
-
-        LinearLayout myPostsLayout = (LinearLayout) view.findViewById(R.id.postLayout);
-        setEventPanel(events.get("POSTS"), myPostsLayout);
-
-        LinearLayout Subs = (LinearLayout) view.findViewById(R.id.subsLayout);
-        setEventPanel(events.get("SUBSCRIPTIONS"), Subs);
+        setUpcomingEvents(events.get("UPCOMING"));
+        setMyEvents(events.get("POSTS"));
+        setSubscriptionEvents(events.get("SUBSCRIPTIONS"));
 
         return view;
     }
@@ -154,6 +148,8 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setEventPanel(List<Event> events, LinearLayout layout) {
+        layout.removeAllViews();
+
         for (int i = 0; i < events.size(); i++) {
             final Event event = events.get(i); // allows each event to go into each onclick
 
@@ -161,9 +157,7 @@ public class ProfileFragment extends Fragment {
 
             TextView titleText = eventWidget.findViewById(R.id.demoevent);
             titleText.setText(event.getTitle());
-            ImageButton deleteBut = new ImageButton(getContext());
-            deleteBut.setBackgroundResource(R.drawable.ic_delete_icon_shift);
-            eventWidget.addView(deleteBut);
+
             TextView infoText = eventWidget.findViewById(R.id.demoorg);
             infoText.setText(event.getShortInfo());
 
@@ -176,12 +170,120 @@ public class ProfileFragment extends Fragment {
             });
         }
     }
+
     public void showEvent(Event event) {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("EVENT", event);
         navController.navigate(R.id.viewEventFragment, bundle);
+    }
+
+    public void toDeleteEvent(Event event) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        deleteEvent(event);
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Are you sure you want to delete the \"" + event.getTitle() + "\" event?")
+                .setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener);
+        builder.show();
+    }
+
+    public void deleteEvent(Event event) {
+        DeleteEventTask task = new DeleteEventTask(event);
+        OutputPair status;
+        task.execute();
+
+        try {
+            status = task.get();
+        } catch (ExecutionException err) {
+            status = new OutputPair(false, "Execution Exception");
+        } catch (InterruptedException err) {
+            status = new OutputPair(false, "Interrupted Exception");
+        }
+
+        if (status.isSuccess()) {
+            List<Event> myEvents = getMyEvents();
+            myEvents.remove(event);
+            setMyEvents(myEvents);
+            TextView eventC = view.findViewById(R.id.eventC);
+            eventC.setText(Integer.toString(user.getEventCount()));
+        }
+        Toast.makeText(getActivity(), status.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    public List<Event> getUpcomingEvents() {
+        return upcomingEvents;
+    }
+
+    public List<Event> getMyEvents() {
+        return myEvents;
+    }
+
+    public List<Event> getSubscriptionEvents() {
+        return subscriptionEvents;
+    }
+    public void setUpcomingEvents(List<Event> events) {
+        upcomingEvents = events;
+
+        // output to screen
+        LinearLayout upCL = (LinearLayout) view.findViewById(R.id.upcLayout);
+        setEventPanel(upcomingEvents, upCL);
+    }
+    public void setMyEvents(List<Event> events) {
+        myEvents = events;
+
+        LinearLayout myPostsLayout = (LinearLayout) view.findViewById(R.id.postLayout);
+        myPostsLayout.removeAllViews();
+
+        for (int i = 0; i < events.size(); i++) {
+            final Event event = events.get(i); // allows each event to go into each onclick
+
+            RelativeLayout eventWidget = (RelativeLayout) getLayoutInflater().inflate(R.layout.event_card, null);
+
+            TextView titleText = eventWidget.findViewById(R.id.demoevent);
+            titleText.setText(event.getTitle());
+
+            ImageButton deleteBut = new ImageButton(getContext());
+            deleteBut.setBackgroundResource(R.drawable.ic_delete_icon_shift);
+
+            deleteBut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toDeleteEvent(event);
+                }
+            });
+
+            eventWidget.addView(deleteBut);
+
+            TextView infoText = eventWidget.findViewById(R.id.demoorg);
+            infoText.setText(event.getShortInfo());
+
+            myPostsLayout.addView(eventWidget);
+            eventWidget.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showEvent(event);
+                }
+            });
+        }
+    }
+    public void setSubscriptionEvents(List<Event> events) {
+        subscriptionEvents = events;
+
+        LinearLayout Subs = (LinearLayout) view.findViewById(R.id.subsLayout);
+        setEventPanel(subscriptionEvents, Subs);
     }
 
     public String changeToAdvSet(View v) {
@@ -225,6 +327,20 @@ public class ProfileFragment extends Fragment {
         }
         // Return null if the button clicked is not the one that triggers the page change
         return null;
+    }
+}
+
+
+class DeleteEventTask extends AsyncTask<String, String, OutputPair> {
+    private Event event;
+
+    public DeleteEventTask(Event event) {
+        super();
+        this.event = event;
+    }
+
+    protected OutputPair doInBackground(String... params) {
+        return event.delete();
     }
 }
 

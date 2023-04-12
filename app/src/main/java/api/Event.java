@@ -1,7 +1,6 @@
 package api;
 
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -19,8 +18,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Allows the app to edit and view event attributes.
+ *
+ * The eventRequester provides authorization to view the event and does not have
+ * to be the organiser of the event.
+ */
 public class Event implements EventAttributes, Parcelable {
     public static final String DEFAULT_IMAGE_UUID = "3070b7ae-396c-420d-8579-9445c5216bbb";
+    // Image saying that the event has no images.
     private int id;
     private UserProfile eventRequester; // user who instantiated this event.
     private String eventType;
@@ -55,6 +61,7 @@ public class Event implements EventAttributes, Parcelable {
             throw new Exception(out.getMessage());
         }
 
+        // set attributes
         JSONArray arr = new JSONArray(out.getMessage());
         JSONObject attrs = arr.getJSONObject(0);
 
@@ -323,6 +330,13 @@ public class Event implements EventAttributes, Parcelable {
         this.images = null;
     }
 
+    /**
+     * Get the date of the event, and how many days until the event in string format.
+     *
+     * If the event requester is the organiser, it will show the attendee count too.
+     *
+     * @return In the form: {date} · In {x} days[ · {y} going]
+     */
     public String getShortInfo() {
         String dateStr = Util.dateToPrettyString(getDatetime());
 
@@ -333,10 +347,13 @@ public class Event implements EventAttributes, Parcelable {
             status = "";
         } else if (days == 0) {
             status = " · Today";
+        } else if (days == 1) {
+            status = " · In " + Integer.toString(days)  + " day";
         } else {
             status = " · In " + Integer.toString(days)  + " days";
         }
 
+        // For the organiser, it shows how many are attending
         if (eventRequesterIsOrganiser()) {
             return dateStr + status + " · " + Integer.toString(getAttendeeCount()) + " going";
         }
@@ -344,6 +361,11 @@ public class Event implements EventAttributes, Parcelable {
         return dateStr + status;
     }
 
+    /**
+     * Get the event description, address, and postcode in a string paragraph.
+     *
+     * @return In form: {description}\n\nADDRESS\n\n{address1}\n{address2}\n{postcode}
+     */
     public String getInfo() {
         String addr2 = getAddress2();
         String addr2Txt;
@@ -416,7 +438,7 @@ public class Event implements EventAttributes, Parcelable {
      */
     public OutputPair delete() {
         if (!eventRequesterIsOrganiser()) {
-            return new OutputPair(false, "Only the organiser can remove events.");
+            return new OutputPair(false, "Only the organiser can remove events");
         }
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
@@ -426,6 +448,9 @@ public class Event implements EventAttributes, Parcelable {
         if (!status.isSuccess()) {
             return status;
         }
+
+        // update local variables
+        eventRequester.setEventCount(eventRequester.getEventCount() - 1);
 
         // If successful, output the success to user
         try {
@@ -578,6 +603,17 @@ public class Event implements EventAttributes, Parcelable {
         return Event.JSONArrayToListOfEvents(events, eventRequester);
     }
 
+    /**
+     * Convert JSON array from response to list of events.
+     *
+     * Used after retrieving events from lists endpoint.
+     *
+     * If an error occurs parsing a JSON value, that event is ignored - no error is raised.
+     *
+     * @param eventsInJSON JSON format of events in an array.
+     * @param eventRequester User who requested the events.
+     * @return List of events, may be empty if the JSON array is empty.
+     */
     private static List<Event> JSONArrayToListOfEvents(JSONArray eventsInJSON, UserProfile eventRequester) {
         LinkedList<Event> listOfEvents = new LinkedList<>();
         for (int i = 0; i < eventsInJSON.length(); i++) {
@@ -590,6 +626,14 @@ public class Event implements EventAttributes, Parcelable {
         return listOfEvents;
     }
 
+    /**
+     * Converts a list of event IDs to events.
+     *
+     * @param eventIDs IDs of events to retrieve.
+     * @param eventRequester User who requested the events.
+     * @return List of events, may be empty if the IDs list is empty.
+     * @throws Exception If an event object cannot be created from the ID.
+     */
     public static List<Event> idsToEvents(List<Integer> eventIDs, UserProfile eventRequester) throws Exception {
         List<Event> output = new LinkedList<>();
 
@@ -600,6 +644,15 @@ public class Event implements EventAttributes, Parcelable {
         return output;
     }
 
+    /**
+     * Get all events that an organiser is currently advertising.
+     *
+     * @param organiserID ID of user to get events for.
+     * @param eventRequester User who requested the events.
+     * @return List of events, may be empty if the organiser has no events.
+     * @throws IOException If there was an error getting the events
+     * @throws JSONException If there was an error parsing the JSON events.
+     */
     public static List<Event> getEventsFromOrganiser(int organiserID, UserProfile eventRequester) throws IOException, JSONException{
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
@@ -618,10 +671,12 @@ public class Event implements EventAttributes, Parcelable {
         return Event.JSONArrayToListOfEvents(events, eventRequester);
     }
 
+    @Override
     public int describeContents() {
         return 0;
     }
 
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         Bundle b = new Bundle();
         b.putParcelable("eventRequester", eventRequester);

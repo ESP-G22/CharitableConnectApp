@@ -1,7 +1,6 @@
 package api;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +13,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class Util {
     public static final String ENDPOINT = "https://api.cc.n0ne1eft.dev/";
     public static final String ENDPOINT_USER = ENDPOINT + "user/";
@@ -21,6 +21,8 @@ public class Util {
     public static final String ENDPOINT_LOGIN = ENDPOINT_USER + "login";
     public static final String ENDPOINT_CHANGE_PASSWORD = ENDPOINT_USER + "passwordchange";
     public static final String ENDPOINT_REGISTER = ENDPOINT_USER + "register";
+
+    public static final String ENDPOINT_USER_FOLLOW = ENDPOINT_USER + "follow/";
 
     public static final String ENDPOINT_EVENT = ENDPOINT + "events/";
     public static final String ENDPOINT_EVENT_LIST = ENDPOINT_EVENT + "list";
@@ -40,31 +42,31 @@ public class Util {
     /**
      * Get specific user by their id.
      *
-     * @param id ID of user to get.
+     * @param userID ID of user to get.
      * @return URL of user profile with given id.
      */
-    public static String getUserEndpoint(int id) {
-        return ENDPOINT_USER + "profile/" + Integer.valueOf(id).toString();
+    public static String getUserEndpoint(int userID) {
+        return ENDPOINT_USER + "profile/" + Integer.valueOf(userID).toString();
     }
 
     /**
      * Get specific event by their id.
      *
-     * @param id ID of event to get.
+     * @param eventID ID of event to get.
      * @return URL of event.
      */
-    public static String getEventEndpoint(int id) {
-        return ENDPOINT_EVENT + Integer.valueOf(id).toString();
+    public static String getEventEndpoint(int eventID) {
+        return ENDPOINT_EVENT + Integer.valueOf(eventID).toString();
     }
 
     /**
      * Get specific rsvp by their id.
      *
-     * @param id ID of rsvp to get.
+     * @param rsvpID ID of rsvp to get.
      * @return URL of rsvp.
      */
-    public static String getRSVPEndpoint(int id) {
-        return ENDPOINT_RSVP + Integer.valueOf(id).toString();
+    public static String getRSVPEndpoint(int rsvpID) {
+        return ENDPOINT_RSVP + Integer.valueOf(rsvpID).toString();
     }
 
     /**
@@ -79,6 +81,10 @@ public class Util {
 
     public static String getEventRSVPEndpoint(int id) {
         return Util.getEventEndpoint(id) + "/rsvp";
+    }
+
+    public static String getUserFollowEndpoint(int userID) {
+        return Util.ENDPOINT_USER_FOLLOW + Integer.valueOf(userID).toString();
     }
 
     /**
@@ -162,6 +168,7 @@ public class Util {
     public static Bitmap getImage(String uuid, String authHeaderValue) throws IOException {
         HTTPConnection conn = new HTTPConnection();
         Bitmap image = conn.getImage(Util.getImageEndpoint(uuid), authHeaderValue);
+        conn.disconnect();
 
         return image;
     }

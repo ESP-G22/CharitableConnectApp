@@ -1,10 +1,8 @@
 package api;
 
 import android.graphics.Bitmap;
-import android.icu.util.Output;
-import android.media.Image;
 import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcelable; // Allows this object to be passed between fragments.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -14,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,18 +20,23 @@ import java.util.Map;
 
 import layout.OutputPair;
 import layout.UserProfileAttributes;
-import validate.UserValidate;
 
+/**
+ * The user object for viewing user attributes and viewing events.
+ *
+ * Called after logging in and getting the token and ID.
+ */
 public class UserProfile implements UserProfileAttributes, Parcelable {
     public static final String DEFAULT_PROFILE_IMAGE_UUID = "37f9f56a-df80-4dd1-ac46-6135e71dc5ca";
+    // An image saying that the user has no profile image.
     public static final String defaultName = "This user has no name.";
     public static final String defaultDescription = "This user has no description.";
     private final String token;
     private final int id;
-    private String username;
+    private final String username;
     private String bio;
     private String name;
-    private String userType;
+    private final String userType;
     private List<Integer> followedUsers;
 
     private Bitmap avatar;
@@ -96,6 +100,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
     private OutputPair getAttrs() {
         HTTPConnection conn = new HTTPConnection();
         OutputPair status = conn.get(getUserEndpoint(), getAuthHeaderValue());
+        conn.disconnect();
 
         return status;
     }
@@ -184,10 +189,21 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         this.avatar = profilePic;
     }
 
+    /**
+     * Edit the name, bio, and profile picture of the user.
+     *
+     * Pass in 'null' if you do not want to edit a specific attribute.
+     *
+     * @param name Name of user.
+     * @param bio Description of user.
+     * @param profilePic Avatar of user.
+     * @return Response of request.
+     */
     public OutputPair editProfile(String name, String bio, Bitmap profilePic) {
         HTTPConnection conn = new HTTPConnection();
         String uuid = null;
 
+        // TODO: setting profile pic
         /*
         if (profilePic != null) {
             OutputPair status_image = conn.postImage(
@@ -277,25 +293,6 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return subsStr + "  ·  " + eventsStr;
     }
 
-    public OutputPair delete() {
-        // Establish connection and post JSON parameters
-        HTTPConnection conn = new HTTPConnection();
-        OutputPair status = conn.delete(getUserEndpoint(), getAuthHeaderValue());
-        conn.disconnect();
-
-        if (!status.isSuccess()) {
-            return status;
-        }
-
-        // If successful, output the success to user
-        try {
-            JSONArray out = new JSONArray(status.getMessage());
-            return new OutputPair(true, out.getJSONObject(0).getString("msg"));
-        } catch (JSONException err) {
-            return new OutputPair(false, "Problem with parsing JSON");
-        }
-    }
-
     /**
      * Subscribe to an event, using its ID.
      *
@@ -346,6 +343,14 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return new OutputPair(true, "RSVP removed.");
     }
 
+    /**
+     * Get all events from all the user's subscriptions.
+     *
+     * @return An unordered list of requested events.
+     *
+     * @throws IOException If the request to ge the events could not be completed.
+     * @throws JSONException If the successful response cannot be parsed into JSON.
+     */
     public List<Integer> getSubscribedEvents() throws IOException, JSONException {
         // Establish connection and post JSON parameters
         HTTPConnection conn = new HTTPConnection();
@@ -407,9 +412,26 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return new OutputPair(true, "Password changed.");
     }
 
+    /**
+     * Is the user subscribed to the user passed into the function?
+     *
+     * @param user The user who they may have subscribed to.
+     *
+     * @return true if the user has subscribed to them, false otherwise.
+     */
     public boolean isSubscribedTo(UserProfile user) {
         return getFollowedUsers().contains(user.getID());
     }
+
+    /**
+     * Subscribe to followedUser.
+     *
+     * You cannot subscribe to yourself or subscribe to one person twice.
+     *
+     * @param followedUser The user who you want to subscribe to.
+     *
+     * @return Status of response. If true, the local values of follower count and followers are updated.
+     */
     public OutputPair subscribe(UserProfile followedUser) {
         if (followedUser.getID() == getID()) {
             return new OutputPair(false, "You cannot subscribe to yourself!");
@@ -418,9 +440,18 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
             return new OutputPair(false, "You have already subscribed to " + followedUser.getUsername());
         }
 
-        OutputPair status = updateFollowedUsers();
-        System.out.println(status.getMessage());
+        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject input = new JSONObject(params);
 
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.post(
+                Util.getUserFollowEndpoint(followedUser.getID()),
+                input,
+                getAuthHeaderValue()
+        );
+        conn.disconnect();
+
+        // Update local variables for both users
         if (status.isSuccess()) {
             followedUsers.add(followedUser.getID());
             followedUser.setFollowerCount(getFollowerCount() + 1);
@@ -429,6 +460,15 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return status;
     }
 
+    /**
+     * Unsubscribe from followedUser.
+     *
+     * You cannot unsubscribe from a user that you have not subscribed to.
+     *
+     * @param followedUser The user who you want to unsubscribe from.
+     *
+     * @return Status of response. If true, the local values of follower count and followers are updated.
+     */
     public OutputPair unsubscribe(UserProfile followedUser) {
         if (!isSubscribedTo(followedUser)) {
             return new OutputPair(
@@ -437,8 +477,14 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
             );
         }
 
-        OutputPair status = updateFollowedUsers();
+        HTTPConnection conn = new HTTPConnection();
+        OutputPair status = conn.delete(
+                Util.getUserFollowEndpoint(followedUser.getID()),
+                getAuthHeaderValue()
+        );
+        conn.disconnect();
 
+        // update local variables for both users.
         if (status.isSuccess()) {
             int idx = getFollowedUsers().indexOf(followedUser.getID());
             followedUsers.remove(idx);
@@ -448,26 +494,59 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         return status;
     }
 
+    /**
+     * Create an event using EventCreate class but eventCount is updated for the user.
+     *
+     * @param eventType Event category. Error if an invalid category is passed.
+     * @param title Title of event.
+     * @param description Description of event.
+     * @param datetime Date and time of event.
+     * @param address1 First line of address of event.
+     * @param address2 Second line of address of event (optional).
+     * @param postcode Postcode of event.
+     * @param images List of images of event.
+     *
+     * @return Response of request.
+     */
+    public OutputPair createEvent(
+            String eventType, String title, String description, Date datetime,
+            String address1, String address2, String postcode, List<Bitmap> images) {
+
+        EventCreate create = new EventCreate();
+        OutputPair output = create.createEvent(
+                eventType, title, description, datetime, address1, address2,
+                postcode, images, getAuthHeaderValue()
+        );
+
+        // update local variables
+        if (output.isSuccess()) {
+            setEventCount(getEventCount() + 1);
+        }
+
+        return output;
+    }
+
+    /**
+     * Set follower count for user.
+     *
+     * Used after updating subscriptions for the user.
+     *
+     * @param followerCount Number of users following this user.
+     */
     public void setFollowerCount(int followerCount) {
         this.followerCount = followerCount;
     }
 
-    private OutputPair updateFollowedUsers() {
-        // Convert input into JSON
-        Map<String, Object> params = new LinkedHashMap<>();
-        params.put("followedUsers", followedUsers);
-        JSONObject input = new JSONObject(params);
-
-        HTTPConnection conn = new HTTPConnection();
-        OutputPair status = conn.put(getUserEndpoint(), input, getAuthHeaderValue());
-
-        return status;
+    public void setEventCount(int eventCount) {
+        this.eventCount = eventCount;
     }
 
+    @Override
     public int describeContents() {
         return 0;
     }
 
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getToken());
         dest.writeInt(getID());
@@ -498,7 +577,7 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         bio = in.readString();
         name = in.readString();
         userType = in.readString();
-        followedUsers = new LinkedList<Integer>();
+        followedUsers = new LinkedList<>();
         in.readList(followedUsers, Integer.class.getClassLoader());
         eventCount = in.readInt();
         followerCount = in.readInt();
