@@ -43,9 +43,18 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -391,7 +400,7 @@ public class NewEventFragment extends Fragment {
         String postcode = postcodeBox.getText().toString();
         String eventType = eventTypeSpinner.getSelectedItem().toString();
 
-        // Need input boxes for these
+        // TODO: Need input boxes for these
         String address2 = null;
 
         // Get date
@@ -414,7 +423,7 @@ public class NewEventFragment extends Fragment {
 
         NewEventTask create = new NewEventTask(
                 eventType, title, description, datetime, address1, address2,
-                postcode, images, user.getAuthHeaderValue()
+                postcode, images, user
         );
         create.execute();
         try {
@@ -436,12 +445,12 @@ class NewEventTask extends AsyncTask<String, String, OutputPair> {
     private String address1;
     private String address2;
     private String postcode;
-    private String organiserAuthHeaderValue;
+    private UserProfile organiser;
 
     private List<Bitmap> images;
 
     public NewEventTask(String eventType, String title, String description, Date datetime, String address1, String address2, String postcode, List<Bitmap> images,
-                        String organiserAuthHeaderValue) {
+                        UserProfile organiser) {
         super();
         this.eventType = eventType;
         this.title = title;
@@ -451,12 +460,12 @@ class NewEventTask extends AsyncTask<String, String, OutputPair> {
         this.address2 = address2;
         this.postcode = postcode;
         this.images = images;
-        this.organiserAuthHeaderValue = organiserAuthHeaderValue;
+        this.organiser = organiser;
     }
     protected OutputPair doInBackground(String... params) {
-        EventCreate create = new EventCreate();
-        OutputPair output = create.createEvent(eventType, title, description, datetime, address1, address2, postcode, images, organiserAuthHeaderValue);
-
-        return output;
+        return organiser.createEvent(
+                eventType, title, description, datetime,
+                address1, address2, postcode, images
+        );
     }
 }

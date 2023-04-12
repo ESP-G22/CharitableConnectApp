@@ -27,7 +27,7 @@ import usertest.UserUnitTest;
 
 
 public class EventUnitTest {
-    public static final int testEventID = 173;
+    public static final int testEventID = 175;
     public static final String testEventType1 = "Other";
     public static final String testEventTitle1 = "Java unit testing";
     public static final String testEventDesc1 = "This is a description.";
@@ -107,7 +107,7 @@ public class EventUnitTest {
     @Test
     public void searchEvent() {
         try {
-            List<Event> output = Event.search("Quiz", user);
+            List<Event> output = Event.search("Run", user);
             assertEquals(testEventID, output.get(0).getID());
         } catch (Exception err) {
             err.printStackTrace();

@@ -1,11 +1,8 @@
 package api;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
