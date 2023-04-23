@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -96,6 +97,10 @@ public class FeedFragment extends Fragment {
                     Toast.makeText(getActivity(), R.string.USER_CREATING_EVENT_ERROR, Toast.LENGTH_LONG).show();
                     return;
                 }
+                //FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                //transaction.replace(R.id.newEventFragment, new NewEventFragment());
+                //transaction.addToBackStack(null);
+                //transaction.commit();
                 NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_main_activity);
                 navController.navigate(R.id.newEventFragment);
             }
@@ -129,6 +134,10 @@ public class FeedFragment extends Fragment {
                 }
             });
         }
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .commit();
 
         return view;
     }
@@ -297,16 +306,16 @@ class GetEventsTask extends AsyncTask<String, String, Pair<String, List<Event>>>
                     events = Event.getTrendingEvents(userRequester);
                 } else if ("localBusiness".equals(keyword)) {
                     //Only food tasting events are shown
-                    events = Event.getByEventType("LocalBusiness", userRequester);
+                    events = Event.getByEventType("localBusiness", userRequester);
                 } else if ("climate".equals(keyword)) {
                     //Only movie events are shown
-                    events = Event.getByEventType("Climate", userRequester);
+                    events = Event.getByEventType("climate", userRequester);
                 } else if ("community".equals(keyword)) {
                     //Only club events are shown
-                    events = Event.getByEventType("Community", userRequester);
+                    events = Event.getByEventType("community", userRequester);
                 } else if ("sports".equals(keyword)) {
                     //Only sports events are shown
-                    events = Event.getByEventType("Sports", userRequester);
+                    events = Event.getByEventType("sports", userRequester);
                 } else {
                     //All events are shown as before
                     events = Event.getEventsList(userRequester);
