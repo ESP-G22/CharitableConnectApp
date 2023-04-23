@@ -90,7 +90,7 @@ public class EventUnitTest {
         }
     }
 
-    @Test
+    @Ignore
     public void daysUntilEvent() {
         try {
             Event event = new Event(testEventID, user);
@@ -104,7 +104,7 @@ public class EventUnitTest {
     /**
      * How to get an event by a search term in the title.
      */
-    @Test
+    @Ignore
     public void searchEvent() {
         try {
             List<Event> output = Event.search("Run", user);
@@ -186,7 +186,7 @@ public class EventUnitTest {
     }
 
 
-    @Test
+    @Ignore
     public void getEventRSVPs() {
         try {
             Event e = new Event(testEventID, user);

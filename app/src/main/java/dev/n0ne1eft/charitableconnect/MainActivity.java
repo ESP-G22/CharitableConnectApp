@@ -1,11 +1,16 @@
 package dev.n0ne1eft.charitableconnect;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -17,20 +22,24 @@ import api.UserProfile;
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
 
-    private ExploreFragment exploreFragment;
-    private ProfileFragment profileFragment;
-    private FeedFragment feedFragment;
-
     private UserProfile user;
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
             user = savedInstanceState.getParcelable("USER");
-            //exploreFragment = (ExploreFragment) getSupportFragmentManager().getFragment(savedInstanceState, "explore");
-            //profileFragment = (ProfileFragment) getSupportFragmentManager().getFragment(savedInstanceState, "profile");
-            //feedFragment = (FeedFragment) getSupportFragmentManager().getFragment(savedInstanceState, "feed");
         } else {
             // Getting the user who logged in
             Bundle extras = getIntent().getExtras();
@@ -59,15 +68,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNav, navController);
 
         //bottomNav.setBackgroundColor(getResources().getColor(R.color.navBarColor, getTheme()));
-    }
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        //Save the fragment's instance
-        //getSupportFragmentManager().putFragment(outState, "explore", exploreFragment);
-        //getSupportFragmentManager().putFragment(outState, "profile", profileFragment);
-        //getSupportFragmentManager().putFragment(outState, "feed", feedFragment);
     }
 
     @Override
