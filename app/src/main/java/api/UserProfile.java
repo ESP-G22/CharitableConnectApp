@@ -78,8 +78,8 @@ public class UserProfile implements UserProfileAttributes, Parcelable {
         this.followerCount = attrs.getInt("followerCount");
 
         // Only choose of of these image setters.
-        setImageForTesting();
-        //setProperImage(attrs);
+        //setImageForTesting();
+        setProperImage(attrs);
     }
 
     /**
