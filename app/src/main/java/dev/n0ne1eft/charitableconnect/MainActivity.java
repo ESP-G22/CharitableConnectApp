@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_main_activity);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(bottomNav, navController);
-        bottomNav.setSelectedItemId(R.id.profileFragment);
+        bottomNav.setSelectedItemId(R.id.feedFragment);
 
         //bottomNav.setBackgroundColor(getResources().getColor(R.color.navBarColor, getTheme()));
     }
