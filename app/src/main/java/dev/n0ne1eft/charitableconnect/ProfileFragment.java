@@ -88,15 +88,15 @@ public class ProfileFragment extends Fragment {
             profilePic.setImageBitmap(user.getProfilePic());
         }
 
-        Button editButton = view.findViewById(R.id.editButton);
-        editButton.setOnClickListener(new View.OnClickListener() {
+        Button logOutButton = view.findViewById(R.id.logOutButton);
+        logOutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                changeToEditProfile(v);
+                getActivity().finish();
             }
         });
 
         Button adSButton = view.findViewById(R.id.adSet);
-        editButton.setOnClickListener(new View.OnClickListener() {
+        adSButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 changeToAdvSet(v);
             }
@@ -310,7 +310,7 @@ public class ProfileFragment extends Fragment {
     public String changeToEditProfile(View v) {
         Toast.makeText(getActivity(), getString(R.string.FEATURE_NOT_IMPLEMENTED), Toast.LENGTH_LONG);
         // Check if the button clicked is the one that triggers the page change
-        if (v.getId() == R.id.editButton) {
+        if (v.getId() == R.id.logOutButton) {
             // Create a new instance of the FeedPage fragment
             FeedFragment feedPageFragment = new FeedFragment();
             // Get the FragmentManager

@@ -150,44 +150,6 @@ public class FeedFragment extends Fragment {
         navController.navigate(R.id.viewEventFragment, bundle);
     }
 
-    public void eventshownfromExplore(View v){
-        pageTitle = "Trending";
-        Pair<String, List<Event>> output = getEventsByTitle(pageTitle);
-        if (!(output.arg1.equals("success"))) {
-            Toast.makeText(getActivity(), output.arg1, Toast.LENGTH_LONG).show();
-            return;
-        }
-        List<Event> events = output.arg2;
-
-        if ("Subscribed".equals(pageTitle)) {
-            //Only events we are subscribed to their organizer are shown
-        } else if ("Date".equals(pageTitle)){
-            TextView textView2 = v.findViewById(R.id.feedTitleText);
-            textView2.setText("Date");
-        } else if ("Trending".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.feedTitleText);
-            textView2.setText("Trending");
-        } else if ("FoodTasting".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.feedTitleText);
-            textView2.setText("FoodTasting");
-        } else if ("Movies".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.feedTitleText);
-            textView2.setText("Movies");
-        } else if ("Club".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.feedTitleText);
-            textView2.setText("Club");
-        } else if ("Sports".equals(pageTitle)) {
-            TextView textView2 = v.findViewById(R.id.feedTitleText);
-            textView2.setText("Sports");
-        } else {
-            TextView textView2 = v.findViewById(R.id.feedTitleText);
-            textView2.setText("Feed");
-        }
-
-        // display events
-        System.out.println(events);
-    }
-
     public Pair<String, List<Event>> getEventsByTitle(String pageTitle) {
         GetEventsTask task = new GetEventsTask(pageTitle, byTitle, user);
         task.execute();
@@ -200,32 +162,7 @@ public class FeedFragment extends Fragment {
             return new Pair("InterruptedError", null);
         }
     }
-    public void sorting(String type){
-        /*
-        const currentEvent;
-        int j;
-        if (type == "Date"){
-            for (int i = 0; i < events.size() - 1; i++){
-                currentEvent = events.get(i);
-                j = i + 1;
-                if (events.get(i).date > events.get(j).date){
-                    events.get(i) = events.get(j);
-                    events.get(j) = currentEvent;
-                }
-            }
-        }
-        else if (type == "Trending"){
-            for (int i = 0; i < events.size() - 1; i++){
-                currentEvent = events.get(i);
-                j = i + 1;
-                if (events.get(i).trending > events.get(j).trending){
-                    events.get(i) = events.get(j);
-                    events.get(j) = currentEvent;
-                }
-            }
-        }
-        */
-    }
+
     public String getTitle() {
         if (byTitle) {
             return "Results for \"" + titleKeyword + "\"";
@@ -306,16 +243,16 @@ class GetEventsTask extends AsyncTask<String, String, Pair<String, List<Event>>>
                     events = Event.getTrendingEvents(userRequester);
                 } else if ("localBusiness".equals(keyword)) {
                     //Only food tasting events are shown
-                    events = Event.getByEventType("localBusiness", userRequester);
+                    events = Event.getByEventType("LocalBusiness", userRequester);
                 } else if ("climate".equals(keyword)) {
                     //Only movie events are shown
-                    events = Event.getByEventType("climate", userRequester);
+                    events = Event.getByEventType("Climate", userRequester);
                 } else if ("community".equals(keyword)) {
                     //Only club events are shown
-                    events = Event.getByEventType("community", userRequester);
+                    events = Event.getByEventType("Community", userRequester);
                 } else if ("sports".equals(keyword)) {
                     //Only sports events are shown
-                    events = Event.getByEventType("sports", userRequester);
+                    events = Event.getByEventType("Sports", userRequester);
                 } else {
                     //All events are shown as before
                     events = Event.getEventsList(userRequester);

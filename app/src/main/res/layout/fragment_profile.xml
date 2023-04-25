@@ -41,11 +41,12 @@
         app:layout_constraintTop_toBottomOf="@+id/ProfileName" />
 
     <Button
-        android:id="@+id/editButton"
+        android:id="@+id/logOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Edit My Profile"
+        android:text="Log out"
+        android:backgroundTint="#F62F53"
         app:layout_constraintStart_toStartOf="@+id/subC"
         app:layout_constraintTop_toBottomOf="@+id/subC" />
 
@@ -57,7 +58,7 @@
         android:layout_marginTop="2dp"
         android:text="Upcoming"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editButton" />
+        app:layout_constraintTop_toBottomOf="@+id/logOutButton" />
 
 
     <TextView
